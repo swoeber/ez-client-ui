@@ -1,1 +1,201 @@
+:root {
+  /* Change these three to rebrand quickly */
+  --brand-h: 220; /* hue (0–360) */
+  --brand-s: 90%; /* saturation */
+  --brand-l: 56%; /* lightness */
+
+  --bs-body-bg: #f7f8fb;
+  --bs-body-color: #1f2937;
+
+  /* Derived palette */
+  --brand: hsl(var(--brand-h), var(--brand-s), var(--brand-l));
+  --brand-600: hsl(var(--brand-h), var(--brand-s), 46%);
+  --brand-700: hsl(var(--brand-h), var(--brand-s), 38%);
+  --brand-050: hsl(var(--brand-h), 100%, 97%);
+  --brand-100: hsl(var(--brand-h), 95%, 92%);
+  --brand-200: hsl(var(--brand-h), 90%, 85%);
+
+  /* Neutrals */
+  --surface: #ffffff;
+  --surface-muted: #f3f4f6;
+  --border-subtle: #e5e7eb;
+}
+
+
 /* You can add global styles to this file, and also import other style files */
+//@use 'bootstrap/scss/functions';
+//@use "bootstrap/scss/variables";
+
+// 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+@import "bootstrap/scss/functions";
+
+// 2. Include Bootstrap variables first
+@import "bootstrap/scss/variables";
+//@import "bootstrap/scss/variables-dark";
+
+@import "bootstrap/scss/mixins";
+
+// 3. Include custom variable overrides after Bootstrap variables
+@import "custom-variables";
+
+@import "bootstrap/scss/bootstrap";
+@import "bootstrap-icons";
+
+//@import "bootstrap/scss/functions";
+//@import "bootstrap/scss/variables";
+//@import "bootstrap/scss/mixins";
+
+
+/* =========
+   App polish
+   ========= */
+
+/* Sidebar */
+.app-sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border-subtle);
+}
+
+.app-sidebar .nav-link {
+  color: #4b5563;
+  border-left: 3px solid transparent;
+  padding: .75rem 1rem;
+  font-weight: 500;
+}
+
+.app-sidebar .nav-link:hover {
+  background: var(--surface-muted);
+}
+
+.app-sidebar .nav-link.active {
+  color: var(--brand-700);
+  background: var(--brand-050);
+  border-left-color: var(--brand);
+}
+
+/* Top bar avatar/name */
+.app-navbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Cards */
+.card {
+  box-shadow: $box-shadow-sm;
+}
+
+.card .card-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border-subtle);
+  font-weight: 600;
+}
+
+/* Quick-start list rows */
+.list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .75rem 1rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.list-row:first-child {
+  border-top: 0;
+}
+
+.list-row .title {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-weight: 500;
+}
+
+.list-row .title .dot {
+  width: .5rem;
+  height: .5rem;
+  border-radius: 999px;
+  background: var(--brand-200);
+}
+
+/* Badges for completion */
+.badge-progress {
+  background: var(--brand-050);
+  color: var(--brand-700);
+  border: 1px solid var(--brand-100);
+}
+
+/* Empty states */
+.empty {
+  color: #6b7280;
+}
+
+.empty .bi {
+  opacity: .6;
+}
+
+/* Subtle buttons */
+.btn-outline-subtle {
+  --bs-btn-color: #475569;
+  --bs-btn-border-color: var(--border-subtle);
+  --bs-btn-hover-bg: var(--surface-muted);
+  --bs-btn-hover-border-color: var(--border-subtle);
+}
+
+/* Links that match brand */
+a, .link-brand {
+  color: var(--brand-700);
+}
+
+a:hover, .link-brand:hover {
+  color: var(--brand);
+}
+
+/* Utility helpers */
+.elevated {
+  box-shadow: $box-shadow;
+}
+
+.text-muted-2 {
+  color: #6b7280 !important;
+}
+
+.hr-muted {
+  border-color: var(--border-subtle);
+}
+
+/* Optional: Dark mode (opt-in by adding .theme-dark on <html>) */
+.theme-dark {
+  --bs-body-bg: #0b1220;
+  --bs-body-color: #e5e7eb;
+  --surface: #0f172a;
+  --surface-muted: #111827;
+  --border-subtle: #1f2937;
+
+  --brand-l: 62%; /* brighten brand in dark */
+}
+
+.theme-dark .card {
+  box-shadow: none;
+}
+
+
+#side-nav {
+  a {
+    color: var(--bs-white)
+  }
+
+  color: var(--bs-white);
+
+  .logo {
+    background: var(--bs-white);
+    height: 81px;
+    padding: 14px;
+    border-right: 1px solid #eee;
+
+    img {
+      height: 53px;
+    }
+  }
+}
+
+

@@ -1,0 +1,76 @@
+<div class="login-container d-flex justify-content-center align-items-center">
+  <div class="login-card card shadow-sm p-4">
+    <h2 class="text-center mb-4">
+      @if (isLogin) {
+        Sign In
+      } @else if (isSignup) {
+        Sign Up
+      } @else {
+        Reset Password
+      }
+    </h2>
+
+    @if (error()) {
+      <div class="error alert rounded p-3 mb-3 text-center">{{ error() }}</div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      @if (isSignup) {
+        <div class="mb-3">
+          <input
+            type="text"
+            formControlName="name"
+            placeholder="Full Name"
+            class="form-control"
+            [class.is-invalid]="form.get('name')?.invalid && form.get('name')?.touched">
+        </div>
+      }
+
+      <div class="mb-3">
+        <input
+          type="email"
+          formControlName="email"
+          placeholder="Email"
+          class="form-control"
+          [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched">
+      </div>
+
+      @if (!isReset) {
+        <div class="mb-3">
+          <input
+            type="password"
+            formControlName="password"
+            placeholder="Password"
+            class="form-control"
+            [class.is-invalid]="form.get('password')?.invalid && form.get('password')?.touched">
+        </div>
+      }
+
+      <button
+        type="submit"
+        [disabled]="form.invalid || loading()"
+        class="btn btn-primary w-100 mb-3">
+        @if (loading()) {
+          Loading...
+        } @else if (isLogin) {
+          Sign In
+        } @else if (isSignup) {
+          Sign Up
+        } @else {
+          Send Reset Link
+        }
+      </button>
+    </form>
+
+    <div class="links text-center">
+      @if (isLogin) {
+        <a class="text-decoration-none" (click)="setMode('signup')">Need an account? Sign up</a>
+        <a class="text-decoration-none" (click)="setMode('reset')">Forgot password?</a>
+      } @else if (isSignup) {
+        <a class="text-decoration-none" (click)="setMode('login')">Already have an account? Sign in</a>
+      } @else {
+        <a class="text-decoration-none" (click)="setMode('login')">Back to sign in</a>
+      }
+    </div>
+  </div>
+</div>

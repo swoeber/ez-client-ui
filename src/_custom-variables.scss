@@ -1,0 +1,73 @@
+@use "sass:map";
+
+$white: #ffffff;
+//$primary: #3b82f6; // your brand accent
+//$body-bg: #ebf3f3;
+//$light: #dcecec;
+//$dark: #030005;
+//$primary: #01465c;
+//$secondary: #0d8887;
+//$info: #87b134;
+//$success: #02a656;
+//$warning: #e7ca02;
+//$danger: #f60118;
+
+$theme-colors: map.merge(
+    $theme-colors,
+    (
+      "primary":   #096361, // calm teal
+      "secondary": #a8dadc, // pale aqua
+      "success":   #22c55e, // soft green
+      "info":      #4a90e2, // soft blue
+      "warning":   #f59e0b, // muted amber
+      "danger":    #ef4444, // soft red
+      "light":     #f8fafb, // light gray background
+      "dark":      #1f2937  // charcoal text
+    )
+);
+
+$enable-caret: false;
+
+
+//$light: #dcecec;
+//$dark: #030005;
+//$primary: #01465c;
+//$secondary: #0d8887;
+//$info: #87b134;
+//$success: #02a656;
+//$warning: #e7ca02;
+//$danger: #f60118;
+
+
+/* =========
+   Bootstrap overrides (variables API)
+   ========= */
+//$primary: var(--brand) !default;
+//$secondary: #6b7280 !default;
+//$success: #22c55e !default;
+//$warning: #f59e0b !default;
+//$danger: #ef4444 !default;
+//$info: #06b6d4 !default;
+
+//$body-bg: var(--bs-body-bg);
+//$body-color: #ebf3f3;
+
+$border-radius: .6rem;
+$border-radius-sm: .5rem;
+$border-radius-lg: .75rem;
+
+$box-shadow-sm: 0 1px 2px rgba(0, 0, 0, .06);
+$box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+$box-shadow-lg: 0 8px 24px rgba(0, 0, 0, .12);
+
+$card-bg: var(--surface);
+$card-border-color: var(--border-subtle);
+$card-border-width: 1px;
+
+/* Progress bar uses brand */
+$progress-height: .75rem;
+$progress-bg: var(--surface-muted);
+$progress-bar-bg: $primary;
+
+/* Badges */
+$badge-border-radius: 2rem;
