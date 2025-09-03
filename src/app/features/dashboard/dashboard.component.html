@@ -1,6 +1,6 @@
 <div class="">
   <h5>Dashboard</h5>
-  <hr />
+  <hr/>
   <div class="row">
     <div class="row">
       <div class="col-12">
@@ -48,9 +48,16 @@
         <div class="card shadow-sm h-100">
           <div class="card-body">
             <h5 class="card-title"><i class="bi bi-people me-2"></i>Clients</h5>
-            <p class="text-muted mb-0">
-              No projects yet. <a (click)="createProject()">Create one</a>.
-            </p>
+            @if (clients$ | async; as clients) {
+              <app-data-table [data]="clients" [columns]="clientColumns" [options]="tableOptions"></app-data-table>
+              <div class="d-flex justify-content-end">
+                <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+              </div>
+            } @else {
+              <p class="text-muted mb-0">
+                No projects yet. <a (click)="createProject()">Create one</a>.
+              </p>
+            }
           </div>
         </div>
       </div>

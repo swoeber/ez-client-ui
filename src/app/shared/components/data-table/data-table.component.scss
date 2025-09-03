@@ -1,0 +1,20 @@
+.sortable {
+  cursor: pointer;
+  user-select: none;
+  
+  &:hover {
+    background-color: var(--bs-gray-100);
+  }
+}
+
+.table th {
+  border-top: none;
+  font-weight: 600;
+}
+
+.data-table {
+  .input-group-text {
+    background-color: var(--bs-gray-50);
+    border-color: var(--bs-border-color);
+  }
+}

@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import {Injectable, signal, computed} from '@angular/core';
 
 export interface User {
   id: string;
@@ -7,7 +7,7 @@ export interface User {
   roles: string[];
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class UserStore {
   private _ready = signal(false);
   private _user = signal<User | null>(null);
@@ -19,10 +19,12 @@ export class UserStore {
   setNotReady() {
     this._ready.set(false);
   }
+
   setUser(u: User | null) {
     this._user.set(u);
     this._ready.set(true);
   }
+
   reset() {
     this._user.set(null);
     this._ready.set(true);

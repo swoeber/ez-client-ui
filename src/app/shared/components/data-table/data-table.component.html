@@ -1,0 +1,56 @@
+<div class="data-table">
+  <div class="d-flex justify-content-between align-items-center mb-3" *ngIf="options.showSearch">
+    <div class="input-group" style="max-width: 300px;">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input 
+        type="text" 
+        class="form-control" 
+        placeholder="Search..." 
+        [(ngModel)]="searchTerm" 
+        (input)="onSearch()">
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead class="table-light">
+        <tr>
+          <th 
+            *ngFor="let column of columns" 
+            [class.sortable]="column.sortable || options.sortable"
+            (click)="onSort(column)">
+            {{ column.label }}
+            <i 
+              *ngIf="(column.sortable || options.sortable) && sortColumn === column.key"
+              class="bi ms-1"
+              [class.bi-arrow-up]="sortDirection === 'asc'"
+              [class.bi-arrow-down]="sortDirection === 'desc'">
+            </i>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of paginatedData">
+          <td *ngFor="let column of columns">
+            {{ formatValue(item[column.key], column.type) }}
+          </td>
+        </tr>
+        <tr *ngIf="paginatedData.length === 0">
+          <td [attr.colspan]="columns.length" class="text-center text-muted py-4">
+            No data available
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ngb-pagination 
+    *ngIf="options.showPagination && collectionSize > pageSize"
+    [(page)]="page"
+    [pageSize]="pageSize"
+    [collectionSize]="collectionSize"
+    [maxSize]="5"
+    [rotate]="true"
+    class="d-flex justify-content-center">
+  </ngb-pagination>
+</div>
