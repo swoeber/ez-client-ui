@@ -1,0 +1,29 @@
+<header class="d-flex flex-wrap justify-content-end pt-3 px-3 mb-4">
+  <div class="dropdown">
+    <div
+      class="d-flex align-items-center text-decoration-none dropdown-toggle no-caret gap-2"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+      *ngIf="me$ | async as me"
+      role="button"
+    >
+      <strong>{{ me.name }}</strong>
+      <img
+        src="https://github.com/mdo.png"
+        alt=""
+        width="42"
+        height="42"
+        class="rounded-circle me-2"
+      />
+    </div>
+    <ul class="dropdown-menu text-small shadow">
+      <li><a class="dropdown-item" href="#">New project...</a></li>
+      <li><a class="dropdown-item" href="#">Settings</a></li>
+      <li><a class="dropdown-item" href="#">Profile</a></li>
+      <li>
+        <hr class="dropdown-divider" />
+      </li>
+      <li><a class="dropdown-item" (click)="logout()">Sign out</a></li>
+    </ul>
+  </div>
+</header>

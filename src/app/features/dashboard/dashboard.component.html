@@ -1,4 +1,6 @@
 <div class="">
+  <h5>Dashboard</h5>
+  <hr />
   <div class="row">
     <div class="row">
       <div class="col-12">
@@ -14,11 +16,15 @@
             <ul class="list-group list-group-flush mt-3" id="quick-start-list">
               <li class="list-group-item d-flex justify-content-between align-items-center">
                 Brand your portal
-                <button class="btn btn-sm btn-outline-primary" (click)="openOnboarding()">Open</button>
+                <button class="btn btn-sm btn-outline-primary" (click)="openOnboarding()">
+                  Open
+                </button>
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
                 Create your first project
-                <button class="btn btn-sm btn-outline-primary" (click)="createProject()">Create</button>
+                <button class="btn btn-sm btn-outline-primary" (click)="createProject()">
+                  Create
+                </button>
               </li>
               <!--            <li class="list-group-item d-flex justify-content-between align-items-center">-->
               <!--              Invite a client-->
@@ -41,9 +47,10 @@
       <div class="col-6">
         <div class="card shadow-sm h-100">
           <div class="card-body">
-            <h5 class="card-title"><i
-              class="bi bi-people me-2"></i>Clients</h5>
-            <p class="text-muted mb-0">No projects yet. <a (click)="createProject()">Create one</a>.</p>
+            <h5 class="card-title"><i class="bi bi-people me-2"></i>Clients</h5>
+            <p class="text-muted mb-0">
+              No projects yet. <a (click)="createProject()">Create one</a>.
+            </p>
           </div>
         </div>
       </div>
@@ -51,9 +58,10 @@
       <div class="col-6">
         <div class="card shadow-sm h-100">
           <div class="card-body">
-            <h5 class="card-title"><i
-              class="bi bi-kanban me-2"></i>Projects</h5>
-            <p class="text-muted mb-0">No projects yet. <a (click)="createProject()">Create one</a>.</p>
+            <h5 class="card-title"><i class="bi bi-kanban me-2"></i>Projects</h5>
+            <p class="text-muted mb-0">
+              No projects yet. <a (click)="createProject()">Create one</a>.
+            </p>
           </div>
         </div>
       </div>
@@ -65,11 +73,12 @@
               <i class="bi bi-receipt me-2"></i>
               Invoices
             </h5>
-            <p class="text-muted mb-0">No invoices yet. <a (click)="newInvoice()">Create one</a>.</p>
+            <p class="text-muted mb-0">
+              No invoices yet. <a (click)="newInvoice()">Create one</a>.
+            </p>
           </div>
         </div>
       </div>
     </div>
   </div>
-
 </div>

@@ -1,16 +1,16 @@
-import {Component, signal} from '@angular/core';
-import {FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
-import {Router} from '@angular/router';
+import { Component, signal } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 // import {AuthService} from '../../../../../ez-client-ui-bck/src/app/services/auth.service';
-import {CommonModule} from '@angular/common';
-import {AuthService} from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
   mode = signal<'login' | 'signup' | 'reset'>('login');
@@ -18,15 +18,11 @@ export class LoginComponent {
   loading = signal(false);
   error = signal<string | null>(null);
 
-  constructor(
-    private fb: FormBuilder,
-    private auth: AuthService,
-    private router: Router
-  ) {
+  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      name: ['']
+      name: [''],
     });
   }
 
@@ -69,14 +65,14 @@ export class LoginComponent {
     this.error.set(null);
 
     try {
-      const {email, password, name} = this.form.value;
+      const { email, password, name } = this.form.value;
       const mode = this.mode();
 
       const actions = {
         login: async () => {
           await this.auth.login(email, password);
           await this.auth.boot();
-          this.router.navigateByUrl('/');
+          this.router.navigateByUrl('/workspace');
         },
         signup: async () => {
           await this.auth.signup(email, password, name);
@@ -86,13 +82,13 @@ export class LoginComponent {
         reset: async () => {
           await this.auth.resetPassword(email);
           this.setMode('login');
-        }
+        },
       };
 
       await actions[mode]();
       // await actions[mode]();
     } catch (err: any) {
-      console.log('hello ano')
+      console.log('hello ano');
       this.error.set(err.error?.message || 'An error occurred');
     } finally {
       this.loading.set(false);
