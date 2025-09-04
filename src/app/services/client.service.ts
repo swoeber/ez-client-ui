@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {firstValueFrom, Observable} from 'rxjs';
-import {environment} from '../../environments/environment';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface Client {
   id: number;
@@ -10,7 +10,7 @@ export interface Client {
   created_at: string;
   currency: string;
   deleted_at: string;
-  email: string
+  email: string;
   // meta
   prefix: string;
   first_name: string;
@@ -24,15 +24,12 @@ export interface Client {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ClientService {
-
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   getClients(): Observable<Client[]> {
-    return this.http.get<Client[]>(`${environment.api}/clients`, {withCredentials: true});
+    return this.http.get<Client[]>(`${environment.api}/clients`, { withCredentials: true });
   }
-
 }

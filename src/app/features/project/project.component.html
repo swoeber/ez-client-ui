@@ -1,1 +1,19 @@
-<p>project works!</p>
+<div class="">
+  <h5><i class="bi bi-kanban me-2"></i>Projects</h5>
+  <hr />
+  <div class="col-12">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        @if (projects$|async; as projects) {
+        <app-data-table
+          [data]="projects"
+          [columns]="projectColumns"
+          [options]="tableOptions"
+        ></app-data-table>
+        } @else {
+        <p class="text-muted mb-0">No projects yet. <a (click)="createProject()">Create one</a>.</p>
+        }
+      </div>
+    </div>
+  </div>
+</div>
