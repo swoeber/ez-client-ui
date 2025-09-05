@@ -2,6 +2,9 @@
   display: flex;
   min-height: 100vh; /* Sets the minimum height to 100% of the viewport height */
   .logo {
+    justify-content: center;
+    align-content: center;
+    display: flex;
     background: var(--bs-body-bg);
   }
 }

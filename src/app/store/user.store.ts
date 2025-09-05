@@ -3,7 +3,8 @@ import {Injectable, signal, computed} from '@angular/core';
 export interface User {
   id: string;
   email: string;
-  name: string;
+  first_name: string;
+  last_name: string;
   roles: string[];
 }
 

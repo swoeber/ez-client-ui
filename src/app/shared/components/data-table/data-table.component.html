@@ -27,6 +27,7 @@
               [class.bi-arrow-down]="sortDirection === 'desc'">
             </i>
           </th>
+          <th *ngIf="hasActions" class="text-center">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -34,9 +35,34 @@
           <td *ngFor="let column of columns">
             {{ formatValue(item[column.key], column.type) }}
           </td>
+          <td *ngIf="hasActions" class="text-center">
+            <div class="dropdown" *ngIf="shouldShowActions(item)">
+              <button 
+                class="btn btn-sm btn-outline-secondary dropdown-toggle" 
+                type="button" 
+                [id]="'dropdown-' + item.id" 
+                data-bs-toggle="dropdown" 
+                aria-expanded="false">
+                <i class="bi bi-three-dots"></i>
+              </button>
+              <ul class="dropdown-menu" [attr.aria-labelledby]="'dropdown-' + item.id">
+                <li *ngFor="let actionItem of actions">
+                  <button 
+                    *ngIf="!actionItem.showActions || actionItem.showActions(item)"
+                    class="dropdown-item" 
+                    type="button"
+                    [disabled]="isActionDisabled(actionItem, item)"
+                    (click)="onActionClick(actionItem.action, item)">
+                    <i *ngIf="actionItem.icon" [class]="'bi bi-' + actionItem.icon + ' me-2'"></i>
+                    {{ actionItem.label }}
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </td>
         </tr>
         <tr *ngIf="paginatedData.length === 0">
-          <td [attr.colspan]="columns.length" class="text-center text-muted py-4">
+          <td [attr.colspan]="columns.length + (hasActions ? 1 : 0)" class="text-center text-muted py-4">
             No data available
           </td>
         </tr>

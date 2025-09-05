@@ -167,6 +167,7 @@ a:hover,
   --bs-nav-pills-link-active-bg: #{$primary_darken};
   // --bs-nav-pills-link-active-bg: #{$primary};
   --bs-nav-pills-link-active-color: #ffffff;
+
   .active {
     font-weight: 700;
   }
@@ -205,3 +206,8 @@ a:hover,
     }
   }
 }
+//
+//.table-responsive,
+//.dataTables_scrollBody {
+//  overflow: visible !important;
+//}

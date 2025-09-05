@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -17,6 +17,14 @@ export interface TableOptions {
   sortable?: boolean;
 }
 
+export interface ActionItem {
+  label: string;
+  action: string;
+  icon?: string;
+  disabled?: (item: any) => boolean;
+  showActions?: (item: any) => boolean;
+}
+
 @Component({
   selector: 'app-data-table',
   standalone: true,
@@ -28,6 +36,8 @@ export class DataTableComponent implements OnInit, OnChanges {
   @Input() data: any[] = [];
   @Input() columns: TableColumn[] = [];
   @Input() options: TableOptions = {};
+  @Input() actions: ActionItem[] = [];
+  @Output() actionClicked = new EventEmitter<{action: string, item: any}>();
 
   filteredData: any[] = [];
   searchTerm = '';
@@ -96,6 +106,10 @@ export class DataTableComponent implements OnInit, OnChanges {
     return this.filteredData.slice(start, start + this.pageSize);
   }
 
+  get hasActions(): boolean {
+    return this.actions && this.actions.length > 0;
+  }
+
   formatValue(value: any, type?: string): string {
     if (!value) return '';
 
@@ -111,5 +125,17 @@ export class DataTableComponent implements OnInit, OnChanges {
       default:
         return String(value);
     }
+  }
+
+  onActionClick(action: string, item: any) {
+    this.actionClicked.emit({ action, item });
+  }
+
+  isActionDisabled(actionItem: ActionItem, item: any): boolean {
+    return actionItem.disabled ? actionItem.disabled(item) : false;
+  }
+
+  shouldShowActions(item: any): boolean {
+    return this.actions.some(action => !action.showActions || action.showActions(item));
   }
 }

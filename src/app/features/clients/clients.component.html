@@ -1,17 +1,17 @@
 <div class="">
   <h5><i class="bi bi-people me-2"></i>Clients</h5>
-  <hr />
+  <hr/>
   <div class="col-12">
     <div class="card shadow-sm h-100">
       <div class="card-body">
         @if (clients$|async; as clients) {
-        <app-data-table
-          [data]="clients"
-          [columns]="clientColumns"
-          [options]="tableOptions"
-        ></app-data-table>
-        } @else {
-        <!-- <p class="text-muted mb-0">No projects yet. <a (click)="createClient()">Create one</a>.</p> -->
+          <app-data-table
+            [data]="clients"
+            [columns]="clientColumns"
+            [options]="tableOptions"
+            [actions]="clientActions"
+            (actionClicked)="onAction($event)"
+          ></app-data-table>
         }
       </div>
     </div>
