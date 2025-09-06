@@ -9,7 +9,7 @@ import {Client, ClientService} from '../../services/client.service';
 import {CommonModule} from '@angular/common';
 import {Observable} from 'rxjs';
 import {Project, ProjectQueryParams, ProjectService} from '../../services/project.service';
-import {Router, RouterLink} from '@angular/router';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -120,7 +120,7 @@ export class DashboardComponent implements OnInit {
   onProjectAction(event: { action: string, item: any }) {
     switch (event.action) {
       case 'view':
-        console.log('Viewing project:', event.item);
+        this.router.navigateByUrl(`workspace/projects/${event.item.id}`);
         break;
       case 'edit':
         console.log('Editing project:', event.item);

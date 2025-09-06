@@ -26,8 +26,13 @@
   --brand-s: 90%; /* saturation */
   --brand-l: 56%; /* lightness */
 
+  //--bs-body-bg: #f0f6f0;
+
   --bs-body-bg: #fff;
   --bs-body-color: #1f2937;
+
+  --body-bg-color: #fff;
+  //--body-bg-color: #f0f6f0;
 
   /* Derived palette */
   --brand: hsl(var(--brand-h), var(--brand-s), var(--brand-l));
@@ -186,6 +191,10 @@ a:hover,
 
 .theme-dark .card {
   box-shadow: none;
+}
+
+body {
+  background: var(--body-bg-color);
 }
 
 #side-nav {
