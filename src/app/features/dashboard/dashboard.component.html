@@ -1,6 +1,6 @@
 <div class="">
   <h5>Dashboard</h5>
-  <hr/>
+  <hr />
   <div class="row">
     <div class="row pe-0">
       <div class="col-12 pe-0">
@@ -49,22 +49,22 @@
           <div class="card-body">
             <h5 class="card-title"><i class="bi bi-kanban me-2"></i>Projects</h5>
             @if (projects$ | async; as projects) {
-              <app-data-table
-                [data]="projects"
-                [columns]="projectColumns"
-                [options]="tableOptions"
-                [actions]="projectActions"
-                (actionClicked)="onProjectAction($event)"
-              ></app-data-table>
-              <div class="d-flex justify-content-end">
-                <button class="btn btn-sm btn-outline-primary" (click)="goToProjects()">
-                  View All
-                </button>
-              </div>
+            <app-data-table
+              [data]="projects"
+              [columns]="projectColumns"
+              [options]="tableOptions"
+              [actions]="projectActions"
+              (actionClicked)="onProjectAction($event)"
+            ></app-data-table>
+            <div class="d-flex justify-content-end">
+              <button class="btn btn-sm btn-outline-primary" (click)="goToProjects()">
+                View All
+              </button>
+            </div>
             } @else {
-              <p class="text-muted mb-0">
-                No projects yet. <a (click)="createProject()">Create one</a>.
-              </p>
+            <p class="text-muted mb-0">
+              No projects yet. <a (click)="createProject()">Create one</a>.
+            </p>
             }
           </div>
         </div>
@@ -74,22 +74,22 @@
           <div class="card-body">
             <h5 class="card-title"><i class="bi bi-people me-2"></i>Clients</h5>
             @if (clients$ | async; as clients) {
-              <app-data-table
-                [data]="clients"
-                [columns]="clientColumns"
-                [options]="tableOptions"
-                [actions]="clientActions"
-                (actionClicked)="onClientAction($event)"
-              ></app-data-table>
-              <div class="d-flex justify-content-end">
-                <button class="btn btn-sm btn-outline-primary" (click)="goToClients()">
-                  View All
-                </button>
-              </div>
+            <app-data-table
+              [data]="clients"
+              [columns]="clientColumns"
+              [options]="tableOptions"
+              [actions]="clientActions"
+              (actionClicked)="onClientAction($event)"
+            ></app-data-table>
+            <div class="d-flex justify-content-end">
+              <button class="btn btn-sm btn-outline-primary" (click)="goToClients()">
+                View All
+              </button>
+            </div>
             } @else {
-              <p class="text-muted mb-0">
-                No projects yet. <a (click)="createProject()">Create one</a>.
-              </p>
+            <p class="text-muted mb-0">
+              No projects yet. <a (click)="createProject()">Create one</a>.
+            </p>
             }
           </div>
         </div>

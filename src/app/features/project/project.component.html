@@ -2,27 +2,95 @@
 <!--  {{ project | json }}-->
 <!--}-->
 <div class="">
-  <h5><i class="bi bi-kanban me-2"></i>Project</h5>
-  <hr/>
   @if (project$ | async; as project) {
-    <div class="row">
-      <div class="row g-4 pe-0 mt-0">
-        <app-card [title]="'Project Details'" class="col-lg-6 col-12 pe-0">
-          Hello World
+  <h5><i class="bi bi-kanban me-2"></i>{{ project.name }}</h5>
+  <hr />
+  <div class="row">
+    <div class="row g-4 pe-0 mt-0">
+      <div class="col-lg-6 d-flex flex-column gap-4">
+        <app-card class="col-12 pe-0" style="min-height: 350px">
+          <form class="d-flex gap-2 mb-3">
+            <div class="w-100">
+              <input type="text" class="form-control" placeholder="Write a message..." />
+            </div>
+            <button class="btn btn-primary"><i class="bi bi-send"></i></button>
+          </form>
+          <div class="overflow-scroll d-flex flex-column-reverse" style="height: 254px">
+            @for (item of project.messages; track $index) {
+            <div class="col-12 p-3 pt-4">
+              <div class="d-flex">
+                <div class="flex-shrink-0">
+                  <img src="..." alt="..." />
+                </div>
+                <div class="flex-grow-1 ms-3">
+                  <div class="d-flex gap-2">
+                    <b>{{ item.author ? item.author.full_name : 'some' }}</b
+                    ><span><small>10/11/2025 10:30AM</small></span>
+                  </div>
+                  {{ item.body }}
+                </div>
+              </div>
+            </div>
+            }
+          </div>
         </app-card>
-        <app-card [title]="'Milestones'" class="col-lg-6 col-12 pe-0">
-          Hello World
+
+        <app-card [title]="'Invoices'" class="col-12 pe-0">
+          <div style="min-height: 300px">
+            <app-data-table [data]="project.invoices" [columns]="invoiceColumns"> </app-data-table>
+          </div>
         </app-card>
-        <app-card [title]="'Invoices'" class="col-lg-12 col-12 pe-0">
-          Hello World
+      </div>
+
+      <div class="col-lg-6 d-flex flex-column gap-4">
+        <app-card [title]="'Project Details'" class="col-12 pe-0">
+          <div class="p-2 row g-2">
+            <div class="d-flex justify-content-between">
+              <span>Status</span>
+              <span class="badge rounded-pill text-bg-primary">Active</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span>Start Date</span>
+              <span>{{ project.starts_on || 'Setup' }}</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span>Due Date</span>
+              <span>{{ project.due_on || 'Setup' }}</span>
+            </div>
+          </div>
         </app-card>
-        <app-card [title]="'Messages'" class="col-lg-12 col-12 pe-0">
-          Hello World
+        <app-card [title]="'Milestones'" class="col-12 pe-0">
+          <div class="p-2">
+            @for (item of project.milestones; track $index) {
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                value=""
+                id="milestone-{{ $index }}"
+              />
+              <label class="form-check-label" for="milestone-{{ $index }}">
+                {{ item.title }}
+              </label>
+            </div>
+            }
+          </div>
         </app-card>
-        <app-card [title]="'Files'" class="col-lg-12 col-12 pe-0">
-          Hello World
+        <app-card [title]="'Files'" class="col-12 pe-0" style="height: 350px">
+          @for (item of project.files; track $index) {
+          <div class="d-flex flex-row gap-2">
+            <i class="bi bi-file-earmark-pdf" style="font-size: 35px"></i>
+            <div>
+              <div class="mb-0 pt-1 btn-link" style="font-weight: 700; cursor: pointer">
+                {{ item.name }}
+              </div>
+              <div class="mt-0" style="font-size: small">Uploaded {{ item.created_at }}</div>
+            </div>
+          </div>
+          }
         </app-card>
       </div>
     </div>
+  </div>
   }
 </div>

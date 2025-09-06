@@ -115,7 +115,7 @@ export class DataTableComponent implements OnInit, OnChanges {
 
     switch (type) {
       case 'currency':
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value / 100);
       case 'date':
         return new Date(value).toLocaleDateString();
       case 'number':

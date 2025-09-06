@@ -5,6 +5,9 @@ export interface User {
   email: string;
   first_name: string;
   last_name: string;
+  suffix: string;
+  prefix: string;
+  full_name: string;
   roles: string[];
 }
 

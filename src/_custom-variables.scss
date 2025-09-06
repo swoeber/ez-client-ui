@@ -12,7 +12,7 @@ $secondary: #a8dadc;
 $info: #4a90e2;
 $success: #22c55e;
 $warning: #f59e0b;
-$danger: #f60118;
+// $danger: #f60118;
 
 $theme-colors: map.merge(
   $theme-colors,
@@ -27,7 +27,7 @@ $theme-colors: map.merge(
     // soft blue
     'warning': $warning,
     // muted amber
-    'danger': $danger,
+    // 'danger': $danger,
     // soft red
     'light': $light,
     // light gray background

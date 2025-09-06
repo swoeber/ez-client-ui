@@ -1,7 +1,8 @@
-import {HttpClient, HttpParams} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {environment} from '../../environments/environment';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { User } from '../store/user.store';
 
 export interface Project {
   id: number;
@@ -19,6 +20,62 @@ export interface Project {
   deleted_at: string;
   created_at: string;
   updated_at: string;
+  milestones: Milestone[];
+  invoices: Invoice[];
+  messages: Message[];
+  files: File[];
+}
+
+export interface Milestone {
+  id: number;
+  project_id: number;
+  title: string;
+  status: string;
+  order: number;
+  due_on: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Invoice {
+  id: number;
+  project_id: number;
+  number: string;
+  currency: string;
+  amount_cents: number;
+  status: string;
+  due_on: null;
+  provider: string;
+  provider_ref: null;
+  payment_intent: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Message {
+  id: number;
+  project_id: number;
+  user_id: number;
+  author: User;
+  body: string;
+  is_system: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface File {
+  id: number;
+  project_id: number;
+  user_id: number;
+  name: string;
+  s3_key: string;
+  content_type: string;
+  size_bytes: number;
+  version: number;
+  is_latest: boolean;
+  meta: string;
+  created_at: '2025-09-03T20:45:20.000000Z';
+  updated_at: '2025-09-03T20:45:20.000000Z';
 }
 
 export interface ProjectQueryParams {
@@ -33,8 +90,7 @@ export interface ProjectQueryParams {
   providedIn: 'root',
 })
 export class ProjectService {
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   all(params?: ProjectQueryParams): Observable<Project[]> {
     let httpParams = new HttpParams();
@@ -47,7 +103,7 @@ export class ProjectService {
 
     return this.http.get<Project[]>(`${environment.api}/projects`, {
       withCredentials: true,
-      params: httpParams
+      params: httpParams,
     });
   }
 
@@ -55,5 +111,5 @@ export class ProjectService {
     return this.http.get<Project>(`${environment.api}/projects/${id}`, {
       withCredentials: true,
     });
-  };
+  }
 }
