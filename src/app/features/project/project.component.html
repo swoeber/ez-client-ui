@@ -1,0 +1,28 @@
+<!--@if (project$ | async; as project) {-->
+<!--  {{ project | json }}-->
+<!--}-->
+<div class="">
+  <h5><i class="bi bi-kanban me-2"></i>Project</h5>
+  <hr/>
+  @if (project$ | async; as project) {
+    <div class="row">
+      <div class="row g-4 pe-0 mt-0">
+        <app-card [title]="'Project Details'" class="col-lg-6 col-12 pe-0">
+          Hello World
+        </app-card>
+        <app-card [title]="'Milestones'" class="col-lg-6 col-12 pe-0">
+          Hello World
+        </app-card>
+        <app-card [title]="'Invoices'" class="col-lg-12 col-12 pe-0">
+          Hello World
+        </app-card>
+        <app-card [title]="'Messages'" class="col-lg-12 col-12 pe-0">
+          Hello World
+        </app-card>
+        <app-card [title]="'Files'" class="col-lg-12 col-12 pe-0">
+          Hello World
+        </app-card>
+      </div>
+    </div>
+  }
+</div>
