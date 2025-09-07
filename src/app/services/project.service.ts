@@ -1,8 +1,8 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { User } from '../store/user.store';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {environment} from '../../environments/environment';
+import {User} from '../store/user.store';
 
 export interface Project {
   id: number;
@@ -21,10 +21,50 @@ export interface Project {
   created_at: string;
   updated_at: string;
   milestones: Milestone[];
+  workitems: WorkItem[];
   invoices: Invoice[];
   messages: Message[];
   files: File[];
   type: number;
+}
+
+export interface WorkItem {
+  "id": number;
+  "project_id": number;
+  "workflow": 'freelance' | 'field_job';
+  "kind": 'milestone' | 'checklist_step';
+  "title": string;
+  "description": string;
+  "status": 'todo' | 'not_started' | 'en_route' | 'on_site' | 'in_progress' | 'on_hold' | 'waiting_on_parts' | 'awaiting_signature' | 'done' | 'waiting_on_client' | 'blocked' | 'canceled';
+  "position": 1;
+  "due_on": string;
+  "started_at": string;
+  "completed_at": string;
+  "assigned_to": number;
+  "assignee": User;
+  "requires_approval": number; //used by freelance
+  "approved_at": string;
+  "approved_by": User;
+  "approver": User;
+  "waiting_on_client": number; //convenience for freelance UX
+  "blocked_by_id": null;
+  "visibility": string;
+  "percent_complete": number;
+  "created_by": number;
+  "creator": User;
+  "updated_by": string;
+  "deleted_at": string;
+  "created_at": string;
+  "updated_at": string;
+  "tasks": Task[]
+}
+
+export interface Task {
+  id: number;
+  title: string;
+  completed: boolean;
+  completed_on: string;
+  completed_by: User;
 }
 
 export interface Milestone {
@@ -91,7 +131,8 @@ export interface ProjectQueryParams {
   providedIn: 'root',
 })
 export class ProjectService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   all(params?: ProjectQueryParams): Observable<Project[]> {
     let httpParams = new HttpParams();

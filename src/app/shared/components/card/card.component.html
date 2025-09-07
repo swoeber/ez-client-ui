@@ -1,6 +1,13 @@
 <div class="card shadow-sm h-100">
+  @if (showPanelHeader) {
+    <div class="card-header" style="background: var(--panel-work-header-bg)">
+      <h5 class="card-title text-white">{{ title }}</h5>
+    </div>
+  }
   <div class="card-body">
-    <h5 class="card-title">{{ title }}</h5>
+    @if (!showPanelHeader) {
+      <h5 class="card-title">{{ title }}</h5>
+    }
     <ng-content></ng-content>
   </div>
 </div>

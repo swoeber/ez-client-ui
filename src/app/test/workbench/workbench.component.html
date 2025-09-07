@@ -1,0 +1,133 @@
+<div class="row mt-3 ms-3">
+  @if (project$|async; as project) {
+    @for (item of project.workitems; track $index) {
+      <app-card [title]="'Work Order #' + item.id + ' - ' + item.title" [showPanelHeader]="true"
+                class="col-12 col-lg-8 pe-0">
+        <app-tabs>
+          <app-tab label="Overview">
+            <div class="row g-3 align-items-start">
+              <app-card [title]="'Job Information'" class="col-12 col-lg-4 order-1 order-lg-2 pe-0">
+                <div class="job-info">
+                  <div class="info-item">
+                    <span class="info-label">Status</span>
+                    <select [(ngModel)]="item.status" class="status-select status-{{ item.status }}">
+                      <option value="todo">Todo</option>
+                      <option value="in_progress">In Progress</option>
+                      <option value="on_site">On Site</option>
+                      <option value="done">Done</option>
+                      <option value="on_hold">On Hold</option>
+                    </select>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Due Date</span>
+                    <span class="info-value">{{ item.due_on | readableDate }}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Progress</span>
+                    <span class="info-value">{{ item.percent_complete }}%</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-label">Assigned To</span>
+                    <span class="info-value">{{ item.assignee.full_name || 'Unassigned' }}</span>
+                  </div>
+                </div>
+              </app-card>
+              <app-card [title]="'Task List'" class="col-12 col-lg-8 order-2 order-lg-1 pe-0">
+                <div class="task-list">
+                  @for (task of item.tasks; track $index) {
+                    <div class="task-item">
+                      <input type="checkbox" [id]="'task-' + item.id + '-' + $index" [(ngModel)]="task.completed"
+                             class="task-checkbox">
+                      <label [for]="'task-' + item.id + '-' + $index" class="task-label"
+                             [class.completed]="task.completed">
+                        {{ task.title }}
+                      </label>
+                    </div>
+                  }
+                </div>
+              </app-card>
+            </div>
+          </app-tab>
+          <app-tab label="Details">
+            <div class="work-order">
+              <div class="ticket-header">
+                <div class="ticket-id">WO-{{ item.id }}</div>
+                <div class="ticket-title">{{ item.title }}</div>
+              </div>
+
+              <div class="ticket-meta">
+                <div class="meta-item">
+                  <span class="meta-label">Assignee</span>
+                  <div class="meta-value">
+                    <div class="avatar">{{ (item.assignee?.full_name || 'U')[0] }}</div>
+                    {{ item.assignee?.full_name || 'Unassigned' }}
+                  </div>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">Creator</span>
+                  <div class="meta-value">
+                    <div class="avatar">{{ (item.creator?.full_name || 'U')[0] }}</div>
+                    {{ item.creator?.full_name }}
+                  </div>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">Due Date</span>
+                  <div class="meta-value due-date">{{ item.due_on | readableDate }}</div>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">Status</span>
+                  <select [(ngModel)]="item.status" class="status-select status-{{ item.status }}">
+                    <option value="todo">Todo</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="on_site">On Site</option>
+                    <option value="done">Done</option>
+                    <option value="on_hold">On Hold</option>
+                  </select>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">Created</span>
+                  <div class="meta-value">{{ item.created_at | readableDate }}</div>
+                </div>
+              </div>
+
+              <div class="ticket-description">
+                <h4>Description</h4>
+                <p>{{ item.description || 'No description provided' }}</p>
+              </div>
+
+              <div class="ticket-tasks">
+                <h4>Tasks</h4>
+                <div class="task-list">
+                  @for (task of item.tasks; track $index) {
+                    <div class="task-item">
+                      <input type="checkbox" [id]="'detail-task-' + item.id + '-' + $index"
+                             [(ngModel)]="task.completed" class="task-checkbox">
+                      <label [for]="'detail-task-' + item.id + '-' + $index" class="task-label"
+                             [class.completed]="task.completed">
+                        {{ task.title }}
+                      </label>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <div class="ticket-notes">
+                <h4>Notes & Comments</h4>
+                <div class="notes-list">
+                  <!--                  @for (note of item.notes; track $index) {-->
+                  <!--                    <div class="note-item">-->
+                  <!--                      <div class="note-author">{{ note.author }}</div>-->
+                  <!--                      <div class="note-content">{{ note.content }}</div>-->
+                  <!--                      <div class="note-date">{{ note.created_at | readableDate }}</div>-->
+                  <!--                    </div>-->
+                  <!--                  }-->
+                </div>
+              </div>
+            </div>
+          </app-tab>
+        </app-tabs>
+      </app-card>
+    }
+  }
+</div>
+

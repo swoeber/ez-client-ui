@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {
   DataTableComponent,
   TableColumn,
@@ -20,8 +20,7 @@ import {Router} from '@angular/router';
 export class DashboardComponent implements OnInit {
   clientService: ClientService = inject(ClientService);
   projectService: ProjectService = inject(ProjectService);
-  router: Router = inject(Router);
-  cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
+  router: Router = inject(Router)
 
   done = 0;
 
