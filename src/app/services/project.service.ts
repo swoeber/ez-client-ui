@@ -24,6 +24,7 @@ export interface Project {
   invoices: Invoice[];
   messages: Message[];
   files: File[];
+  type: number;
 }
 
 export interface Milestone {

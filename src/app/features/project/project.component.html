@@ -1,13 +1,17 @@
 <div class="">
   @if (project$ | async; as project) {
-    <h5 class="h3"><i class="bi bi-kanban me-2"></i>{{ project.name }}</h5>
-    <app-tabs>
-      <app-tab label="Overview">
-        <app-project-overview [project]="project"></app-project-overview>
-      </app-tab>
-      <app-tab label="Milestones">
-        <app-milestones [project]="project"></app-milestones>
-      </app-tab>
-    </app-tabs>
+  <h5 class="h3"><i class="bi bi-kanban me-2"></i>{{ project.name }}</h5>
+  <app-tabs>
+    <app-tab label="Overview">
+      <app-project-overview [project]="project"></app-project-overview>
+    </app-tab>
+    <app-tab [label]="project.type == 1 ? 'Milestones' : 'Job'">
+      @if(project.type == 1) {
+      <app-milestones [project]="project"></app-milestones>
+      } @else {
+      <app-tasks [project]="project"></app-tasks>
+      }
+    </app-tab>
+  </app-tabs>
   }
 </div>
