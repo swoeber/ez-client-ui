@@ -1,0 +1,138 @@
+.work-order-list {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  
+  .list-header {
+    text-align: center;
+    margin-bottom: 32px;
+    
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 8px;
+    }
+    
+    .project-name {
+      font-size: 16px;
+      color: #6b7280;
+      margin: 0;
+    }
+  }
+  
+  .work-orders {
+    display: grid;
+    gap: 16px;
+  }
+  
+  .work-order-card {
+    background: white;
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-color: #096361;
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      
+      .work-order-id {
+        background: #096361;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      
+      .status-badge {
+        padding: 4px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 600;
+        
+        &.status-todo {
+          background: #f3f4f6;
+          color: #6b7280;
+        }
+        &.status-in_progress {
+          background: #dbeafe;
+          color: #1d4ed8;
+        }
+        &.status-on_site {
+          background: #fef3c7;
+          color: #d97706;
+        }
+        &.status-done {
+          background: #dcfce7;
+          color: #16a34a;
+        }
+        &.status-on_hold {
+          background: #fee2e2;
+          color: #dc2626;
+        }
+      }
+    }
+    
+    .card-content {
+      margin-bottom: 16px;
+      
+      .work-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 8px;
+        line-height: 1.3;
+      }
+      
+      .work-description {
+        font-size: 14px;
+        color: #6b7280;
+        margin: 0;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    }
+    
+    .card-footer {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      
+      .footer-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        color: #6b7280;
+        
+        i {
+          color: #096361;
+        }
+      }
+    }
+    
+    .card-arrow {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #d1d5db;
+      font-size: 16px;
+    }
+  }
+}

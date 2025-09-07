@@ -1,12 +1,9 @@
 import {Component, Input} from '@angular/core';
 import {Project} from '../../../../services/project.service';
-import {JsonPipe} from '@angular/common';
 
 @Component({
   selector: 'app-milestones',
-  imports: [
-    JsonPipe
-  ],
+  imports: [],
   templateUrl: './milestones.component.html',
   styleUrl: './milestones.component.scss'
 })

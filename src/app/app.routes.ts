@@ -37,6 +37,16 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'work-orders',
+    loadComponent: () =>
+      import('./test/workbench/work-order-list.component').then((m) => m.WorkOrderListComponent),
+  },
+  {
+    path: 'workbench/:id',
+    loadComponent: () =>
+      import('./test/workbench/workbench.component').then((m) => m.WorkbenchComponent),
+  },
+  {
     path: 'workbench',
     loadComponent: () =>
       import('./test/workbench/workbench.component').then((m) => m.WorkbenchComponent),

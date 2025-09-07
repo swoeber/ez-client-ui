@@ -1,11 +1,12 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {Observable} from 'rxjs';
-import {Project, ProjectService} from '../../services/project.service';
+import {Observable, map} from 'rxjs';
+import {ProjectService, WorkItem} from '../../services/project.service';
 import {AsyncPipe} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {CardComponent} from '../../shared/components/card/card.component';
 import {TabComponent, TabsComponent} from '../../components/tabs/tabs.component';
 import {ReadableDatePipe} from '../../shared/pipes/readable-date.pipe';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-workbench',
@@ -20,15 +21,21 @@ import {ReadableDatePipe} from '../../shared/pipes/readable-date.pipe';
   templateUrl: './workbench.component.html',
   styleUrl: './workbench.component.scss'
 })
-export class WorkbenchComponent implements OnInit{
+export class WorkbenchComponent implements OnInit {
   projectService: ProjectService = inject(ProjectService);
+  route = inject(ActivatedRoute);
+  router = inject(Router);
 
-  project$: Observable<Project> = new Observable<Project>();
-
+  workItem$: Observable<WorkItem> = new Observable<WorkItem>();
 
   ngOnInit() {
-    this.project$ = this.projectService.get(1);
+    const workOrderId = Number(this.route.snapshot.paramMap.get('id'));
+    this.workItem$ = this.projectService.get(1).pipe(
+      map(project => project.workitems.find(item => item.id === workOrderId)!)
+    );
   }
 
-
+  goBack() {
+    this.router.navigate(['/work-orders']);
+  }
 }

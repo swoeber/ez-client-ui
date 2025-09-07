@@ -1,12 +1,12 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Project, ProjectService } from '../../services/project.service';
-import { ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { TabComponent, TabsComponent } from '../../components/tabs/tabs.component';
-import { ProjectOverviewComponent } from './components/overview/project-overview.component';
-import { MilestonesComponent } from './components/milestones/milestones.component';
-import { TasksComponent } from './components/tasks/tasks.component';
+import {Component, inject, OnInit} from '@angular/core';
+import {Observable} from 'rxjs';
+import {Project, ProjectService} from '../../services/project.service';
+import {ActivatedRoute} from '@angular/router';
+import {CommonModule} from '@angular/common';
+import {TabComponent, TabsComponent} from '../../components/tabs/tabs.component';
+import {ProjectOverviewComponent} from './components/overview/project-overview.component';
+import {MilestonesComponent} from './components/milestones/milestones.component';
+import {WorkOrderListComponent} from '../../test/workbench/work-order-list.component';
 
 @Component({
   selector: 'app-project.component',
@@ -16,7 +16,7 @@ import { TasksComponent } from './components/tasks/tasks.component';
     ProjectOverviewComponent,
     TabComponent,
     MilestonesComponent,
-    TasksComponent,
+    WorkOrderListComponent,
   ],
   templateUrl: './project.component.html',
   styleUrl: './project.component.scss',

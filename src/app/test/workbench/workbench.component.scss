@@ -247,6 +247,16 @@
   &.status-on_hold { color: #ef4444; }
 }
 
+.back-button-container {
+  margin-bottom: 20px;
+  
+  .btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
 .overview-layout {
   padding: 20px;
   
