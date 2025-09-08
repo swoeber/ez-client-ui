@@ -1,15 +1,21 @@
-import {Component, Input, ContentChildren, QueryList, AfterContentInit, ElementRef} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {
+  Component,
+  Input,
+  ContentChildren,
+  QueryList,
+  AfterContentInit,
+  ElementRef,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-tab',
-  template: '<ng-content></ng-content>'
+  template: '<ng-content></ng-content>',
 })
 export class TabComponent {
   @Input() label!: string;
 
-  constructor(public elementRef: ElementRef) {
-  }
+  constructor(public elementRef: ElementRef) {}
 }
 
 @Component({
@@ -17,11 +23,11 @@ export class TabComponent {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './tabs.component.html',
-  styleUrls: ['./tabs.component.scss']
+  styleUrls: ['./tabs.component.scss'],
 })
 export class TabsComponent implements AfterContentInit {
   @ContentChildren(TabComponent) tabs!: QueryList<TabComponent>;
-  selectedIndex = 0;
+  @Input() selectedIndex = 0;
 
   ngAfterContentInit() {
     this.updateTabVisibility();

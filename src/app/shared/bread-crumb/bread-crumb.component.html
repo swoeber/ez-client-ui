@@ -1,0 +1,23 @@
+<!-- breadcrumbs.component.html -->
+<nav class="breadcrumb-wrap" aria-label="breadcrumb">
+  <ol class="breadcrumb breadcrumb-soft mb-0">
+    @for (c of crumbs; let i = $index; let last = $last; track c.url ?? i) {
+    <li class="breadcrumb-item" [class.active]="last" [attr.aria-current]="last ? 'page' : null">
+      <!-- Linked crumb -->
+      <a
+        *ngIf="!last && c.url !== undefined"
+        [routerLink]="c.url"
+        class="crumb-link"
+        [queryParams]="c.query"
+      >
+        <span class="crumb-text">{{ c.label }}</span>
+      </a>
+
+      <!-- Current / non-clickable crumb -->
+      <span *ngIf="last || c.url === undefined" class="crumb-current">
+        <span class="crumb-text">{{ c.label }}</span>
+      </span>
+    </li>
+    }
+  </ol>
+</nav>

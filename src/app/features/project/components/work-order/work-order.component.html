@@ -1,0 +1,192 @@
+<div class="row mt-3">
+  <!-- <header class="p-3 border-b"> -->
+  <!-- …workspace nav… -->
+  <app-breadcrumbs [crumbs]="crumbs"></app-breadcrumbs>
+  <!-- </header> -->
+  <app-card class="col-12 pe-4">
+    <app-tabs>
+      <app-tab label="Overview">
+        <div class="overview-layout">
+          <div class="overview-header">
+            <div class="work-badge">WO-{{ workItem.id }}</div>
+            <h2 class="work-title">{{ workItem.title }}</h2>
+            <div class="status-container">
+              <select
+                [(ngModel)]="workItem.status"
+                class="status-select-overview status-{{ workItem.status }}"
+              >
+                <option value="todo">Todo</option>
+                <option value="in_progress">In Progress</option>
+                <option value="on_site">On Site</option>
+                <option value="done">Done</option>
+                <option value="on_hold">On Hold</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="overview-content">
+            <div class="info-panel">
+              <div class="panel-header">
+                <i class="bi bi-info-circle panel-icon"></i>
+                <h3>Job Information</h3>
+              </div>
+              <div class="info-grid">
+                <div class="info-card-mini">
+                  <i class="bi bi-calendar-event mini-icon"></i>
+                  <div class="mini-content">
+                    <div class="mini-label">Due Date</div>
+                    <div class="mini-value">{{ workItem.due_on | readableDate }}</div>
+                  </div>
+                </div>
+                <div class="info-card-mini">
+                  <i class="bi bi-bar-chart mini-icon"></i>
+                  <div class="mini-content">
+                    <div class="mini-label">Progress</div>
+                    <div class="mini-value">{{ workItem.percent_complete }}%</div>
+                  </div>
+                </div>
+                <div class="info-card-mini">
+                  <i class="bi bi-person mini-icon"></i>
+                  <div class="mini-content">
+                    <div class="mini-label">Assigned To</div>
+                    <div class="mini-value">{{ workItem.assignee.full_name || 'Unassigned' }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tasks-panel">
+              <div class="panel-header">
+                <i class="bi bi-check-square panel-icon"></i>
+                <h3>Task Checklist</h3>
+              </div>
+              <div class="tasks-content">
+                <div class="task-list">
+                  @for (task of workItem.tasks; track $index) {
+                  <div class="task-item">
+                    <input
+                      type="checkbox"
+                      [id]="'task-' + workItem.id + '-' + $index"
+                      [(ngModel)]="task.completed"
+                      class="task-checkbox"
+                    />
+                    <label
+                      [for]="'task-' + workItem.id + '-' + $index"
+                      class="task-label"
+                      [class.completed]="task.completed"
+                    >
+                      {{ task.title }}
+                    </label>
+                  </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </app-tab>
+      <app-tab label="Details">
+        <div class="work-order-details">
+          <div class="hero-section">
+            <div class="work-order-badge">WO-{{ workItem.id }}</div>
+            <h2 class="work-order-title">{{ workItem.title }}</h2>
+            <div class="status-pill status-{{ workItem.status }}">
+              <select
+                [(ngModel)]="workItem.status"
+                class="status-select-modern status-{{ workItem.status }}"
+              >
+                <option value="todo">Todo</option>
+                <option value="in_progress">In Progress</option>
+                <option value="on_site">On Site</option>
+                <option value="done">Done</option>
+                <option value="on_hold">On Hold</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="info-cards">
+            <div class="info-card">
+              <i class="bi bi-person card-icon"></i>
+              <div class="card-content">
+                <div class="card-label">Assignee</div>
+                <div class="card-value">{{ workItem.assignee.full_name || 'Unassigned' }}</div>
+              </div>
+            </div>
+            <div class="info-card">
+              <i class="bi bi-calendar-event card-icon"></i>
+              <div class="card-content">
+                <div class="card-label">Due Date</div>
+                <div class="card-value">{{ workItem.due_on | readableDate }}</div>
+              </div>
+            </div>
+            <div class="info-card">
+              <i class="bi bi-star card-icon"></i>
+              <div class="card-content">
+                <div class="card-label">Created By</div>
+                <div class="card-value">{{ workItem.creator.full_name }}</div>
+              </div>
+            </div>
+            <div class="info-card">
+              <i class="bi bi-clock card-icon"></i>
+              <div class="card-content">
+                <div class="card-label">Created</div>
+                <div class="card-value">{{ workItem.created_at | readableDate }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-section">
+            <div class="section-header">
+              <i class="bi bi-file-text section-icon"></i>
+              <h3>Description</h3>
+            </div>
+            <div class="section-content">
+              <p>{{ workItem.description || 'No description provided' }}</p>
+            </div>
+          </div>
+
+          <div class="content-section">
+            <div class="section-header">
+              <i class="bi bi-check-square section-icon"></i>
+              <h3>Tasks</h3>
+            </div>
+            <div class="section-content">
+              <div class="task-list">
+                @for (task of workItem.tasks; track $index) {
+                <div class="task-item">
+                  <input
+                    type="checkbox"
+                    [id]="'detail-task-' + workItem.id + '-' + $index"
+                    [(ngModel)]="task.completed"
+                    class="task-checkbox"
+                  />
+                  <label
+                    [for]="'detail-task-' + workItem.id + '-' + $index"
+                    class="task-label"
+                    [class.completed]="task.completed"
+                  >
+                    {{ task.title }}
+                  </label>
+                </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="content-section">
+            <div class="section-header">
+              <i class="bi bi-chat-dots section-icon"></i>
+              <h3>Notes & Comments</h3>
+            </div>
+            <div class="section-content">
+              <div class="empty-state">
+                <i class="bi bi-chat empty-icon"></i>
+                <p>No comments yet</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </app-tab>
+    </app-tabs>
+  </app-card>
+</div>

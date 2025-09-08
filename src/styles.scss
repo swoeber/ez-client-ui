@@ -47,6 +47,10 @@
   --surface: #ffffff;
   --surface-muted: #f3f4f6;
   --border-subtle: #e5e7eb;
+
+  --brand-primary: #{$primary}; /* TODO: set to your Primary */
+  --brand-secondary: #{$secondary}; /* TODO: set to your Secondary */
+  --brand-accent: #{$accent}; /* TODO: set to your Accent */
 }
 
 /* =========
