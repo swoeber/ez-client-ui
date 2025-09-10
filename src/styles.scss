@@ -26,13 +26,6 @@
   --brand-s: 90%; /* saturation */
   --brand-l: 56%; /* lightness */
 
-  //--bs-body-bg: #f0f6f0;
-
-  --bs-body-bg: #fff;
-  --bs-body-color: #1f2937;
-  --body-bg-color: #fff;
-  //--body-bg-color: #f0f6f0;
-
   --panel-work-header-bg: #255651;
 
   /* Derived palette */
@@ -43,14 +36,29 @@
   --brand-100: hsl(var(--brand-h), 95%, 92%);
   --brand-200: hsl(var(--brand-h), 90%, 85%);
 
-  /* Neutrals */
+  --brand-primary: #{$primary};
+  --brand-secondary: #{$secondary};
+  --brand-accent: #{$accent};
+}
+
+/* Light mode defaults */
+:root,
+[data-bs-theme="light"] {
   --surface: #ffffff;
   --surface-muted: #f3f4f6;
   --border-subtle: #e5e7eb;
+  --body-bg-color: #fff;
+}
 
-  --brand-primary: #{$primary}; /* TODO: set to your Primary */
-  --brand-secondary: #{$secondary}; /* TODO: set to your Secondary */
-  --brand-accent: #{$accent}; /* TODO: set to your Accent */
+/* Dark mode overrides */
+[data-bs-theme="dark"] {
+  --bs-body-bg: #0f172a;
+  --bs-body-color: #e2e8f0;
+  --surface: #1e293b;
+  --surface-muted: #334155;
+  --border-subtle: #475569;
+  --body-bg-color: #0f172a;
+  --brand-l: 62%;
 }
 
 /* =========
@@ -183,18 +191,7 @@ a:hover,
   }
 }
 
-/* Optional: Dark mode (opt-in by adding .theme-dark on <html>) */
-.theme-dark {
-  --bs-body-bg: #0b1220;
-  --bs-body-color: #e5e7eb;
-  --surface: #0f172a;
-  --surface-muted: #111827;
-  --border-subtle: #1f2937;
-
-  --brand-l: 62%; /* brighten brand in dark */
-}
-
-.theme-dark .card {
+[data-bs-theme="dark"] .card {
   box-shadow: none;
 }
 

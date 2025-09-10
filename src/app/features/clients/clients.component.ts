@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { Client, ClientService } from '../../services/client.service';
 import { Observable } from 'rxjs';
 import {
@@ -9,18 +9,23 @@ import {
 } from '../../shared/components/data-table/data-table.component';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-clients.component',
-  imports: [DataTableComponent, CommonModule],
+  imports: [DataTableComponent, CommonModule, FormsModule],
   templateUrl: './clients.component.html',
   styleUrl: './clients.component.scss',
 })
 export class ClientsComponent {
   clientService: ClientService = inject(ClientService);
   router: Router = inject(Router);
+  cdr = inject(ChangeDetectorRef);
 
   clients$: Observable<Client[]> = new Observable<Client[]>();
+  showAddModal = false;
+  newClient: Partial<Client> = {};
+  isSubmitting = false;
 
   clientColumns: TableColumn[] = [
     { key: 'id', label: 'ID', sortable: true, type: 'number' },
@@ -51,7 +56,53 @@ export class ClientsComponent {
   };
 
   ngOnInit() {
+    this.loadClients();
+  }
+
+  loadClients() {
     this.clients$ = this.clientService.getClients();
+  }
+
+  openAddModal() {
+    this.newClient = {};
+    this.showAddModal = true;
+  }
+
+  closeAddModal() {
+    console.log('closing modal');
+    this.showAddModal = false;
+    this.newClient = {};
+    this.cdr.markForCheck();
+  }
+
+  onSubmitClient() {
+    if (!this.newClient.first_name || !this.newClient.last_name || !this.newClient.email) {
+      return;
+    }
+
+    this.isSubmitting = true;
+    this.clientService.createClient(this.newClient).subscribe({
+      next: (result) => {
+        this.loadClients();
+        this.closeAddModal();
+        this.isSubmitting = false;
+      },
+      error: (error) => {
+        this.isSubmitting = false;
+      },
+    });
+  }
+
+  deleteClient(client: Client) {
+    this.clientService.deleteClient(client.id).subscribe({
+      next: () => {
+        this.loadClients();
+        this.cdr.markForCheck();
+      },
+      error: (error) => {
+        console.error('Error deleting client:', error);
+      },
+    });
   }
 
   onAction(event: { action: string; item: any }) {
@@ -68,7 +119,7 @@ export class ClientsComponent {
         console.log('Editing client:', event.item);
         break;
       case 'delete':
-        console.log('Deleting client:', event.item);
+        this.deleteClient(event.item);
         break;
     }
   }

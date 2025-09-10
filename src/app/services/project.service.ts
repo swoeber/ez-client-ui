@@ -12,7 +12,18 @@ export interface Project {
   client_id: string;
   name: string;
   slug: string;
-  status: string;
+  status: | 'todo'
+    | 'not_started'
+    | 'en_route'
+    | 'on_site'
+    | 'in_progress'
+    | 'on_hold'
+    | 'waiting_on_parts'
+    | 'awaiting_signature'
+    | 'done'
+    | 'waiting_on_client'
+    | 'blocked'
+    | 'canceled';
   percent_complete: string;
   starts_on: string;
   due_on: string;
@@ -21,10 +32,12 @@ export interface Project {
   deleted_at: string;
   created_at: string;
   updated_at: string;
+  account: User;
   milestones: Milestone[];
   workitems: WorkItem[];
   invoices: Invoice[];
   messages: Message[];
+  assignee?: User;
   files: File[];
   type: number;
 }

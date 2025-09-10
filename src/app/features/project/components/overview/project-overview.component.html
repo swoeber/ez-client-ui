@@ -1,87 +1,188 @@
-<div class="row">
-  <div class="row g-4 pe-0 mt-0">
-    <div class="col-lg-6 d-flex flex-column gap-4">
-      <app-card class="col-12 pe-0" style="min-height: 350px">
-        <form class="d-flex gap-2 mb-3">
-          <div class="w-100">
-            <input type="text" class="form-control" placeholder="Write a message..."/>
+<div class="container-fluid px-4 py-3">
+  <div class="row g-4">
+    <!-- Main Content -->
+    <div class="col-lg-8">
+      <!-- Job Status Header -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <h4 class="mb-0 fw-bold text-dark">Job Overview</h4>
+            <span class="badge bg-success fs-6 px-3 py-2 rounded-pill">Active</span>
           </div>
-          <button class="btn btn-primary"><i class="bi bi-send"></i></button>
-        </form>
-        <div class="overflow-scroll d-flex flex-column-reverse" style="height: 254px">
-          @for (item of project.messages; track $index) {
-            <div class="col-12 p-3 pt-4">
+          <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+              <div class="form-group">
+                <label class="form-label text-muted mb-2">
+                  <i class="bi bi-calendar-event text-primary me-2"></i>
+                  Start Date
+                </label>
+                <input
+                  type="date"
+                  class="form-control"
+                  [(ngModel)]="project.starts_on"
+                  style="padding: 8px 12px"
+                />
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+              <div class="form-group">
+                <label class="form-label text-muted mb-2">
+                  <i class="bi bi-calendar-check text-warning me-2"></i>
+                  Due Date
+                </label>
+                <input
+                  type="date"
+                  class="form-control"
+                  [(ngModel)]="project.due_on"
+                  style="padding: 8px 12px"
+                />
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+              <div class="form-group position-relative">
+                <label class="form-label text-muted mb-2">
+                  <i class="bi bi-person text-success me-2"></i>
+                  Assignee
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="assigneeSearch"
+                  (input)="onAssigneeSearch()"
+                  (focus)="onAssigneeFocus()"
+                  (blur)="onAssigneeBlur()"
+                  placeholder="Search members..."
+                  style="padding: 8px 12px"
+                />
+                @if (showAssigneeDropdown && filteredMembers.length > 0) {
+                <div
+                  class="dropdown-menu show position-absolute w-100 shadow-sm"
+                  style="z-index: 1000; top: 100%; max-height: 200px; overflow-y: auto"
+                >
+                  @for (member of filteredMembers; track member.id) {
+                  <button
+                    type="button"
+                    class="dropdown-item py-2 px-3"
+                    (click)="selectAssignee(member)"
+                  >
+                    <i class="bi bi-person-circle me-2 text-muted"></i>
+                    {{ member.full_name }}
+                  </button>
+                  }
+                </div>
+                }
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+              <div class="form-group">
+                <label class="form-label text-muted mb-2">
+                  <i class="bi bi-clock text-info me-2"></i>
+                  Status
+                </label>
+                <select class="form-select" [(ngModel)]="project.status" style="padding: 8px 12px">
+                  @for (option of statusOptions; track option.value) {
+                  <option [value]="option.value">{{ option.label }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages Section -->
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white border-0 p-4">
+          <h5 class="mb-0 fw-semibold">Messages</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="p-4 border-bottom">
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control border-0 bg-light"
+                placeholder="Write a message..."
+                style="padding: 12px 16px"
+              />
+              <button class="btn btn-primary px-4" type="button">
+                <i class="bi bi-send"></i>
+              </button>
+            </div>
+          </div>
+          <div class="overflow-auto" style="max-height: 400px">
+            @for (item of project.messages; track $index) {
+            <div class="p-4 border-bottom">
               <div class="d-flex">
                 <div class="flex-shrink-0">
-<!--                  <img src="..." alt="..."/>-->
+                  <div
+                    class="bg-primary rounded-circle d-flex align-items-center justify-content-center"
+                    style="width: 40px; height: 40px"
+                  >
+                    @if(item.author == null) {
+                    <span class="text-white fw-bold">{{
+                      (project.account.full_name || 'U')[0]
+                    }}</span>
+                    } @else {
+                    <span class="text-white fw-bold">{{ (item.author.full_name || 'U')[0] }}</span>
+                    }
+                  </div>
                 </div>
                 <div class="flex-grow-1 ms-3">
-                  <div class="d-flex gap-2">
-                    <b>{{ item.author ? item.author.full_name : 'some' }}</b
-                    ><span><small>{{ item.created_at | readableDate }}</small></span>
+                  <div class="d-flex align-items-center gap-2 mb-1">
+                    @if(item.author == null) {
+                    <span class="fw-semibold">{{ project.account.full_name || 'Unknown' }}</span>
+                    }@else {
+                    <span class="fw-semibold">{{ item.author.full_name || 'Unknown' }}</span>
+                    }
+                    <small class="text-muted">{{ item.created_at | readableDate }}</small>
                   </div>
-                  {{ item.body }}
+                  <p class="mb-0 text-dark">{{ item.body }}</p>
                 </div>
               </div>
             </div>
-          }
+            }
+          </div>
         </div>
-      </app-card>
+      </div>
 
-      <app-card [title]="'Invoices'" class="col-12 pe-0">
-        <div style="min-height: 300px">
+      <!-- Invoices Section -->
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-0 p-4">
+          <h5 class="mb-0 fw-semibold">Invoices</h5>
+        </div>
+        <div class="card-body p-4">
           <app-data-table [data]="project.invoices" [columns]="invoiceColumns"></app-data-table>
         </div>
-      </app-card>
+      </div>
     </div>
 
-    <div class="col-lg-6 d-flex flex-column gap-4">
-      <app-card [title]="'Project Details'" class="col-12 pe-0">
-        <div class="p-2 row g-2">
-          <div class="d-flex justify-content-between">
-            <span>Status</span>
-            <span class="badge rounded-pill text-bg-primary">Active</span>
-          </div>
-          <div class="d-flex justify-content-between">
-            <span>Start Date</span>
-            <span>{{ project.starts_on || 'Setup' }}</span>
-          </div>
-          <div class="d-flex justify-content-between">
-            <span>Due Date</span>
-            <span>{{ (project.due_on | readableDate) || 'Setup' }}</span>
-          </div>
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+      <!-- Files Section -->
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-0 p-4">
+          <h5 class="mb-0 fw-semibold">Files</h5>
         </div>
-      </app-card>
-      <!-- <app-card [title]="'Milestones'" class="col-12 pe-0">
-        <div class="p-2">
-          @for (item of project.milestones; track $index) {
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                value=""
-                id="milestone-{{ $index }}"
-              />
-              <label class="form-check-label" for="milestone-{{ $index }}">
-                {{ item.title }}
-              </label>
+        <div class="card-body p-4">
+          @for (item of project.files; track $index) {
+          <div
+            class="d-flex align-items-center p-3 rounded-3 bg-light mb-3 hover-shadow"
+            style="cursor: pointer; transition: all 0.2s"
+          >
+            <div class="flex-shrink-0">
+              <i class="bi bi-file-earmark-pdf text-danger" style="font-size: 24px"></i>
             </div>
+            <div class="flex-grow-1 ms-3">
+              <div class="fw-semibold text-dark mb-1">{{ item.name }}</div>
+              <small class="text-muted">Uploaded {{ item.created_at }}</small>
+            </div>
+            <div class="flex-shrink-0">
+              <i class="bi bi-download text-muted"></i>
+            </div>
+          </div>
           }
         </div>
-      </app-card> -->
-      <app-card [title]="'Files'" class="col-12 pe-0" style="height: 350px">
-        @for (item of project.files; track $index) {
-          <div class="d-flex flex-row gap-2">
-            <i class="bi bi-file-earmark-pdf" style="font-size: 35px"></i>
-            <div>
-              <div class="mb-0 pt-1 btn-link" style="font-weight: 700; cursor: pointer">
-                {{ item.name }}
-              </div>
-              <div class="mt-0" style="font-size: small">Uploaded {{ item.created_at }}</div>
-            </div>
-          </div>
-        }
-      </app-card>
+      </div>
     </div>
   </div>
 </div>

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { UserStore } from '../../../../store/user.store';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
+import { ThemeService } from '../../../../services/theme.service';
 
 @Component({
   selector: 'app-header',
@@ -15,11 +16,17 @@ export class Header {
   auth = inject(AuthService);
   users = inject(UserStore);
   router = inject(Router);
+  themeService = inject(ThemeService);
 
   me$ = toObservable(this.users.user);
+  isDarkMode = this.themeService.isDarkMode;
 
   async logout() {
     await this.auth.logout();
     this.router.navigateByUrl('/login');
+  }
+
+  toggleTheme() {
+    this.themeService.toggleTheme();
   }
 }

@@ -32,4 +32,12 @@ export class ClientService {
   getClients(): Observable<Client[]> {
     return this.http.get<Client[]>(`${environment.api}/clients`, { withCredentials: true });
   }
+
+  createClient(client: Partial<Client>): Observable<Client> {
+    return this.http.post<Client>(`${environment.api}/clients`, client, { withCredentials: true });
+  }
+
+  deleteClient(id: number): Observable<any> {
+    return this.http.delete(`${environment.api}/clients/${id}`, { withCredentials: true });
+  }
 }

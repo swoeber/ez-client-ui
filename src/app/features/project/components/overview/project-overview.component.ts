@@ -1,21 +1,38 @@
-import {Component, Input} from '@angular/core';
-import {CardComponent} from "../../../../shared/components/card/card.component";
+import {Component, Input, OnInit} from '@angular/core';
 import {DataTableComponent, TableColumn} from "../../../../shared/components/data-table/data-table.component";
 import {Project} from '../../../../services/project.service';
 import {ReadableDatePipe} from '../../../../shared/pipes/readable-date.pipe';
+import {FormsModule} from '@angular/forms';
+import {UserService} from '../../../../services/user.service';
+import {User} from '../../../../store/user.store';
+import {CommonModule} from '@angular/common';
 
 @Component({
   selector: 'app-project-overview',
   imports: [
-    CardComponent,
     DataTableComponent,
     ReadableDatePipe,
+    FormsModule,
+    CommonModule,
   ],
   templateUrl: './project-overview.component.html',
   styleUrl: './project-overview.component.scss'
 })
-export class ProjectOverviewComponent {
+export class ProjectOverviewComponent implements OnInit {
   @Input() project: Project = {} as Project;
+  
+  accountMembers: User[] = [];
+  filteredMembers: User[] = [];
+  assigneeSearch = '';
+  showAssigneeDropdown = false;
+
+  statusOptions = [
+    { value: 'todo', label: 'To Do' },
+    { value: 'in_progress', label: 'In Progress' },
+    { value: 'on_site', label: 'On Site' },
+    { value: 'done', label: 'Done' },
+    { value: 'on_hold', label: 'On Hold' }
+  ];
 
   invoiceColumns: TableColumn[] = [
     {key: 'id', label: 'ID', sortable: true, type: 'number'},
@@ -24,4 +41,40 @@ export class ProjectOverviewComponent {
     {key: 'status', label: 'Status', sortable: true},
     {key: 'due_on', label: 'Due On', sortable: true, type: 'date'},
   ];
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit() {
+    this.loadAccountMembers();
+  }
+
+  loadAccountMembers() {
+    this.userService.getAccountMembers().subscribe(members => {
+      this.accountMembers = members;
+      this.filteredMembers = members;
+    });
+  }
+
+  onAssigneeSearch() {
+    this.filteredMembers = this.accountMembers.filter(member =>
+      member.full_name.toLowerCase().includes(this.assigneeSearch.toLowerCase())
+    );
+    this.showAssigneeDropdown = true;
+  }
+
+  selectAssignee(member: User) {
+    this.project.assignee = member;
+    this.assigneeSearch = member.full_name;
+    this.showAssigneeDropdown = false;
+  }
+
+  onAssigneeFocus() {
+    this.assigneeSearch = this.project.assignee?.full_name || '';
+    this.filteredMembers = this.accountMembers;
+    this.showAssigneeDropdown = true;
+  }
+
+  onAssigneeBlur() {
+    setTimeout(() => this.showAssigneeDropdown = false, 200);
+  }
 }

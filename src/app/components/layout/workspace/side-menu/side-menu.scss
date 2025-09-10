@@ -8,3 +8,25 @@
     background: var(--bs-body-bg);
   }
 }
+
+.nav-link {
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  &.active {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+  }
+}
+
+[data-bs-theme="dark"] #side-nav {
+  background: #1e293b !important;
+}
+
+[data-bs-theme="dark"] #side-nav .border-light {
+  border-color: rgba(148, 163, 184, 0.2) !important;
+}

@@ -1,54 +1,73 @@
-<div class="">
-  <h5>Dashboard</h5>
-  <hr />
-  <div class="row">
-    <div class="row pe-0">
-      <div class="col-12 pe-0">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <h5 class="card-title mb-1">Quick start</h5>
-                <small class="text-muted">Finish these to get your portal live.</small>
-              </div>
-              <span class="badge bg-primary-subtle text-primary">{{ done }}/2 complete</span>
+<div class="container-fluid px-4 py-3">
+  <!-- Header Section -->
+  <div class="mb-4">
+    <h3 class="mb-1 fw-bold text-dark">
+      <i class="bi bi-speedometer2 text-primary me-2"></i>
+      Dashboard
+    </h3>
+    <p class="text-muted mb-0">Welcome back! Here's what's happening with your business.</p>
+  </div>
+
+  <!-- Quick Start Section -->
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h5 class="mb-1 fw-semibold">
+            <i class="bi bi-rocket-takeoff text-success me-2"></i>
+            Quick Start
+          </h5>
+          <small class="text-muted">Complete these steps to get your portal ready</small>
+        </div>
+        <span class="badge bg-success-subtle text-success fs-6 px-3 py-2 rounded-pill">
+          {{ done }}/2 complete
+        </span>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded-3">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-palette text-primary me-3" style="font-size: 1.2rem;"></i>
+              <span class="fw-medium">Brand your portal</span>
             </div>
-            <ul class="list-group list-group-flush mt-3" id="quick-start-list">
-              <li class="list-group-item d-flex justify-content-between align-items-center">
-                Brand your portal
-                <button class="btn btn-sm btn-outline-primary" (click)="openOnboarding()">
-                  Open
-                </button>
-              </li>
-              <li class="list-group-item d-flex justify-content-between align-items-center">
-                Create your first project
-                <button class="btn btn-sm btn-outline-primary" (click)="createProject()">
-                  Create
-                </button>
-              </li>
-              <!--            <li class="list-group-item d-flex justify-content-between align-items-center">-->
-              <!--              Invite a client-->
-              <!--              <button class="btn btn-sm btn-outline-primary" (click)="inviteClient()">Invite</button>-->
-              <!--            </li>-->
-              <!--              <li class="list-group-item d-flex justify-content-between align-items-center">-->
-              <!--                Upload a deliverable-->
-              <!--                <button class="btn btn-sm btn-outline-primary" (click)="goFiles()">Upload</button>-->
-              <!--              </li>-->
-              <!--              <li class="list-group-item d-flex justify-content-between align-items-center">-->
-              <!--                Send an invoice-->
-              <!--                <button class="btn btn-sm btn-outline-primary" (click)="newInvoice()">New invoice</button>-->
-              <!--              </li>-->
-            </ul>
+            <button class="btn btn-primary btn-sm px-3" (click)="openOnboarding()">
+              Open
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded-3">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-plus-circle text-primary me-3" style="font-size: 1.2rem;"></i>
+              <span class="fw-medium">Create your first project</span>
+            </div>
+            <button class="btn btn-primary btn-sm px-3" (click)="createProject()">
+              Create
+            </button>
           </div>
         </div>
       </div>
     </div>
-    <div class="row g-4 pe-0">
-      <div class="col-lg-6 col-12 pe-0">
-        <div class="card shadow-sm h-100">
-          <div class="card-body">
-            <h5 class="card-title"><i class="bi bi-kanban me-2"></i>Projects</h5>
-            @if (projects$ | async; as projects) {
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="row g-4">
+    <!-- Projects Section -->
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white border-0 p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-semibold">
+              <i class="bi bi-kanban-fill text-primary me-2"></i>
+              Recent Projects
+            </h5>
+            <button class="btn btn-outline-primary btn-sm" (click)="goToProjects()">
+              View All
+            </button>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          @if (projects$ | async; as projects) {
             <app-data-table
               [data]="projects"
               [columns]="projectColumns"
@@ -56,24 +75,34 @@
               [actions]="projectActions"
               (actionClicked)="onProjectAction($event)"
             ></app-data-table>
-            <div class="d-flex justify-content-end">
-              <button class="btn btn-sm btn-outline-primary" (click)="goToProjects()">
-                View All
-              </button>
+          } @else {
+            <div class="text-center py-5">
+              <i class="bi bi-kanban text-muted" style="font-size: 2.5rem;"></i>
+              <p class="text-muted mt-3 mb-0">
+                No projects yet. <a class="text-primary" style="cursor: pointer;" (click)="createProject()">Create your first project</a>.
+              </p>
             </div>
-            } @else {
-            <p class="text-muted mb-0">
-              No projects yet. <a (click)="createProject()">Create one</a>.
-            </p>
-            }
-          </div>
+          }
         </div>
       </div>
-      <div class="col-lg-6 col-12 pe-0">
-        <div class="card shadow-sm h-100">
-          <div class="card-body">
-            <h5 class="card-title"><i class="bi bi-people me-2"></i>Clients</h5>
-            @if (clients$ | async; as clients) {
+    </div>
+
+    <!-- Clients Section -->
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white border-0 p-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-semibold">
+              <i class="bi bi-people-fill text-primary me-2"></i>
+              Recent Clients
+            </h5>
+            <button class="btn btn-outline-primary btn-sm" (click)="goToClients()">
+              View All
+            </button>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          @if (clients$ | async; as clients) {
             <app-data-table
               [data]="clients"
               [columns]="clientColumns"
@@ -81,28 +110,32 @@
               [actions]="clientActions"
               (actionClicked)="onClientAction($event)"
             ></app-data-table>
-            <div class="d-flex justify-content-end">
-              <button class="btn btn-sm btn-outline-primary" (click)="goToClients()">
-                View All
-              </button>
+          } @else {
+            <div class="text-center py-5">
+              <i class="bi bi-people text-muted" style="font-size: 2.5rem;"></i>
+              <p class="text-muted mt-3 mb-0">
+                No clients yet. <a class="text-primary" style="cursor: pointer;" (click)="createProject()">Add your first client</a>.
+              </p>
             </div>
-            } @else {
-            <p class="text-muted mb-0">
-              No projects yet. <a (click)="createProject()">Create one</a>.
-            </p>
-            }
-          </div>
+          }
         </div>
       </div>
-      <div class="col-12 pe-0">
-        <div class="card shadow-sm h-100">
-          <div class="card-body">
-            <h5 class="card-title">
-              <i class="bi bi-receipt me-2"></i>
-              Invoices
-            </h5>
-            <p class="text-muted mb-0">
-              No invoices yet. <a (click)="newInvoice()">Create one</a>.
+    </div>
+
+    <!-- Invoices Section -->
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-0 p-4">
+          <h5 class="mb-0 fw-semibold">
+            <i class="bi bi-receipt-cutoff text-primary me-2"></i>
+            Recent Invoices
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="text-center py-5">
+            <i class="bi bi-receipt text-muted" style="font-size: 2.5rem;"></i>
+            <p class="text-muted mt-3 mb-0">
+              No invoices yet. <a class="text-primary" style="cursor: pointer;" (click)="newInvoice()">Create your first invoice</a>.
             </p>
           </div>
         </div>
