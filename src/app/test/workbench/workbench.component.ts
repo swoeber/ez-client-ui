@@ -7,7 +7,7 @@ import { CardComponent } from '../../shared/components/card/card.component';
 import { TabComponent, TabsComponent } from '../../components/tabs/tabs.component';
 import { ReadableDatePipe } from '../../shared/pipes/readable-date.pipe';
 import { ActivatedRoute, Router } from '@angular/router';
-import { WorkItem } from '../../services/work-order.service';
+import { WorkItem } from '../../services/work-item.service';
 
 @Component({
   selector: 'app-workbench',
@@ -30,6 +30,6 @@ export class WorkbenchComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/work-orders']);
+    this.router.navigate(['/work-items']);
   }
 }

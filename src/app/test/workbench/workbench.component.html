@@ -80,10 +80,10 @@
           </div>
         </app-tab>
         <app-tab label="Details">
-          <div class="work-order-details">
+          <div class="work-item-details">
             <div class="hero-section">
-              <div class="work-order-badge">WO-{{ item.id }}</div>
-              <h2 class="work-order-title">{{ item.title }}</h2>
+              <div class="work-item-badge">WO-{{ item.id }}</div>
+              <h2 class="work-item-title">{{ item.title }}</h2>
               <div class="status-pill status-{{ item.status }}">
                 <select [(ngModel)]="item.status" class="status-select-modern">
                   <option value="todo">Todo</option>

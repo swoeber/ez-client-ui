@@ -4,17 +4,17 @@
 </div>
 
 
-<div class="work-order-list col-12">
+<div class="work-item-list col-12">
   <!--  <div class="list-header">-->
   <!--    <h1>Work Orders</h1>-->
   <!--    <p class="project-name">{{ project.name }}</p>-->
   <!--  </div>-->
 
-  <div class="work-orders">
+  <div class="work-items">
     @for (item of project.workitems; track item.id) {
-      <div class="work-order-card" (click)="openWorkOrder(item.id)">
+      <div class="work-item-card" (click)="openWorkOrder(item.id)">
         <div class="card-header">
-          <div class="work-order-id">WO-{{ item.id }}</div>
+          <div class="work-item-id">WO-{{ item.id }}</div>
           <div class="status-badge status-{{ item.status }}">
             {{ item.status | titlecase }}
           </div>

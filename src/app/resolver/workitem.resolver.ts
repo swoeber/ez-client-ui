@@ -2,14 +2,13 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, ResolveFn } from '@angular/router';
 import { catchError, of, tap } from 'rxjs';
-import { ProjectService } from '../services/project.service';
-import { WorkItem, WorkOrderService } from '../services/work-order.service';
+import { WorkItem, WorkItemService } from '../services/work-item.service';
 
-export const WorkorderResolver: ResolveFn<WorkItem> = (route: ActivatedRouteSnapshot) => {
+export const WorkitemResolver: ResolveFn<WorkItem> = (route: ActivatedRouteSnapshot) => {
   const id = Number(route.paramMap.get('workorderId'));
   const projectId = Number(route.paramMap.get('id'));
   const router = inject(Router);
-  const svc = inject(WorkOrderService);
+  const svc = inject(WorkItemService);
 
   return svc.get(projectId, id).pipe(
     tap((wo: WorkItem) => {

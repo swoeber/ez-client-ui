@@ -6,6 +6,7 @@ import {FormsModule} from '@angular/forms';
 import {UserService} from '../../../../services/user.service';
 import {User} from '../../../../store/user.store';
 import {CommonModule} from '@angular/common';
+import { SignatureComponent } from "../../../../shared/components/signature/signature.component";
 
 @Component({
   selector: 'app-project-overview',
@@ -14,7 +15,8 @@ import {CommonModule} from '@angular/common';
     ReadableDatePipe,
     FormsModule,
     CommonModule,
-  ],
+    SignatureComponent
+],
   templateUrl: './project-overview.component.html',
   styleUrl: './project-overview.component.scss'
 })
@@ -76,5 +78,9 @@ export class ProjectOverviewComponent implements OnInit {
 
   onAssigneeBlur() {
     setTimeout(() => this.showAssigneeDropdown = false, 200);
+  }
+
+  onSignatureChange($event: any) {
+    console.log('Signature changed:', $event);
   }
 }

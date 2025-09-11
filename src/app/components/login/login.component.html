@@ -1,76 +1,124 @@
-<div class="login-container d-flex justify-content-center align-items-center">
-  <div class="login-card card shadow-sm p-4">
-    <h2 class="text-center mb-4">
-      @if (isLogin) {
-        Sign In
-      } @else if (isSignup) {
-        Sign Up
-      } @else {
-        Reset Password
-      }
-    </h2>
-
-    @if (error()) {
-      <div class="error alert rounded p-3 mb-3 text-center">{{ error() }}</div>
-    }
-
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      @if (isSignup) {
-        <div class="mb-3">
-          <input
-            type="text"
-            formControlName="name"
-            placeholder="Full Name"
-            class="form-control"
-            [class.is-invalid]="form.get('name')?.invalid && form.get('name')?.touched">
+<div class="login-container min-vh-100 d-flex justify-content-center align-items-center bg-light">
+  <div class="login-card card border-0 shadow-lg" style="width: 100%; max-width: 420px;">
+    <div class="card-body p-5">
+      <!-- Logo/Brand -->
+      <div class="text-center mb-4">
+        <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+          <i class="bi bi-person-circle text-white" style="font-size: 28px;"></i>
         </div>
-      }
-
-      <div class="mb-3">
-        <input
-          type="email"
-          formControlName="email"
-          placeholder="Email"
-          class="form-control"
-          [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched">
+        <h3 class="fw-bold text-dark mb-1">
+          @if (isLogin) {
+            Welcome Back
+          } @else if (isSignup) {
+            Create Account
+          } @else {
+            Reset Password
+          }
+        </h3>
+        <p class="text-muted mb-0">
+          @if (isLogin) {
+            Sign in to your account
+          } @else if (isSignup) {
+            Join us today
+          } @else {
+            We'll send you a reset link
+          }
+        </p>
       </div>
 
-      @if (!isReset) {
-        <div class="mb-3">
-          <input
-            type="password"
-            formControlName="password"
-            placeholder="Password"
-            class="form-control"
-            [class.is-invalid]="form.get('password')?.invalid && form.get('password')?.touched">
+      @if (error()) {
+        <div class="alert alert-danger border-0 rounded-3 mb-4">
+          <i class="bi bi-exclamation-triangle me-2"></i>{{ error() }}
         </div>
       }
 
-      <button
-        type="submit"
-        [disabled]="form.invalid || loading()"
-        class="btn btn-primary w-100 mb-3">
-        @if (loading()) {
-          Loading...
-        } @else if (isLogin) {
-          Sign In
-        } @else if (isSignup) {
-          Sign Up
-        } @else {
-          Send Reset Link
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        @if (isSignup) {
+          <div class="mb-3">
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0">
+                <i class="bi bi-person text-muted"></i>
+              </span>
+              <input
+                type="text"
+                formControlName="name"
+                placeholder="Full Name"
+                class="form-control border-start-0 bg-light"
+                style="padding: 12px 16px;"
+                [class.is-invalid]="form.get('name')?.invalid && form.get('name')?.touched">
+            </div>
+          </div>
         }
-      </button>
-    </form>
 
-    <div class="links text-center">
-      @if (isLogin) {
-        <a class="text-decoration-none" (click)="setMode('signup')">Need an account? Sign up</a>
-        <a class="text-decoration-none" (click)="setMode('reset')">Forgot password?</a>
-      } @else if (isSignup) {
-        <a class="text-decoration-none" (click)="setMode('login')">Already have an account? Sign in</a>
-      } @else {
-        <a class="text-decoration-none" (click)="setMode('login')">Back to sign in</a>
-      }
+        <div class="mb-3">
+          <div class="input-group">
+            <span class="input-group-text bg-light border-end-0">
+              <i class="bi bi-envelope text-muted"></i>
+            </span>
+            <input
+              type="email"
+              formControlName="email"
+              placeholder="Email Address"
+              class="form-control border-start-0 bg-light"
+              style="padding: 12px 16px;"
+              [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched">
+          </div>
+        </div>
+
+        @if (!isReset) {
+          <div class="mb-4">
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0">
+                <i class="bi bi-lock text-muted"></i>
+              </span>
+              <input
+                type="password"
+                formControlName="password"
+                placeholder="Password"
+                class="form-control border-start-0 bg-light"
+                style="padding: 12px 16px;"
+                [class.is-invalid]="form.get('password')?.invalid && form.get('password')?.touched">
+            </div>
+          </div>
+        }
+
+        <button
+          type="submit"
+          [disabled]="form.invalid || loading()"
+          class="btn btn-primary w-100 py-3 fw-semibold rounded-3 mb-4"
+          style="font-size: 16px;">
+          @if (loading()) {
+            <span class="spinner-border spinner-border-sm me-2"></span>Loading...
+          } @else if (isLogin) {
+            <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+          } @else if (isSignup) {
+            <i class="bi bi-person-plus me-2"></i>Create Account
+          } @else {
+            <i class="bi bi-envelope me-2"></i>Send Reset Link
+          }
+        </button>
+      </form>
+
+      <div class="text-center">
+        @if (isLogin) {
+          <div class="d-flex flex-column gap-2">
+            <a class="text-decoration-none text-primary fw-medium" (click)="setMode('signup')" style="cursor: pointer;">
+              Need an account? <span class="fw-bold">Sign up</span>
+            </a>
+            <a class="text-decoration-none text-muted" (click)="setMode('reset')" style="cursor: pointer;">
+              Forgot your password?
+            </a>
+          </div>
+        } @else if (isSignup) {
+          <a class="text-decoration-none text-primary fw-medium" (click)="setMode('login')" style="cursor: pointer;">
+            Already have an account? <span class="fw-bold">Sign in</span>
+          </a>
+        } @else {
+          <a class="text-decoration-none text-primary fw-medium" (click)="setMode('login')" style="cursor: pointer;">
+            <i class="bi bi-arrow-left me-1"></i>Back to sign in
+          </a>
+        }
+      </div>
     </div>
   </div>
 </div>

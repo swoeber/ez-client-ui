@@ -1,0 +1,13 @@
+.signature-container {
+  .signature-pad {
+    display: inline-block;
+    background: #f8f9fa;
+  }
+
+  .signature-canvas {
+    display: block;
+    background: white;
+    cursor: crosshair;
+    touch-action: none;
+  }
+}

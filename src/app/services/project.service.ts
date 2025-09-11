@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { User } from '../store/user.store';
-import { WorkItem } from './work-order.service';
+import { WorkItem } from './work-item.service';
 
 export interface Project {
   id: number;

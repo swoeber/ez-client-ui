@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 import { TabComponent, TabsComponent } from '../../components/tabs/tabs.component';
 import { ProjectOverviewComponent } from './components/overview/project-overview.component';
 import { MilestonesComponent } from './components/milestones/milestones.component';
-import { WorkOrderListComponent } from './components/work-order-list/work-order-list.component';
+import { WorkItemListComponent } from './components/work-item-list/work-item-list.component';
 
 @Component({
   selector: 'app-project.component',
@@ -16,7 +16,7 @@ import { WorkOrderListComponent } from './components/work-order-list/work-order-
     ProjectOverviewComponent,
     TabComponent,
     MilestonesComponent,
-    WorkOrderListComponent,
+    WorkItemListComponent,
   ],
   templateUrl: './project.component.html',
   styleUrl: './project.component.scss',

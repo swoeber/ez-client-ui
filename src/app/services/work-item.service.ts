@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { User } from '../store/user.store';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -58,7 +58,7 @@ export interface Task {
 @Injectable({
   providedIn: 'root',
 })
-export class WorkOrderService {
+export class WorkItemService {
   constructor(private http: HttpClient) {}
 
   get(projectId: number, id: number): Observable<WorkItem> {

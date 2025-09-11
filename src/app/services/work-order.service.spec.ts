@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { WorkOrderServiceService } from './work-order-service.service';
+import { WorkItemService } from './work-item.service';
 
-describe('WorkOrderServiceService', () => {
-  let service: WorkOrderServiceService;
+describe('WorkItemService', () => {
+  let service: WorkItemService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(WorkOrderServiceService);
+    service = TestBed.inject(WorkItemService);
   });
 
   it('should be created', () => {

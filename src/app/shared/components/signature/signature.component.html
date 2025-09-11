@@ -1,0 +1,18 @@
+<div class="signature-container">
+  <div class="signature-pad border rounded p-3 bg-white">
+    <canvas 
+      #canvas
+      class="signature-canvas border"
+      (mousedown)="startDrawing($event)"
+      (mousemove)="draw($event)"
+      (mouseup)="stopDrawing()"
+      (mouseleave)="stopDrawing()">
+    </canvas>
+    <div class="d-flex justify-content-between mt-3">
+      <small class="text-muted">Sign above</small>
+      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="clear()">
+        <i class="bi bi-arrow-clockwise me-1"></i>Clear
+      </button>
+    </div>
+  </div>
+</div>

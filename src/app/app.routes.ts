@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { Workspace } from './components/workspace/workspace';
 import { authGuard } from './guards/auth.guard';
-import { WorkorderResolver } from './resolver/workorder.resolver';
+import { WorkitemResolver } from './resolver/workitem.resolver';
 
 export const routes: Routes = [
   {
@@ -27,11 +27,11 @@ export const routes: Routes = [
         data: { breadcrumb: 'Project' },
       },
       {
-        path: 'projects/:id/workorder/:workorderId',
-        resolve: { workorder: WorkorderResolver }, // returns { id, code }
+        path: 'projects/:id/workitem/:workItemId',
+        resolve: { workitem: WorkitemResolver }, // returns { id, code }
         loadComponent: () =>
-          import('./features/project/components/work-order/work-order.component').then(
-            (m) => m.WorkOrderComponent
+          import('./features/project/components/work-item/work-item.component').then(
+            (m) => m.WorkItemComponent
           ),
         data: { breadcrumb: 'Work Item' },
       },
@@ -48,17 +48,17 @@ export const routes: Routes = [
       // {
       //   path: 'projects/:project_id/workorder/:id',
       //   loadComponent: () =>
-      //     import('./features/project/components/work-order/work-order.component').then(
+      //     import('./features/project/components/work-item/work-item.component').then(
       //       (m) => m.WorkOrderComponent
       //     ),
       // },
     ],
   },
   {
-    path: 'work-orders',
+    path: 'work-items',
     loadComponent: () =>
-      import('./features/project/components/work-order-list/work-order-list.component').then(
-        (m) => m.WorkOrderListComponent
+      import('./features/project/components/work-item-list/work-item-list.component').then(
+        (m) => m.WorkItemListComponent
       ),
   },
   {

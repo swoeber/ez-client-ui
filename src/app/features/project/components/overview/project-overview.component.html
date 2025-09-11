@@ -90,8 +90,23 @@
         </div>
       </div>
 
-      <!-- Messages Section -->
+      <!-- Summary Section -->
       <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white border-0 p-4">
+          <h5 class="mb-0 fw-semibold">
+            <i class="bi bi-file-text text-primary me-2"></i>
+            Project Summary
+          </h5>
+        </div>
+        <div class="card-body p-4">
+          <p class="mb-0 text-dark lh-base">
+            {{ project.summary || 'No summary provided.' }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Messages Section -->
+      <div class="card border-0 shadow-sm">
         <div class="card-header bg-white border-0 p-4">
           <h5 class="mb-0 fw-semibold">Messages</h5>
         </div>
@@ -144,20 +159,23 @@
           </div>
         </div>
       </div>
+    </div>
 
+    <!-- Sidebar -->
+    <div class="col-lg-4">
       <!-- Invoices Section -->
-      <div class="card border-0 shadow-sm">
+      <div class="card border-0 shadow-sm mb-4">
         <div class="card-header bg-white border-0 p-4">
-          <h5 class="mb-0 fw-semibold">Invoices</h5>
+          <h5 class="mb-0 fw-semibold">
+            <i class="bi bi-receipt text-success me-2"></i>
+            Invoices
+          </h5>
         </div>
         <div class="card-body p-4">
           <app-data-table [data]="project.invoices" [columns]="invoiceColumns"></app-data-table>
         </div>
       </div>
-    </div>
-
-    <!-- Sidebar -->
-    <div class="col-lg-4">
+      
       <!-- Files Section -->
       <div class="card border-0 shadow-sm">
         <div class="card-header bg-white border-0 p-4">

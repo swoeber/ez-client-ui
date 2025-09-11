@@ -23,11 +23,11 @@
         <app-tab label="Overview">
           <app-project-overview [project]="project"></app-project-overview>
         </app-tab>
-        <app-tab [label]="project.type == 1 ? 'Milestones' : 'Work Orders'">
+        <app-tab [label]="project.type == 1 ? 'Milestones' : 'Work Items'">
           @if (project.type == 1) {
             <app-milestones [project]="project"></app-milestones>
           } @else {
-            <app-work-order-list [project]="project"></app-work-order-list>
+            <app-work-item-list [project]="project"></app-work-item-list>
           }
         </app-tab>
       </app-tabs>

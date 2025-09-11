@@ -5,11 +5,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CardComponent } from '../../../../shared/components/card/card.component';
 import { TabComponent, TabsComponent } from '../../../../components/tabs/tabs.component';
 import { ReadableDatePipe } from '../../../../shared/pipes/readable-date.pipe';
-import { WorkItem } from '../../../../services/work-order.service';
+import { WorkItem } from '../../../../services/work-item.service';
 import { BreadcrumbsComponent, Crumb } from '../../../../shared/bread-crumb/bread-crumb.component';
 
 @Component({
-  selector: 'app-work-order',
+  selector: 'app-work-item',
   imports: [
     FormsModule,
     CardComponent,
@@ -18,10 +18,10 @@ import { BreadcrumbsComponent, Crumb } from '../../../../shared/bread-crumb/brea
     ReadableDatePipe,
     BreadcrumbsComponent,
   ],
-  templateUrl: './work-order.component.html',
-  styleUrl: './work-order.component.scss',
+  templateUrl: './work-item.component.html',
+  styleUrl: './work-item.component.scss',
 })
-export class WorkOrderComponent {
+export class WorkItemComponent {
   projectService: ProjectService = inject(ProjectService);
   route = inject(ActivatedRoute);
   router = inject(Router);

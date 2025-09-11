@@ -86,10 +86,10 @@
         </div>
       </app-tab>
       <app-tab label="Details">
-        <div class="work-order-details">
+        <div class="work-item-details">
           <div class="hero-section">
-            <div class="work-order-badge">WO-{{ workItem.id }}</div>
-            <h2 class="work-order-title">{{ workItem.title }}</h2>
+            <div class="work-item-badge">WO-{{ workItem.id }}</div>
+            <h2 class="work-item-title">{{ workItem.title }}</h2>
             <div class="status-pill status-{{ workItem.status }}">
               <select
                 [(ngModel)]="workItem.status"
