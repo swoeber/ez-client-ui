@@ -5,14 +5,19 @@ import { environment } from '../../environments/environment';
 import { User } from '../store/user.store';
 import { WorkItem } from './work-item.service';
 
+
 export interface Project {
   id: number;
-  account_id: string;
-  owner_user_id: string;
-  client_id: string;
+  account_id: number;
+  owner_user_id: number;
+  client_id: number;
+  assignee_id?: number | null;
+
   name: string;
   slug: string;
-  status: | 'todo'
+
+  status:
+    | 'todo'
     | 'not_started'
     | 'en_route'
     | 'on_site'
@@ -24,22 +29,40 @@ export interface Project {
     | 'waiting_on_client'
     | 'blocked'
     | 'canceled';
-  percent_complete: string;
-  starts_on: string;
-  due_on: string;
-  summary: string;
-  meta: string;
-  deleted_at: string;
-  created_at: string;
-  updated_at: string;
-  account: User;
+  // percent_complete: number;
+
+  starts_on?: string | null; // ISO8601 date string: "2025-09-11"
+  due_on?: string | null; // ISO8601 date string
+
+  summary?: string | null;
+  meta?: Record<string, any> | null; // flexible JSON
+
+  service_address_line1?: string | null;
+  service_address_line2?: string | null;
+  service_city?: string | null;
+  service_state?: string | null;
+  service_postal_code?: string | null;
+  service_country?: string | null;
+
+  service_latitude?: number | null;
+  service_longitude?: number | null;
+
+  service_place_name?: string | null;
+  service_access_notes?: string | null;
+
+  deleted_at?: string | null; // ISO8601 datetime
+  created_at: string; // ISO8601 datetime
+  updated_at: string; // ISO8601 datetime
+
   milestones: Milestone[];
   workitems: WorkItem[];
   invoices: Invoice[];
   messages: Message[];
   assignee?: User;
   files: File[];
-  type: number;
+  owner?: User;
+
+  type: number; // e.g. "freelance" | "field_job"
 }
 
 export interface Milestone {
@@ -72,7 +95,7 @@ export interface Message {
   id: number;
   project_id: number;
   user_id: number;
-  author: User;
+  author?: User;
   body: string;
   is_system: boolean;
   created_at: string;

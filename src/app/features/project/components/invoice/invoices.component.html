@@ -1,0 +1,13 @@
+@if (project.invoices && project.invoices.length > 0) {
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-header bg-white border-0 p-4">
+    <h5 class="mb-0 fw-semibold">
+      <i class="bi bi-receipt text-success me-2"></i>
+      Invoices
+    </h5>
+  </div>
+  <div class="card-body p-4">
+    <app-data-table [data]="project.invoices" [columns]="invoiceColumns"></app-data-table>
+  </div>
+</div>
+}

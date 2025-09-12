@@ -6,8 +6,8 @@
       <div class="card border-0 shadow-sm mb-4">
         <div class="card-body p-4">
           <div class="d-flex align-items-center justify-content-between mb-3">
-            <h4 class="mb-0 fw-bold text-dark">Job Overview</h4>
-            <span class="badge bg-success fs-6 px-3 py-2 rounded-pill">Active</span>
+            <h4 class="mb-0 fw-bold text-dark">{{ project.name || 'Project Overview' }}</h4>
+            <span class="badge" [class]="'bg-' + (project.status === 'done' ? 'success' : project.status === 'in_progress' ? 'primary' : project.status === 'on_hold' ? 'warning' : 'secondary') + ' fs-6 px-3 py-2 rounded-pill'">{{ project.status.replace('_', ' ') | titlecase }}</span>
           </div>
           <div class="row g-4">
             <div class="col-md-6 col-lg-3">
@@ -105,102 +105,104 @@
         </div>
       </div>
 
-      <!-- Messages Section -->
-      <div class="card border-0 shadow-sm">
+      <!-- Service Address Section -->
+      @if (project.service_address_line1 || project.service_city) {
+      <div class="card border-0 shadow-sm mb-4">
         <div class="card-header bg-white border-0 p-4">
-          <h5 class="mb-0 fw-semibold">Messages</h5>
+          <h5 class="mb-0 fw-semibold">
+            <i class="bi bi-geo-alt text-danger me-2"></i>
+            Service Address
+          </h5>
         </div>
-        <div class="card-body p-0">
-          <div class="p-4 border-bottom">
-            <div class="input-group">
-              <input
-                type="text"
-                class="form-control border-0 bg-light"
-                placeholder="Write a message..."
-                style="padding: 12px 16px"
-              />
-              <button class="btn btn-primary px-4" type="button">
-                <i class="bi bi-send"></i>
-              </button>
-            </div>
-          </div>
-          <div class="overflow-auto" style="max-height: 400px">
-            @for (item of project.messages; track $index) {
-            <div class="p-4 border-bottom">
-              <div class="d-flex">
-                <div class="flex-shrink-0">
-                  <div
-                    class="bg-primary rounded-circle d-flex align-items-center justify-content-center"
-                    style="width: 40px; height: 40px"
-                  >
-                    @if(item.author == null) {
-                    <span class="text-white fw-bold">{{
-                      (project.account.full_name || 'U')[0]
-                    }}</span>
-                    } @else {
-                    <span class="text-white fw-bold">{{ (item.author.full_name || 'U')[0] }}</span>
-                    }
-                  </div>
-                </div>
-                <div class="flex-grow-1 ms-3">
-                  <div class="d-flex align-items-center gap-2 mb-1">
-                    @if(item.author == null) {
-                    <span class="fw-semibold">{{ project.account.full_name || 'Unknown' }}</span>
-                    }@else {
-                    <span class="fw-semibold">{{ item.author.full_name || 'Unknown' }}</span>
-                    }
-                    <small class="text-muted">{{ item.created_at | readableDate }}</small>
-                  </div>
-                  <p class="mb-0 text-dark">{{ item.body }}</p>
-                </div>
-              </div>
+        <div class="card-body p-4">
+          <div class="text-dark">
+            @if (project.service_address_line1) {
+            <div>{{ project.service_address_line1 }}</div>
+            }
+            @if (project.service_address_line2) {
+            <div>{{ project.service_address_line2 }}</div>
+            }
+            @if (project.service_city || project.service_state || project.service_postal_code) {
+            <div>
+              {{ project.service_city }}{{ project.service_state ? ', ' + project.service_state : '' }}{{ project.service_postal_code ? ' ' + project.service_postal_code : '' }}
             </div>
             }
+            @if (project.service_country) {
+            <div>{{ project.service_country }}</div>
+            }
+            @if (project.service_place_name) {
+            <div class="text-muted mt-2">
+              <i class="bi bi-pin-map me-1"></i>
+              {{ project.service_place_name }}
+            </div>
+            }
+            @if (project.service_access_notes) {
+            <div class="mt-3">
+              <strong>Access Notes:</strong>
+              <p class="mb-0 mt-1">{{ project.service_access_notes }}</p>
+            </div>
+            }
+            @if (project.service_address_line1 || project.service_city) {
+            <div class="mt-3">
+              <iframe 
+                [src]="getMapUrl()" 
+                width="100%" 
+                height="200" 
+                frameborder="0" 
+                class="rounded"
+                style="border: 1px solid #dee2e6">
+              </iframe>
+            </div>
+            }
+            <div class="mt-3">
+              <a [href]="getGoogleMapsUrl()" target="_blank" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-geo-alt me-1"></i>
+                View in Google Maps
+              </a>
+            </div>
           </div>
         </div>
       </div>
+      }
+
+
+
+
     </div>
 
     <!-- Sidebar -->
     <div class="col-lg-4">
-      <!-- Invoices Section -->
+      <!-- Project Details -->
       <div class="card border-0 shadow-sm mb-4">
         <div class="card-header bg-white border-0 p-4">
           <h5 class="mb-0 fw-semibold">
-            <i class="bi bi-receipt text-success me-2"></i>
-            Invoices
+            <i class="bi bi-info-circle text-info me-2"></i>
+            Project Details
           </h5>
         </div>
         <div class="card-body p-4">
-          <app-data-table [data]="project.invoices" [columns]="invoiceColumns"></app-data-table>
-        </div>
-      </div>
-      
-      <!-- Files Section -->
-      <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white border-0 p-4">
-          <h5 class="mb-0 fw-semibold">Files</h5>
-        </div>
-        <div class="card-body p-4">
-          @for (item of project.files; track $index) {
-          <div
-            class="d-flex align-items-center p-3 rounded-3 bg-light mb-3 hover-shadow"
-            style="cursor: pointer; transition: all 0.2s"
-          >
-            <div class="flex-shrink-0">
-              <i class="bi bi-file-earmark-pdf text-danger" style="font-size: 24px"></i>
+          <div class="row g-3">
+            <!-- <div class="col-12">
+              <small class="text-muted">Project Type</small>
+              <div class="fw-semibold">{{ project.type | titlecase || 'Not specified' }}</div>
+            </div> -->
+            <div class="col-6">
+              <small class="text-muted">Project ID</small>
+              <div class="fw-semibold">#{{ project.id }}</div>
             </div>
-            <div class="flex-grow-1 ms-3">
-              <div class="fw-semibold text-dark mb-1">{{ item.name }}</div>
-              <small class="text-muted">Uploaded {{ item.created_at }}</small>
+            <div class="col-12">
+              <small class="text-muted">Created</small>
+              <div class="fw-semibold">{{ project.created_at | readableDate }}</div>
             </div>
-            <div class="flex-shrink-0">
-              <i class="bi bi-download text-muted"></i>
+            <div class="col-12">
+              <small class="text-muted">Last Updated</small>
+              <div class="fw-semibold">{{ project.updated_at | readableDate }}</div>
             </div>
           </div>
-          }
         </div>
       </div>
+
+
     </div>
   </div>
 </div>

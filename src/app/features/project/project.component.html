@@ -1,36 +1,47 @@
 <div class="container-fluid px-4 py-3">
   @if (project$ | async; as project) {
-    <!-- Project Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <div>
-        <h2 class="mb-1 fw-bold text-body d-flex align-items-center">
-          <i class="bi bi-kanban-fill text-primary me-3" style="font-size: 1.5rem;"></i>
-          {{ project.name }}
-        </h2>
-        <p class="text-muted mb-0">Project Details & Management</p>
-      </div>
-      <div class="d-flex gap-2">
-        <button class="btn btn-primary btn-sm">
-          <i class="bi bi-gear me-1"></i>
-          Settings
-        </button>
-      </div>
+  <!-- Project Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="mb-1 fw-bold text-body d-flex align-items-center">
+        <i class="bi bi-kanban-fill text-primary me-3" style="font-size: 1.5rem"></i>
+        {{ project.name }}
+      </h2>
+      <p class="text-muted mb-0">Project Details & Management</p>
     </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-primary btn-sm">
+        <i class="bi bi-gear me-1"></i>
+        Settings
+      </button>
+    </div>
+  </div>
 
-    <!-- Tabs Section -->
-    <div class="card border-0 shadow-sm">
-      <app-tabs [selectedIndex]="selectedIndex">
-        <app-tab label="Overview">
-          <app-project-overview [project]="project"></app-project-overview>
-        </app-tab>
-        <app-tab [label]="project.type == 1 ? 'Milestones' : 'Work Items'">
-          @if (project.type == 1) {
-            <app-milestones [project]="project"></app-milestones>
-          } @else {
-            <app-work-item-list [project]="project"></app-work-item-list>
-          }
-        </app-tab>
-      </app-tabs>
-    </div>
+  <!-- Tabs Section -->
+  <div class="card border-0 shadow-sm">
+    <app-tabs [selectedIndex]="selectedIndex">
+      <app-tab label="Overview">
+        <app-project-overview [project]="project"></app-project-overview>
+      </app-tab>
+      <app-tab [label]="project.type == 1 ? 'Milestones' : 'Work Items'">
+        @if (project.type == 1) {
+        <app-milestones [project]="project"></app-milestones>
+        } @else {
+        <app-work-item-list [project]="project"></app-work-item-list>
+        }
+      </app-tab>
+      <app-tab label="Messages">
+        <app-messages [project]="project"></app-messages>
+      </app-tab>
+      <app-tab label="Files">
+        <app-files [project]="project"></app-files>
+      </app-tab>
+      @if (project.invoices && project.invoices.length > 0) {
+      <app-tab label="Invoices">
+        <app-invoices [project]="project"></app-invoices>
+      </app-tab>
+      }
+    </app-tabs>
+  </div>
   }
 </div>

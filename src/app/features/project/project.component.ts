@@ -7,6 +7,9 @@ import { TabComponent, TabsComponent } from '../../components/tabs/tabs.componen
 import { ProjectOverviewComponent } from './components/overview/project-overview.component';
 import { MilestonesComponent } from './components/milestones/milestones.component';
 import { WorkItemListComponent } from './components/work-item-list/work-item-list.component';
+import { InvoicesComponent } from "./components/invoice/invoices.component";
+import { MessagesComponent } from "./components/messages/messages.component";
+import { FilesComponent } from "./components/files/files.component";
 
 @Component({
   selector: 'app-project.component',
@@ -17,7 +20,10 @@ import { WorkItemListComponent } from './components/work-item-list/work-item-lis
     TabComponent,
     MilestonesComponent,
     WorkItemListComponent,
-  ],
+    InvoicesComponent,
+    MessagesComponent,
+    FilesComponent
+],
   templateUrl: './project.component.html',
   styleUrl: './project.component.scss',
 })

@@ -1,0 +1,29 @@
+@for (item of project.messages; track $index) {
+<div class="p-4 border-bottom">
+  <div class="d-flex">
+    <div class="flex-shrink-0">
+      <div
+        class="bg-primary rounded-circle d-flex align-items-center justify-content-center"
+        style="width: 40px; height: 40px"
+      >
+        @if(item.author == null) {
+        <span class="text-white fw-bold">{{ (project.owner?.full_name || 'U')[0] }}</span>
+        } @else {
+        <span class="text-white fw-bold">{{ (item.author.full_name || 'U')[0] }}</span>
+        }
+      </div>
+    </div>
+    <div class="flex-grow-1 ms-3">
+      <div class="d-flex align-items-center gap-2 mb-1">
+        @if(item.author == null) {
+        <span class="fw-semibold">{{ project.owner?.full_name || 'Unknown' }}</span>
+        }@else {
+        <span class="fw-semibold">{{ item.author.full_name || 'Unknown' }}</span>
+        }
+        <small class="text-muted">{{ item.created_at | readableDate }}</small>
+      </div>
+      <p class="mb-0 text-dark">{{ item.body }}</p>
+    </div>
+  </div>
+</div>
+}
