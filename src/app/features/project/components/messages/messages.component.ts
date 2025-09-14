@@ -1,9 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { Project } from '../../../../services/project.service';
+import {ReadableDatePipe} from '../../../../shared/pipes/readable-date.pipe';
 
 @Component({
   selector: 'app-messages',
-  imports: [],
+  imports: [
+    ReadableDatePipe
+  ],
   templateUrl: './messages.component.html',
   styleUrl: './messages.component.scss',
 })

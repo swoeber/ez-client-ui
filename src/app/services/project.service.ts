@@ -1,9 +1,9 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { User } from '../store/user.store';
-import { WorkItem } from './work-item.service';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {environment} from '../../environments/environment';
+import {User} from '../store/user.store';
+import {WorkItem} from './work-item.service';
 
 
 export interface Project {
@@ -129,7 +129,8 @@ export interface ProjectQueryParams {
   providedIn: 'root',
 })
 export class ProjectService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   all(params?: ProjectQueryParams): Observable<Project[]> {
     let httpParams = new HttpParams();
@@ -148,6 +149,12 @@ export class ProjectService {
 
   get(id: number): Observable<Project> {
     return this.http.get<Project>(`${environment.api}/projects/${id}`, {
+      withCredentials: true,
+    });
+  }
+
+  updateProject(project: Project) {
+    return this.http.put<Project>(`${environment.api}/projects/${project.id}`, project, {
       withCredentials: true,
     });
   }

@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { Project, ProjectService } from '../../services/project.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -30,19 +30,26 @@ import { FilesComponent } from "./components/files/files.component";
 export class ProjectComponent implements OnInit {
   route: ActivatedRoute = inject(ActivatedRoute);
   projectService: ProjectService = inject(ProjectService);
-  project$: Observable<Project> = new Observable<Project>();
+  private projectSubject = new BehaviorSubject<Project>({} as Project);
+  project$ = this.projectSubject.asObservable();
 
   selectedIndex: number = 0;
 
   ngOnInit() {
     this.route.params.subscribe((params) => {
-      const projectId = +params['id']; // Convert the parameter to a number
-      this.project$ = this.projectService.get(projectId);
+      const projectId = +params['id'];
+      this.projectService.get(projectId).subscribe(project => {
+        this.projectSubject.next(project);
+      });
     });
     this.route.queryParams.subscribe((params) => {
       if (params['tab'] && params['tab'] == 'workorders') {
         this.selectedIndex = 1;
       }
     });
+  }
+
+  onProjectUpdated(updatedProject: Project) {
+    this.projectSubject.next(updatedProject);
   }
 }

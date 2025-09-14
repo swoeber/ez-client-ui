@@ -86,6 +86,7 @@
               <h2 class="work-item-title">{{ item.title }}</h2>
               <div class="status-pill status-{{ item.status }}">
                 <select [(ngModel)]="item.status" class="status-select-modern">
+                  <option value="draft">Draft</option>
                   <option value="todo">Todo</option>
                   <option value="in_progress">In Progress</option>
                   <option value="on_site">On Site</option>
