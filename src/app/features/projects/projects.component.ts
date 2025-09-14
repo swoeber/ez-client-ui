@@ -9,10 +9,11 @@ import {Project, ProjectService} from '../../services/project.service';
 import {Observable} from 'rxjs';
 import {CommonModule} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
+import {ProjectFormComponent} from '../project/components/form/project-form.component';
 
 @Component({
   selector: 'app-project',
-  imports: [DataTableComponent, CommonModule],
+  imports: [DataTableComponent, CommonModule, ProjectFormComponent],
   templateUrl: './projects.component.html',
   styleUrl: './projects.component.scss',
 })
@@ -22,6 +23,9 @@ export class ProjectsComponent implements OnInit {
   router: Router = inject(Router);
 
   projects$: Observable<Project[]> = new Observable<Project[]>();
+  showForm = false;
+  selectedProject?: Project;
+  isEdit = false;
 
   projectColumns: TableColumn[] = [
     {key: 'id', label: 'ID', sortable: true, type: 'number'},
@@ -31,7 +35,8 @@ export class ProjectsComponent implements OnInit {
 
   projectActions: ActionItem[] = [
     {label: 'View', action: 'view', icon: 'eye'},
-    {label: 'Edit', action: 'edit', icon: 'pencil'},
+    {label: 'Edit (Modal)', action: 'edit', icon: 'pencil'},
+    {label: 'Edit (Page)', action: 'edit-page', icon: 'pencil-square'},
     {label: 'Delete', action: 'delete', icon: 'trash', disabled: (item) => item.status === 'active'}
   ];
 
@@ -44,11 +49,17 @@ export class ProjectsComponent implements OnInit {
   };
 
   ngOnInit() {
-    const clientId = this.route.snapshot.queryParams['client_id'];
-    this.projects$ = this.projectService.all(clientId ? {client_id: clientId} : undefined);
+    this.loadProjects();
   }
 
   createProject() {
+    this.selectedProject = undefined;
+    this.isEdit = false;
+    this.showForm = true;
+  }
+
+  createProjectPage() {
+    this.router.navigate(['/workspace/projects/new']);
   }
 
   onAction(event: { action: string, item: Project }) {
@@ -57,11 +68,35 @@ export class ProjectsComponent implements OnInit {
         this.router.navigate(['/workspace/projects/'+event.item.id]);
         break;
       case 'edit':
-        console.log('Editing client:', event.item);
+        this.selectedProject = event.item;
+        this.isEdit = true;
+        this.showForm = true;
+        break;
+      case 'edit-page':
+        this.router.navigate(['/workspace/projects', event.item.id, 'edit']);
         break;
       case 'delete':
-        console.log('Deleting client:', event.item);
+        if (confirm('Are you sure you want to delete this project?')) {
+          console.log('Deleting project:', event.item);
+        }
         break;
     }
+  }
+
+  onSaveProject(projectData: Partial<Project>) {
+    console.log('Saving project:', projectData);
+    // TODO: Implement save logic with ProjectService
+    this.showForm = false;
+    this.loadProjects();
+  }
+
+  onCancelForm() {
+    this.showForm = false;
+    this.selectedProject = undefined;
+  }
+
+  private loadProjects() {
+    const clientId = this.route.snapshot.queryParams['client_id'];
+    this.projects$ = this.projectService.all(clientId ? {client_id: clientId} : undefined);
   }
 }

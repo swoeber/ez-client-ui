@@ -21,6 +21,20 @@ export const routes: Routes = [
           import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
       },
       {
+        path: 'projects/new',
+        loadComponent: () =>
+          import('./features/project/pages/form/project-form-page.component').then(
+            (m) => m.ProjectFormPageComponent
+          ),
+      },
+      {
+        path: 'projects/edit/:id',
+        loadComponent: () =>
+          import('./features/project/pages/form/project-form-page.component').then(
+            (m) => m.ProjectFormPageComponent
+          ),
+      },
+      {
         path: 'projects/:id',
         loadComponent: () =>
           import('./features/project/project.component').then((m) => m.ProjectComponent),
@@ -40,6 +54,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/projects/projects.component').then((m) => m.ProjectsComponent),
       },
+
       {
         path: 'clients',
         loadComponent: () =>

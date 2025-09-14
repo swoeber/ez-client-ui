@@ -1,0 +1,211 @@
+<div class="container-fluid p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h4 class="mb-0 fw-bold">{{ isEdit ? 'Edit Project' : 'New Project' }}</h4>
+      <small class="text-muted">Step {{ currentStep }} of {{ totalSteps }}</small>
+    </div>
+    <button type="button" class="btn-close" (click)="onCancel()"></button>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="mb-4">
+    <div class="progress" style="height: 6px;">
+      <div class="progress-bar" [style.width.%]="(currentStep / totalSteps) * 100"></div>
+    </div>
+    <div class="d-flex justify-content-between mt-2">
+      <small class="text-muted" [class.text-primary]="currentStep >= 1" [class.fw-bold]="currentStep >= 1">Basic Info</small>
+      <small class="text-muted" [class.text-primary]="currentStep >= 2" [class.fw-bold]="currentStep >= 2">Client</small>
+      <small class="text-muted" [class.text-primary]="currentStep >= 3" [class.fw-bold]="currentStep >= 3">Location</small>
+    </div>
+  </div>
+
+  <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+    <!-- Step 1: Basic Information -->
+    @if (currentStep === 1) {
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-0 p-4">
+        <h5 class="mb-0 fw-semibold">Basic Information</h5>
+      </div>
+      <div class="card-body p-4">
+        <div class="row g-3">
+          <div class="col-md-8">
+            <label class="form-label">Project Name *</label>
+            <input type="text" class="form-control" formControlName="name" placeholder="Enter project name">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Status</label>
+            <select class="form-select" formControlName="status">
+              @for (option of statusOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Start Date</label>
+            <input type="date" class="form-control" formControlName="starts_on">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Due Date</label>
+            <input type="date" class="form-control" formControlName="due_on">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Assignee</label>
+            <select class="form-select" formControlName="assignee_id">
+              <option value="">Select assignee</option>
+              @for (user of users; track user.id) {
+              <option [value]="user.id">{{ user.full_name }}</option>
+              }
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Summary</label>
+            <textarea class="form-control" rows="3" formControlName="summary" placeholder="Project description..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Step 2: Client Selection/Creation -->
+    @if (currentStep === 2) {
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-0 p-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="mb-0 fw-semibold">Client Information</h5>
+          @if (!showClientForm) {
+          <button type="button" class="btn btn-outline-primary btn-sm" (click)="toggleClientForm()">
+            <i class="bi bi-plus"></i> Add New Client
+          </button>
+          }
+        </div>
+      </div>
+      <div class="card-body p-4">
+        @if (!showClientForm) {
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label">Select Client *</label>
+            <select class="form-select" formControlName="client_id">
+              <option value="">Choose a client</option>
+              @for (client of clients; track client.id) {
+              <option [value]="client.id">{{ client.company || (client.first_name + ' ' + client.last_name) }}</option>
+              }
+            </select>
+          </div>
+        </div>
+        } @else {
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="mb-0">Create New Client</h6>
+          <button type="button" class="btn btn-outline-secondary btn-sm" (click)="toggleClientForm()">
+            <i class="bi bi-arrow-left"></i> Back to Selection
+          </button>
+        </div>
+        <div class="row g-3" [formGroup]="clientForm">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">First Name *</label>
+            <input type="text" class="form-control" formControlName="first_name" placeholder="Enter first name">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Last Name *</label>
+            <input type="text" class="form-control" formControlName="last_name" placeholder="Enter last name">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Email *</label>
+            <input type="email" class="form-control" formControlName="email" placeholder="Enter email address">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Phone</label>
+            <input type="tel" class="form-control" formControlName="phone" placeholder="Enter phone number">
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-semibold">Company</label>
+            <input type="text" class="form-control" formControlName="company" placeholder="Enter company name">
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-semibold">Website</label>
+            <input type="url" class="form-control" formControlName="website" placeholder="https://example.com">
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-semibold">Notes</label>
+            <textarea class="form-control" rows="3" formControlName="notes" placeholder="Additional notes about the client"></textarea>
+          </div>
+          <div class="col-12">
+            <button type="button" class="btn btn-success" (click)="createClient()" [disabled]="clientForm.invalid">
+              <i class="bi bi-check me-2"></i>
+              Create & Select Client
+            </button>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    }
+
+    <!-- Step 3: Service Address -->
+    @if (currentStep === 3) {
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-0 p-4">
+        <h5 class="mb-0 fw-semibold">Service Location</h5>
+      </div>
+      <div class="card-body p-4">
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label">Address Line 1</label>
+            <input type="text" class="form-control" formControlName="service_address_line1" placeholder="Street address">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Address Line 2</label>
+            <input type="text" class="form-control" formControlName="service_address_line2" placeholder="Apartment, suite, etc.">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">City</label>
+            <input type="text" class="form-control" formControlName="service_city" placeholder="City">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">State</label>
+            <input type="text" class="form-control" formControlName="service_state" placeholder="State">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Postal Code</label>
+            <input type="text" class="form-control" formControlName="service_postal_code" placeholder="ZIP code">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Country</label>
+            <input type="text" class="form-control" formControlName="service_country" placeholder="Country">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Place Name</label>
+            <input type="text" class="form-control" formControlName="service_place_name" placeholder="Building or landmark name">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Access Notes</label>
+            <textarea class="form-control" rows="2" formControlName="service_access_notes" placeholder="Special instructions for accessing the location..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Step Navigation -->
+    <div class="d-flex justify-content-between mt-4">
+      <div>
+        @if (currentStep > 1) {
+        <button type="button" class="btn btn-outline-secondary" (click)="prevStep()">
+          <i class="bi bi-arrow-left me-2"></i>Previous
+        </button>
+        }
+      </div>
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">Cancel</button>
+        @if (currentStep < totalSteps) {
+        <button type="button" class="btn btn-primary" (click)="nextStep()" [disabled]="!canProceed()">
+          Next<i class="bi bi-arrow-right ms-2"></i>
+        </button>
+        } @else {
+        <button type="submit" class="btn btn-success" [disabled]="projectForm.invalid">
+          <i class="bi bi-check me-2"></i>{{ isEdit ? 'Update Project' : 'Create Project' }}
+        </button>
+        }
+      </div>
+    </div>
+  </form>
+</div>

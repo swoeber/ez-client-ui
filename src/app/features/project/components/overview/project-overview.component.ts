@@ -7,17 +7,16 @@ import {
   ChangeDetectorRef,
   inject,
   Output,
-  EventEmitter
+  EventEmitter,
 } from '@angular/core';
-import {Project, ProjectService} from '../../../../services/project.service';
-import {ReadableDatePipe} from '../../../../shared/pipes/readable-date.pipe';
-import {FormsModule} from '@angular/forms';
-import {UserService} from '../../../../services/user.service';
-import {User} from '../../../../store/user.store';
-import {CommonModule} from '@angular/common';
-import {LocationComponent} from '../location/location.component';
+import { Project, ProjectService } from '../../../../services/project.service';
+import { ReadableDatePipe } from '../../../../shared/pipes/readable-date.pipe';
+import { FormsModule } from '@angular/forms';
+import { UserService } from '../../../../services/user.service';
+import { User } from '../../../../store/user.store';
+import { CommonModule } from '@angular/common';
+import { LocationComponent } from '../location/location.component';
 import { DateTime } from 'luxon';
-
 
 @Component({
   selector: 'app-project-overview',
@@ -40,12 +39,12 @@ export class ProjectOverviewComponent implements OnInit, OnChanges {
   editingField: string | null = null;
 
   statusOptions = [
-    {value: 'draft', label: 'Draft'},
-    {value: 'todo', label: 'To Do'},
-    {value: 'in_progress', label: 'In Progress'},
-    {value: 'on_site', label: 'On Site'},
-    {value: 'done', label: 'Done'},
-    {value: 'on_hold', label: 'On Hold'},
+    { value: 'draft', label: 'Draft' },
+    { value: 'todo', label: 'To Do' },
+    { value: 'in_progress', label: 'In Progress' },
+    { value: 'on_site', label: 'On Site' },
+    { value: 'done', label: 'Done' },
+    { value: 'on_hold', label: 'On Hold' },
   ];
 
   ngOnInit() {
@@ -68,7 +67,7 @@ export class ProjectOverviewComponent implements OnInit, OnChanges {
 
   private setInitialAssignee() {
     if (this.project.assignee_id) {
-      const assignee = this.accountMembers.find(member => member.id === this.project.assignee_id);
+      const assignee = this.accountMembers.find((member) => member.id === this.project.assignee_id);
       if (assignee) {
         this.project.assignee = assignee;
         this.assigneeSearch = assignee.full_name;
@@ -117,7 +116,7 @@ export class ProjectOverviewComponent implements OnInit, OnChanges {
   }
 
   getStatusLabel(): string {
-    const option = this.statusOptions.find(opt => opt.value === this.project.status);
+    const option = this.statusOptions.find((opt) => opt.value === this.project.status);
     return option?.label || 'Select status';
   }
 
@@ -173,7 +172,11 @@ export class ProjectOverviewComponent implements OnInit, OnChanges {
     this.updateDateTime('due_on', null, event.target.value);
   }
 
-  private updateDateTime(field: 'starts_on' | 'due_on', newDate: string | null, newTime: string | null) {
+  private updateDateTime(
+    field: 'starts_on' | 'due_on',
+    newDate: string | null,
+    newTime: string | null
+  ) {
     const currentTimestamp = this.project[field];
     let dt: DateTime;
 
@@ -205,7 +208,7 @@ export class ProjectOverviewComponent implements OnInit, OnChanges {
       },
       error: (error: any) => {
         console.error('Error updating project:', error);
-      }
+      },
     });
   }
 }

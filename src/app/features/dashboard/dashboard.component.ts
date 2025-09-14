@@ -99,7 +99,9 @@ export class DashboardComponent implements OnInit {
 
   openOnboarding() {}
 
-  createProject() {}
+  createProject() {
+    this.router.navigate(['workspace/projects/new']);
+  }
 
   inviteClient() {}
 
@@ -128,6 +130,7 @@ export class DashboardComponent implements OnInit {
         break;
       case 'edit':
         console.log('Editing project:', event.item);
+        this.router.navigateByUrl(`workspace/projects/edit/${event.item.id}`);
         break;
       case 'archive':
         console.log('Archiving project:', event.item);

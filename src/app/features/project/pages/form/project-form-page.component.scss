@@ -1,0 +1,12 @@
+// Consistent with app styling
+.card {
+  transition: all 0.2s ease-in-out;
+}
+
+.btn {
+  transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}

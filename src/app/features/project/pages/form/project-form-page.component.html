@@ -1,0 +1,41 @@
+<div class="container-fluid px-4 py-3">
+  <!-- Header Section -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="mb-1 fw-bold text-dark">
+        <i class="bi bi-kanban-fill text-primary me-2"></i>
+        {{ isEdit ? 'Edit Project' : 'New Project' }}
+      </h3>
+      <p class="text-muted mb-0">{{ isEdit ? 'Update project information' : 'Create a new project' }}</p>
+    </div>
+    <button 
+      class="btn btn-outline-secondary"
+      (click)="onCancel()">
+      <i class="bi bi-arrow-left me-2"></i>
+      Back to Projects
+    </button>
+  </div>
+
+  <!-- Form Content -->
+  @if (loading) {
+  <div class="card border-0 shadow-sm">
+    <div class="card-body text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="text-muted mt-3 mb-0">Loading project...</p>
+    </div>
+  </div>
+  } @else {
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+      <app-project-form
+        [project]="project"
+        [isEdit]="isEdit"
+        (save)="onSaveProject($event)"
+        (cancel)="onCancel()">
+      </app-project-form>
+    </div>
+  </div>
+  }
+</div>

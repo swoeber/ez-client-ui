@@ -1,6 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { AuthService } from '../../../../services/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { UserStore } from '../../../../store/user.store';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
@@ -8,7 +8,7 @@ import { ThemeService } from '../../../../services/theme.service';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })

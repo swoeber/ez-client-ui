@@ -7,9 +7,9 @@ import { TabComponent, TabsComponent } from '../../components/tabs/tabs.componen
 import { ProjectOverviewComponent } from './components/overview/project-overview.component';
 import { MilestonesComponent } from './components/milestones/milestones.component';
 import { WorkItemListComponent } from './components/work-item-list/work-item-list.component';
-import { InvoicesComponent } from "./components/invoice/invoices.component";
-import { MessagesComponent } from "./components/messages/messages.component";
-import { FilesComponent } from "./components/files/files.component";
+import { InvoicesComponent } from './components/invoice/invoices.component';
+import { MessagesComponent } from './components/messages/messages.component';
+import { FilesComponent } from './components/files/files.component';
 
 @Component({
   selector: 'app-project.component',
@@ -22,8 +22,8 @@ import { FilesComponent } from "./components/files/files.component";
     WorkItemListComponent,
     InvoicesComponent,
     MessagesComponent,
-    FilesComponent
-],
+    FilesComponent,
+  ],
   templateUrl: './project.component.html',
   styleUrl: './project.component.scss',
 })
@@ -38,7 +38,7 @@ export class ProjectComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe((params) => {
       const projectId = +params['id'];
-      this.projectService.get(projectId).subscribe(project => {
+      this.projectService.get(projectId).subscribe((project) => {
         this.projectSubject.next(project);
       });
     });
