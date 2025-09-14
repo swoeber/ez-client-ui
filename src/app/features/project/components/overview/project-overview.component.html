@@ -17,6 +17,7 @@
 
       <!-- Service Address -->
       <app-location [project]="project"></app-location>
+      <app-messages [project]="project"></app-messages>
     </div>
 
     <!-- Sidebar -->
@@ -61,14 +62,15 @@
             @if (isEditing('starts_on')) {
               <div class="row g-2">
                 <div class="col-7">
-                  <input type="date" class="form-control" [value]="getDateValue(project.starts_on)" (blur)="onStartDateBlur($event); stopEditing()" />
+                  <input type="date" class="form-control" [value]="getDateValue(project.starts_on)" (blur)="onStartDateBlur($event)" />
                 </div>
                 <div class="col-5">
-                  <input type="time" class="form-control" [value]="getTimeValue(project.starts_on)" (blur)="onStartTimeBlur($event); stopEditing()" />
+                  <input type="time" class="form-control" [value]="getTimeValue(project.starts_on)" (blur)="onStartTimeBlur($event)" />
                 </div>
               </div>
-              <div>
-                <button class="btn btn-link link-brand" (click)="stopEditing()">Cancel</button>
+              <div class="d-flex flex-row gap-1 mt-1">
+                <a class="link-brand fst-italic" (click)="updateStartTimestamp()">Save</a>
+                <a class="link-brand fst-italic" (click)="stopEditing()">Cancel</a>
               </div>
             } @else {
               <div class="form-control-plaintext fw-medium text-dark" (click)="startEditing('starts_on')" style="cursor: pointer; padding: 8px 12px; border: 1px solid transparent; border-radius: 0.375rem;"
@@ -87,14 +89,15 @@
             @if (isEditing('due_on')) {
               <div class="row g-2">
                 <div class="col-7">
-                  <input type="date" class="form-control" [value]="getDateValue(project.due_on)" (blur)="onDueDateBlur($event); stopEditing()" />
+                  <input type="date" class="form-control" [value]="getDateValue(project.due_on)" (blur)="onDueDateBlur($event)" />
                 </div>
                 <div class="col-5">
-                  <input type="time" class="form-control" [value]="getTimeValue(project.due_on)" (blur)="onDueTimeBlur($event); stopEditing()" />
+                  <input type="time" class="form-control" [value]="getTimeValue(project.due_on)" (blur)="onDueTimeBlur($event)" />
                 </div>
               </div>
-              <div>
-                <button class="btn btn-link" (click)="stopEditing()">Cancel</button>
+              <div class="d-flex flex-row gap-1 mt-1">
+                <a class="link-brand fst-italic" (click)="updateDueTimestamp()">Save</a>
+                <a class="link-brand fst-italic" (click)="stopEditing()">Cancel</a>
               </div>
             } @else {
               <div class="form-control-plaintext fw-medium text-dark" (click)="startEditing('due_on')" style="cursor: pointer; padding: 8px 12px; border: 1px solid transparent; border-radius: 0.375rem;"
@@ -117,7 +120,7 @@
                 [(ngModel)]="assigneeSearch"
                 (input)="onAssigneeSearch()"
                 (focus)="onAssigneeFocus()"
-                (blur)="onAssigneeBlur(); stopEditing()"
+                (blur)="onAssigneeBlur()"
                 placeholder="Search members..."
               />
               @if (showAssigneeDropdown && filteredMembers.length > 0) {
@@ -148,6 +151,10 @@
             <div class="col-12">
               <small class="text-muted d-block">Created</small>
               <span class="fw-medium">{{ project.created_at | readableDate }}</span>
+            </div>
+            <div class="col-12">
+              <small class="text-muted d-block">Created By</small>
+              <span class="fw-medium">{{ project.owner!.full_name }}</span>
             </div>
             <div class="col-12">
               <small class="text-muted d-block">Last Updated</small>

@@ -28,7 +28,7 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'projects/edit/:id',
+        path: 'projects/:id/edit',
         loadComponent: () =>
           import('./features/project/pages/form/project-form-page.component').then(
             (m) => m.ProjectFormPageComponent

@@ -130,7 +130,7 @@ export class DashboardComponent implements OnInit {
         break;
       case 'edit':
         console.log('Editing project:', event.item);
-        this.router.navigateByUrl(`workspace/projects/edit/${event.item.id}`);
+        this.router.navigateByUrl(`workspace/projects/${event.item.id}/edit`);
         break;
       case 'archive':
         console.log('Archiving project:', event.item);

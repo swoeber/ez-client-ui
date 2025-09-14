@@ -1,18 +1,30 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+  FormsModule,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Project } from '../../../../services/project.service';
+import { Project, ProjectService } from '../../../../services/project.service';
 import { User } from '../../../../store/user.store';
 import { UserService } from '../../../../services/user.service';
 import { Client, ClientService } from '../../../../services/client.service';
+import { DateTime } from 'luxon';
 
 @Component({
   selector: 'app-project-form',
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './project-form.component.html',
-  styleUrl: './project-form.component.scss'
+  styleUrl: './project-form.component.scss',
 })
 export class ProjectFormComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private userService = inject(UserService);
+  private clientService = inject(ClientService);
+  private projectService = inject(ProjectService);
+
   @Input() project?: Project;
   @Input() isEdit = false;
   @Output() save = new EventEmitter<Partial<Project>>();
@@ -27,6 +39,7 @@ export class ProjectFormComponent implements OnInit {
   totalSteps = 3;
 
   statusOptions = [
+    { value: 'draft', label: 'Draft' },
     { value: 'todo', label: 'To Do' },
     { value: 'not_started', label: 'Not Started' },
     { value: 'en_route', label: 'En Route' },
@@ -38,14 +51,10 @@ export class ProjectFormComponent implements OnInit {
     { value: 'done', label: 'Done' },
     { value: 'waiting_on_client', label: 'Waiting on Client' },
     { value: 'blocked', label: 'Blocked' },
-    { value: 'canceled', label: 'Canceled' }
+    { value: 'canceled', label: 'Canceled' },
   ];
 
-  constructor(
-    private fb: FormBuilder,
-    private userService: UserService,
-    private clientService: ClientService
-  ) {
+  constructor() {
     this.clientForm = this.fb.group({
       first_name: ['', Validators.required],
       last_name: ['', Validators.required],
@@ -53,9 +62,9 @@ export class ProjectFormComponent implements OnInit {
       phone: [''],
       company: [''],
       website: [''],
-      notes: ['']
+      notes: [''],
     });
-    
+
     this.projectForm = this.fb.group({
       name: ['', Validators.required],
       status: ['todo', Validators.required],
@@ -71,7 +80,7 @@ export class ProjectFormComponent implements OnInit {
       service_postal_code: [''],
       service_country: [''],
       service_place_name: [''],
-      service_access_notes: ['']
+      service_access_notes: [''],
     });
   }
 
@@ -84,13 +93,13 @@ export class ProjectFormComponent implements OnInit {
   }
 
   loadUsers() {
-    this.userService.getAccountMembers().subscribe(users => {
+    this.userService.getAccountMembers().subscribe((users) => {
       this.users = users;
     });
   }
 
   loadClients() {
-    this.clientService.getClients().subscribe(clients => {
+    this.clientService.getClients().subscribe((clients) => {
       this.clients = clients;
     });
   }
@@ -102,9 +111,70 @@ export class ProjectFormComponent implements OnInit {
     }
   }
 
+  getDateValue(timestamp: string | null | undefined): string {
+    if (!timestamp) return '';
+    return DateTime.fromISO(timestamp).toFormat('yyyy-MM-dd');
+  }
+
+  getTimeValue(timestamp: string | null | undefined): string {
+    if (!timestamp) return '';
+    return DateTime.fromISO(timestamp).toFormat('HH:mm');
+  }
+
+  onStartDateBlur(event: any) {
+    this.updateDateTime('starts_on', event.target.value, null);
+  }
+  onStartTimeBlur(event: any) {
+    this.updateDateTime('starts_on', null, event.target.value);
+  }
+
+  onDueDateBlur(event: any) {
+    this.updateDateTime('due_on', event.target.value, null);
+  }
+  onDueTimeBlur(event: any) {
+    this.updateDateTime('due_on', null, event.target.value);
+  }
+
+  private updateDateTime(
+    field: 'starts_on' | 'due_on',
+    newDate: string | null,
+    newTime: string | null
+  ) {
+    const currentTimestamp = this.project![field];
+    let dt: DateTime;
+
+    if (currentTimestamp) {
+      dt = DateTime.fromISO(currentTimestamp);
+    } else {
+      dt = DateTime.now();
+    }
+
+    if (newDate !== null) {
+      const [year, month, day] = newDate.split('-').map(Number);
+      dt = dt.set({ year, month, day });
+    }
+
+    if (newTime !== null) {
+      const [hour, minute] = newTime.split(':').map(Number);
+      dt = dt.set({ hour, minute, second: 0, millisecond: 0 });
+    }
+
+    if(field === 'due_on') {
+      this.projectForm.patchValue({
+        due_on: dt.toUTC().toISO(),
+      });
+    }
+
+    if(field === 'starts_on') {
+      this.projectForm.patchValue({
+        starts_on: dt.toUTC().toISO(),
+      });
+    }
+  }
+
   createClient() {
     if (this.clientForm.valid) {
-      this.clientService.createClient(this.clientForm.value).subscribe(newClient => {
+      this.clientService.createClient(this.clientForm.value).subscribe((newClient) => {
         this.clients.push(newClient);
         this.projectForm.patchValue({ client_id: newClient.id });
         this.showClientForm = false;
@@ -127,7 +197,8 @@ export class ProjectFormComponent implements OnInit {
 
   onSubmit() {
     if (this.projectForm.valid) {
-      this.save.emit(this.projectForm.value);
+      // this.save.emit(this.projectForm.value);
+      this.saveProject(this.projectForm.value);
     }
   }
 
@@ -141,6 +212,30 @@ export class ProjectFormComponent implements OnInit {
         return true;
       default:
         return false;
+    }
+  }
+
+  saveProject(projectData: Partial<Project>) {
+    console.log('Saving project:', projectData);
+    // TODO: Implement save logic with ProjectService
+    if (this.isEdit && this.project) {
+      this.projectService.updateProject({ ...this.project, ...projectData }).subscribe({
+        next: (project) => {
+          this.save.emit(project);
+        },
+        error: (error) => {
+          console.error('Error updating project:', error);
+        },
+      });
+    } else {
+      this.projectService.create(projectData).subscribe({
+        next: (project) => {
+          this.save.emit(project);
+        },
+        error: (error) => {
+          console.error('Error creating project:', error);
+        }
+      });
     }
   }
 

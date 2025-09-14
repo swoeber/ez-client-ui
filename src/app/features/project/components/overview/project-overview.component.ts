@@ -17,10 +17,11 @@ import { User } from '../../../../store/user.store';
 import { CommonModule } from '@angular/common';
 import { LocationComponent } from '../location/location.component';
 import { DateTime } from 'luxon';
+import { MessagesComponent } from '../messages/messages.component';
 
 @Component({
   selector: 'app-project-overview',
-  imports: [ReadableDatePipe, FormsModule, CommonModule, LocationComponent],
+  imports: [ReadableDatePipe, FormsModule, CommonModule, LocationComponent, MessagesComponent],
   templateUrl: './project-overview.component.html',
   styleUrl: './project-overview.component.scss',
 })
@@ -32,6 +33,7 @@ export class ProjectOverviewComponent implements OnInit, OnChanges {
   @Input() project: Project = {} as Project;
   @Output() projectUpdated = new EventEmitter<Project>();
 
+  projectStage: Project = {} as Project;
   accountMembers: User[] = [];
   filteredMembers: User[] = [];
   assigneeSearch = '';
@@ -147,23 +149,6 @@ export class ProjectOverviewComponent implements OnInit, OnChanges {
     this.updateDateTime('starts_on', null, event.target.value);
   }
 
-  // setTimeValue(timeStr: string, originalTimestamp: string | null | undefined): string | null {
-  //   if (!timeStr || !originalTimestamp) return null;
-  //
-  //   // Parse the original timestamp
-  //   const date = new Date(originalTimestamp);
-  //
-  //   // Split "HH:mm"
-  //   const [hours, minutes] = timeStr.split(':').map(Number);
-  //
-  //   // Apply local time
-  //   date.setHours(hours, minutes, 0, 0);
-  //
-  //   // Return back in UTC (ISO string) or as epoch
-  //   return date.toISOString(); // always UTC
-  //   // or: return Math.floor(date.getTime() / 1000); // if you want Unix seconds
-  // }
-
   onDueDateBlur(event: any) {
     this.updateDateTime('due_on', event.target.value, null);
   }
@@ -196,14 +181,28 @@ export class ProjectOverviewComponent implements OnInit, OnChanges {
       dt = dt.set({ hour, minute, second: 0, millisecond: 0 });
     }
 
-    this.project[field] = dt.toUTC().toISO();
-    this.updateProject();
+    this.projectStage[field] = dt.toUTC().toISO();
+  }
+
+  public updateDueTimestamp() {
+    if (this.projectStage['due_on']) {
+      this.project['due_on'] = this.projectStage['due_on'];
+      this.updateProject();
+    }
+    this.stopEditing();
+  }
+
+  public updateStartTimestamp() {
+    if (this.projectStage['starts_on']) {
+      this.project['starts_on'] = this.projectStage['starts_on'];
+      this.updateProject();
+    }
+    this.stopEditing();
   }
 
   private updateProject() {
     this.projectService.updateProject(this.project).subscribe({
       next: (updatedProject: Project) => {
-        console.log(updatedProject);
         this.projectUpdated.emit(updatedProject);
       },
       error: (error: any) => {
