@@ -18,8 +18,8 @@ export class ProfileComponent implements OnInit {
   selectedFile: File | null = null;
   isLoading = false;
 
-  prefixOptions = ['', 'Mr.', 'Mrs.', 'Ms.', 'Dr.', 'Prof.', 'Rev.'];
-  suffixOptions = ['', 'Jr.', 'Sr.', 'II', 'III', 'IV', 'PhD', 'MD', 'Esq.'];
+  prefixOptions = [null, 'Mr.', 'Mrs.', 'Ms.', 'Dr.', 'Prof.', 'Rev.'];
+  suffixOptions = [null, 'Jr.', 'Sr.', 'II', 'III', 'IV', 'PhD', 'MD', 'Esq.'];
 
   constructor(
     private fb: FormBuilder,

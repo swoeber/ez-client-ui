@@ -36,12 +36,22 @@ export class DashboardComponent implements OnInit {
     { key: 'email', label: 'Email' },
   ];
 
+  // projectColumns: TableColumn[] = [
+  //   { key: 'id', label: 'ID', sortable: true, type: 'number' },
+  //   { key: 'name', label: 'Project Name', sortable: true },
+  //   { key: 'status', label: 'Status', sortable: true },
+  //   { key: 'due_on', label: 'Due On', sortable: true, type: 'date' },
+  // ];
+
   projectColumns: TableColumn[] = [
-    { key: 'id', label: 'ID', sortable: true, type: 'number' },
-    { key: 'name', label: 'Project Name', sortable: true },
-    { key: 'status', label: 'Status', sortable: true },
-    { key: 'due_on', label: 'Due On', sortable: true, type: 'date' },
+    {key: 'name', label: 'Project Name', sortable: true, clickable: true},
+    {key: 'status', label: 'Status', sortable: true, type: 'badge'},
+    {key: 'assignee.full_name', label: 'Assignee', sortable: true},
+    {key: 'starts_on', label: 'Start Date', sortable: true, type: 'date'},
+    {key: 'due_on', label: 'Due Date', sortable: true, type: 'date'},
+    // {key: 'created_at', label: 'Created', sortable: true, type: 'date'}
   ];
+
 
   // Configure Client options
   tableOptions: TableOptions = {
@@ -108,6 +118,12 @@ export class DashboardComponent implements OnInit {
   goFiles() {}
 
   newInvoice() {}
+
+  onColumnClick(event: { column: string, item: Project }) {
+    if (event.column === 'name') {
+      this.router.navigate(['/workspace/projects/' + event.item.id]);
+    }
+  }
 
   onClientAction(event: { action: string; item: any }) {
     switch (event.action) {

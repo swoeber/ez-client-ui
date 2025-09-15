@@ -74,6 +74,7 @@
               [options]="tableOptions"
               [actions]="projectActions"
               (actionClicked)="onProjectAction($event)"
+              (columnClicked)="onColumnClick($event)"
             ></app-data-table>
           } @else {
             <div class="text-center py-5">

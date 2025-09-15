@@ -1,132 +1,135 @@
-<div class="container-fluid px-4 py-3">
-  <!-- Header Section -->
-  <div class="mb-4">
-    <h3 class="mb-1 fw-bold text-dark">
-      <i class="bi bi-person-circle text-primary me-2"></i>
-      Profile
-    </h3>
-    <p class="text-muted mb-0">Manage your account information</p>
-  </div>
-
-  <div class="row g-4">
-    <!-- Profile Card -->
-    <div class="col-lg-4">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body text-center p-4">
-          <!-- Avatar -->
-          <div class="mb-3 position-relative">
-            @if (profileImage || user?.avatar_url) {
-            <img [src]="profileImage || user?.avatar_url" class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;" alt="Profile">
-            } @else {
-            <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center" 
-                 style="width: 80px; height: 80px;">
-              <span class="text-white fw-bold" style="font-size: 2rem;">{{ getInitials() }}</span>
-            </div>
-            }
-            
-            <!-- Image Upload Controls -->
-            <div class="mt-3">
-              <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" class="d-none">
-              <button type="button" class="btn btn-outline-primary btn-sm me-2" (click)="fileInput.click()" [disabled]="isLoading">
-                @if (isLoading) {
-                <span class="spinner-border spinner-border-sm me-1"></span>
-                } @else {
-                <i class="bi bi-camera me-1"></i>
-                }
-                {{ (profileImage || user?.avatar_url) ? 'Change' : 'Upload' }}
-              </button>
-              @if (profileImage || user?.avatar_url) {
-              <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeProfileImage()" [disabled]="isLoading">
-                <i class="bi bi-trash me-1"></i>
-                Remove
-              </button>
-              }
-            </div>
-          </div>
-          
-          <!-- User Info -->
-          @if (user) {
-          <h5 class="mb-1 fw-bold">{{ user.full_name }}</h5>
-          <p class="text-muted mb-3">{{ user.email }}</p>
-          
-          <!-- Roles -->
-          @if (user.roles && user.roles.length > 0) {
-          <div class="mb-3">
-            @for (role of user.roles; track role) {
-            <span class="badge bg-secondary me-1">{{ role | titlecase }}</span>
-            }
-          </div>
-          }
-          
-          <!-- User ID -->
-          <small class="text-muted">User ID: #{{ user.id }}</small>
-          }
+<div class="profile-container">
+  <!-- Hero Header -->
+  <div class="profile-hero">
+    <div class="hero-content">
+      <div class="hero-avatar">
+        @if (profileImage || user?.avatar_url) {
+        <img [src]="profileImage || user?.avatar_url" class="avatar-image" alt="Profile">
+        } @else {
+        <div class="avatar-placeholder">
+          <span class="avatar-initials">{{ getInitials() }}</span>
+        </div>
+        }
+        <div class="avatar-overlay">
+          <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" class="d-none">
+          <button type="button" class="btn-avatar-edit" (click)="fileInput.click()" [disabled]="isLoading">
+            <i class="bi bi-camera"></i>
+          </button>
         </div>
       </div>
-    </div>
-
-    <!-- Profile Form -->
-    <div class="col-lg-8">
-      <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white border-0 p-4">
-          <h5 class="mb-0 fw-semibold">
-            <i class="bi bi-info-circle text-info me-2"></i>
-            Personal Information
-          </h5>
+      <div class="hero-info">
+        @if (user) {
+        <h1 class="hero-name">{{ user.full_name }}</h1>
+        <p class="hero-email">{{ user.email }}</p>
+        @if (user.roles && user.roles.length > 0) {
+        <div class="hero-roles">
+          @for (role of user.roles; track role) {
+          <span class="role-badge">{{ role | titlecase }}</span>
+          }
         </div>
-        <div class="card-body p-4">
-          <form [formGroup]="profileForm" (ngSubmit)="onSave()">
-            <div class="row g-3">
-              <!-- Name Fields -->
-              <div class="col-md-2">
-                <label class="form-label">Prefix</label>
-                <select class="form-select" formControlName="prefix">
-                  @for (option of prefixOptions; track option) {
-                  <option [value]="option">{{ option || 'None' }}</option>
-                  }
-                </select>
-              </div>
-              <div class="col-md-5">
-                <label class="form-label">First Name *</label>
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  formControlName="first_name"
-                  placeholder="Enter first name">
-              </div>
-              <div class="col-md-3">
-                <label class="form-label">Last Name *</label>
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  formControlName="last_name"
-                  placeholder="Enter last name">
-              </div>
-              <div class="col-md-2">
-                <label class="form-label">Suffix</label>
-                <select class="form-select" formControlName="suffix">
-                  @for (option of suffixOptions; track option) {
-                  <option [value]="option">{{ option || 'None' }}</option>
-                  }
-                </select>
-              </div>
+        }
+        <div class="hero-meta">
+          <span class="meta-item">
+            <i class="bi bi-calendar-check"></i>
+            Member since Jan 2024
+          </span>
+          <span class="meta-item">
+            <i class="bi bi-hash"></i>
+            ID: {{ user.id }}
+          </span>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
 
-              <!-- Email -->
-              <div class="col-12">
-                <label class="form-label">Email Address *</label>
-                <input 
-                  type="email" 
-                  class="form-control" 
-                  formControlName="email"
-                  placeholder="Enter email address">
-              </div>
+  <div class="profile-content">
+    <div class="row g-4">
+      <!-- Quick Stats -->
+      <!-- <div class="col-12">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon bg-primary">
+              <i class="bi bi-briefcase"></i>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-number">12</h3>
+              <p class="stat-label">Active Projects</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon bg-success">
+              <i class="bi bi-check-circle"></i>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-number">48</h3>
+              <p class="stat-label">Completed Tasks</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon bg-info">
+              <i class="bi bi-people"></i>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-number">8</h3>
+              <p class="stat-label">Team Members</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon bg-warning">
+              <i class="bi bi-clock"></i>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-number">156h</h3>
+              <p class="stat-label">Hours Logged</p>
+            </div>
+          </div>
+        </div>
+      </div> -->
 
-              <!-- Action Buttons -->
-              <div class="col-12 pt-3">
-                <button 
-                  type="submit" 
-                  class="btn btn-primary"
-                  [disabled]="profileForm.invalid || isLoading">
+      <!-- Personal Information -->
+      <div class="col-lg-8">
+        <div class="profile-card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="bi bi-person"></i>
+              Personal Information
+            </h2>
+          </div>
+          <div class="card-body">
+            <form [formGroup]="profileForm" (ngSubmit)="onSave()">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Prefix</label>
+                  <select class="form-control" formControlName="prefix">
+                    @for (option of prefixOptions; track option) {
+                    <option [value]="option">{{ option || 'None' }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="form-group span-2">
+                  <label class="form-label">First Name *</label>
+                  <input type="text" class="form-control" formControlName="first_name" placeholder="Enter first name">
+                </div>
+                <div class="form-group span-2">
+                  <label class="form-label">Last Name *</label>
+                  <input type="text" class="form-control" formControlName="last_name" placeholder="Enter last name">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Suffix</label>
+                  <select class="form-control" formControlName="suffix">
+                    @for (option of suffixOptions; track option) {
+                    <option [value]="option">{{ option || 'None' }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="form-group span-full">
+                  <label class="form-label">Email Address *</label>
+                  <input type="email" class="form-control" formControlName="email" placeholder="Enter email address">
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary" [disabled]="profileForm.invalid || isLoading">
                   @if (isLoading) {
                   <span class="spinner-border spinner-border-sm me-2"></span>
                   } @else {
@@ -134,44 +137,98 @@
                   }
                   Save Changes
                 </button>
+                @if (profileImage || user?.avatar_url) {
+                <button type="button" class="btn btn-outline-danger" (click)="removeProfileImage()" [disabled]="isLoading">
+                  <i class="bi bi-trash me-1"></i>
+                  Remove Photo
+                </button>
+                }
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
 
-      <!-- Account Settings -->
-      <div class="card border-0 shadow-sm mt-4">
-        <div class="card-header bg-white border-0 p-4">
-          <h5 class="mb-0 fw-semibold">
-            <i class="bi bi-shield-lock text-warning me-2"></i>
-            Account Security
-          </h5>
-        </div>
-        <div class="card-body p-4">
-          <div class="row g-3">
-            <div class="col-md-6">
-              <div class="d-flex align-items-center justify-content-between p-3 border rounded">
-                <div>
-                  <h6 class="mb-1">Password</h6>
+      <!-- Security & Preferences -->
+      <div class="col-lg-4">
+        <div class="profile-card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="bi bi-shield-lock"></i>
+              Security
+            </h2>
+          </div>
+          <div class="card-body">
+            <div class="security-items">
+              <div class="security-item">
+                <div class="security-info">
+                  <h6>Password</h6>
                   <small class="text-muted">Last updated 30 days ago</small>
                 </div>
                 <button class="btn btn-outline-primary btn-sm">
-                  <i class="bi bi-key me-1"></i>
+                  <i class="bi bi-key"></i>
                   Change
                 </button>
               </div>
-            </div>
-            <div class="col-md-6">
-              <div class="d-flex align-items-center justify-content-between p-3 border rounded">
-                <div>
-                  <h6 class="mb-1">Two-Factor Auth</h6>
-                  <small class="text-muted">Not enabled</small>
+              <div class="security-item">
+                <div class="security-info">
+                  <h6>Two-Factor Authentication</h6>
+                  <small class="text-danger">Not enabled</small>
                 </div>
                 <button class="btn btn-outline-success btn-sm">
-                  <i class="bi bi-shield-check me-1"></i>
+                  <i class="bi bi-shield-check"></i>
                   Enable
                 </button>
+              </div>
+              <!-- <div class="security-item">
+                <div class="security-info">
+                  <h6>Login Sessions</h6>
+                  <small class="text-muted">3 active sessions</small>
+                </div>
+                <button class="btn btn-outline-secondary btn-sm">
+                  <i class="bi bi-list"></i>
+                  Manage
+                </button>
+              </div> -->
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-card mt-4">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="bi bi-gear"></i>
+              Preferences
+            </h2>
+          </div>
+          <div class="card-body">
+            <div class="preference-items">
+              <div class="preference-item">
+                <div class="preference-info">
+                  <h6>Email Notifications</h6>
+                  <small class="text-muted">Project updates & messages</small>
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" checked>
+                </div>
+              </div>
+              <!-- <div class="preference-item">
+                <div class="preference-info">
+                  <h6>Dark Mode</h6>
+                  <small class="text-muted">Switch to dark theme</small>
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox">
+                </div>
+              </div> -->
+              <div class="preference-item">
+                <div class="preference-info">
+                  <h6>Weekly Reports</h6>
+                  <small class="text-muted">Receive weekly summaries</small>
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" checked>
+                </div>
               </div>
             </div>
           </div>
