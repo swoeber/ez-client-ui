@@ -12,10 +12,11 @@ import { User } from '../../../../store/user.store';
 import { UserService } from '../../../../services/user.service';
 import { Client, ClientService } from '../../../../services/client.service';
 import { DateTime } from 'luxon';
+import { QuillModule } from 'ngx-quill';
 
 @Component({
   selector: 'app-project-form',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, QuillModule],
   templateUrl: './project-form.component.html',
   styleUrl: './project-form.component.scss',
 })
@@ -37,6 +38,13 @@ export class ProjectFormComponent implements OnInit {
   clientForm: FormGroup;
   currentStep = 1;
   totalSteps = 3;
+
+  quillModules = {
+    toolbar: [
+      ['bold', 'italic', 'underline'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }]
+    ]
+  };
 
   statusOptions = [
     { value: 'draft', label: 'Draft' },
@@ -216,8 +224,6 @@ export class ProjectFormComponent implements OnInit {
   }
 
   saveProject(projectData: Partial<Project>) {
-    console.log('Saving project:', projectData);
-    // TODO: Implement save logic with ProjectService
     if (this.isEdit && this.project) {
       this.projectService.updateProject({ ...this.project, ...projectData }).subscribe({
         next: (project) => {

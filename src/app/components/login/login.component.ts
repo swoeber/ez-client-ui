@@ -88,7 +88,6 @@ export class LoginComponent {
       await actions[mode]();
       // await actions[mode]();
     } catch (err: any) {
-      console.log('hello ano');
       this.error.set(err.error?.message || 'An error occurred');
     } finally {
       this.loading.set(false);

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -7,7 +7,8 @@ export interface TableColumn {
   key: string;
   label: string;
   sortable?: boolean;
-  type?: 'text' | 'date' | 'number' | 'currency' | 'percentage';
+  type?: 'text' | 'date' | 'number' | 'currency' | 'percentage' | 'badge';
+  clickable?: boolean;
 }
 
 export interface TableOptions {
@@ -28,7 +29,7 @@ export interface ActionItem {
 @Component({
   selector: 'app-data-table',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgbModule],
+  imports: [CommonModule, FormsModule, NgbModule, TitleCasePipe],
   templateUrl: './data-table.component.html',
   styleUrls: ['./data-table.component.scss'],
 })
@@ -38,6 +39,7 @@ export class DataTableComponent implements OnInit, OnChanges {
   @Input() options: TableOptions = {};
   @Input() actions: ActionItem[] = [];
   @Output() actionClicked = new EventEmitter<{action: string, item: any}>();
+  @Output() columnClicked = new EventEmitter<{column: string, item: any}>();
 
   filteredData: any[] = [];
   searchTerm = '';
@@ -71,7 +73,7 @@ export class DataTableComponent implements OnInit, OnChanges {
     } else {
       this.filteredData = this.data.filter((item) =>
         this.columns.some((col) =>
-          String(item[col.key]).toLowerCase().includes(this.searchTerm.toLowerCase())
+          String(this.getNestedValue(item, col.key) || '').toLowerCase().includes(this.searchTerm.toLowerCase())
         )
       );
     }
@@ -90,8 +92,8 @@ export class DataTableComponent implements OnInit, OnChanges {
     }
 
     this.filteredData.sort((a, b) => {
-      const aVal = a[column.key];
-      const bVal = b[column.key];
+      const aVal = this.getNestedValue(a, column.key);
+      const bVal = this.getNestedValue(b, column.key);
 
       if (aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;
       if (aVal > bVal) return this.sortDirection === 'asc' ? 1 : -1;
@@ -110,6 +112,10 @@ export class DataTableComponent implements OnInit, OnChanges {
     return this.actions && this.actions.length > 0;
   }
 
+  getNestedValue(obj: any, path: string): any {
+    return path.split('.').reduce((current, key) => current?.[key], obj);
+  }
+
   formatValue(value: any, type?: string): string {
     if (!value) return '';
 
@@ -122,8 +128,31 @@ export class DataTableComponent implements OnInit, OnChanges {
         return new Intl.NumberFormat().format(value);
       case 'percentage':
         return new Intl.NumberFormat().format(value) + '%';
+      case 'badge':
+        return String(value).replace('_', ' ');
       default:
         return String(value);
+    }
+  }
+
+  getBadgeClass(value: any): string {
+    const status = String(value).toLowerCase();
+    switch (status) {
+      case 'done':
+      case 'completed':
+        return 'bg-success';
+      case 'in_progress':
+      case 'active':
+        return 'bg-primary';
+      case 'on_hold':
+      case 'paused':
+        return 'bg-warning';
+      case 'canceled':
+      case 'cancelled':
+      case 'blocked':
+        return 'bg-danger';
+      default:
+        return 'bg-secondary';
     }
   }
 
@@ -132,10 +161,16 @@ export class DataTableComponent implements OnInit, OnChanges {
   }
 
   isActionDisabled(actionItem: ActionItem, item: any): boolean {
-    return actionItem.disabled ? actionItem.disabled(item) : false;
+    return actionItem.disabled?.(item) ?? false;
   }
 
   shouldShowActions(item: any): boolean {
     return this.actions.some(action => !action.showActions || action.showActions(item));
+  }
+
+  onColumnClick(column: TableColumn, item: any) {
+    if (column.clickable) {
+      this.columnClicked.emit({ column: column.key, item });
+    }
   }
 }

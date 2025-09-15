@@ -47,7 +47,9 @@ export class ProjectComponent implements OnInit {
     });
   }
 
-  onProjectUpdated(updatedProject: Project) {
-    this.projectSubject.next(updatedProject);
+  onProjectUpdated(updatedProject: Partial<Project>) {
+    const currentProject = this.projectSubject.value;
+    const mergedProject = { ...currentProject, ...updatedProject };
+    this.projectSubject.next(mergedProject);
   }
 }

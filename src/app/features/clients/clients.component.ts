@@ -69,7 +69,6 @@ export class ClientsComponent {
   }
 
   closeAddModal() {
-    console.log('closing modal');
     this.showAddModal = false;
     this.newClient = {};
     this.cdr.markForCheck();

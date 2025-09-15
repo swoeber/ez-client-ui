@@ -1,8 +1,9 @@
-<div class="container-fluid p-0 m-0 d-flex flex-row">
+<div class="container-fluid p-0 m-0 d-flex flex-row" style="height: 100vh; overflow: hidden;">
   <app-side-menu></app-side-menu>
-  <div class="container-fluid d-flex g-0 h-100 flex-column">
+  <div class="container-fluid d-flex g-0 h-100 flex-column" style="overflow: hidden; min-width: 0;">
     <app-header></app-header>
-    <router-outlet></router-outlet>
-    <router-outlet name="out-stuff"></router-outlet>
+    <div style="flex: 1; overflow: auto; min-width: 0;">
+      <router-outlet></router-outlet>
+    </div>
   </div>
 </div>

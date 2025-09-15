@@ -18,3 +18,13 @@
     border-color: var(--bs-border-color);
   }
 }
+
+.clickable {
+  cursor: pointer;
+  color: var(--bs-primary);
+  
+  &:hover {
+    text-decoration: underline;
+    background-color: var(--bs-gray-50);
+  }
+}

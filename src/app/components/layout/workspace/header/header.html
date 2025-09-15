@@ -26,11 +26,11 @@
         @if (me$ | async; as me) {
           <div class="d-flex align-items-center gap-2">
             <img
-              src="https://github.com/mdo.png"
+              src="{{ me.avatar_url || 'https://github.com/mdo.png' }}"
               alt="Profile"
               width="32"
               height="32"
-              class="rounded-circle"
+              class="rounded-circle object-fit-cover"
             />
             <div class="d-none d-md-block">
               <small class="fw-semibold text-dark">{{ me.first_name + ' ' + me.last_name }}</small>
@@ -44,11 +44,11 @@
           @if (me$ | async; as me) {
             <div class="d-flex align-items-center gap-2">
               <img
-                src="https://github.com/mdo.png"
+                src="{{ me.avatar_url || 'https://github.com/mdo.png' }}"
                 alt="Profile"
                 width="40"
                 height="40"
-                class="rounded-circle"
+                class="rounded-circle object-fit-cover"
               />
               <div>
                 <div class="fw-semibold">{{ me.first_name + ' ' + me.last_name }}</div>
@@ -60,7 +60,7 @@
         <li><a class="dropdown-item py-2" [routerLink]="'/workspace/projects/new'" href="#">
           <i class="bi bi-plus-circle me-2 text-primary"></i>New Project
         </a></li>
-        <li><a class="dropdown-item py-2" href="#">
+        <li><a class="dropdown-item py-2" href="#" [routerLink]="'/workspace/profile'">
           <i class="bi bi-person me-2 text-muted"></i>Profile
         </a></li>
         <li><a class="dropdown-item py-2" href="#">

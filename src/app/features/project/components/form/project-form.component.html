@@ -118,12 +118,12 @@
           </div> -->
           <div class="col-12">
             <label class="form-label">Summary</label>
-            <textarea
-              class="form-control"
-              rows="3"
+            <quill-editor
               formControlName="summary"
+              [modules]="quillModules"
               placeholder="Project description..."
-            ></textarea>
+              style="min-height: 120px;">
+            </quill-editor>
           </div>
         </div>
       </div>
@@ -152,7 +152,7 @@
               <option value="">Choose a client</option>
               @for (client of clients; track client.id) {
               <option [value]="client.id">
-                {{ client.company || client.first_name + ' ' + client.last_name }}
+                {{ client.company ? client.company + ' - ' + client.first_name + ' ' + client.last_name : client.first_name + ' ' + client.last_name }}
               </option>
               }
             </select>

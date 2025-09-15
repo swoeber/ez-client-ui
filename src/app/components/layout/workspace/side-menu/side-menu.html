@@ -46,7 +46,17 @@
           Files
         </a>
       </li>
-      <li class="nav-item mt-4">
+      <li>
+        <hr>
+      </li>
+      <li class="nav-item mt-1">
+        <a [routerLink]="'profile'" [routerLinkActive]="'active'" 
+           class="nav-link d-flex align-items-center px-3 py-2 rounded-3 text-white-50 fw-medium">
+          <i class="bi bi-person-circle me-3" style="font-size: 1.1rem;"></i>
+          Profile
+        </a>
+      </li>
+      <li class="nav-item">
         <a [routerLink]="'settings'" [routerLinkActive]="'active'" 
            class="nav-link d-flex align-items-center px-3 py-2 rounded-3 text-white-50 fw-medium">
           <i class="bi bi-gear-fill me-3" style="font-size: 1.1rem;"></i>

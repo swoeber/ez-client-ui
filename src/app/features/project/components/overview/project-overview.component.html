@@ -11,7 +11,7 @@
           </h5>
         </div>
         <div class="card-body px-4 py-3">
-          <p class="mb-0 text-dark lh-base">{{ project.summary || 'No summary provided.' }}</p>
+          <div class="mb-0 text-dark lh-base" [innerHTML]="project.summary || 'No summary provided.'"></div>
         </div>
       </div>
 

@@ -7,13 +7,13 @@ import {
 } from '../../shared/components/data-table/data-table.component';
 import {Project, ProjectService} from '../../services/project.service';
 import {Observable} from 'rxjs';
-import {CommonModule} from '@angular/common';
+import {CommonModule, TitleCasePipe} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ProjectFormComponent} from '../project/components/form/project-form.component';
 
 @Component({
   selector: 'app-project',
-  imports: [DataTableComponent, CommonModule, ProjectFormComponent],
+  imports: [DataTableComponent, CommonModule, ProjectFormComponent, TitleCasePipe],
   templateUrl: './projects.component.html',
   styleUrl: './projects.component.scss',
 })
@@ -26,15 +26,21 @@ export class ProjectsComponent implements OnInit {
   showForm = false;
   selectedProject?: Project;
   isEdit = false;
+  showQuickView = false;
+  quickViewProject?: Project;
 
   projectColumns: TableColumn[] = [
-    {key: 'id', label: 'ID', sortable: true, type: 'number'},
-    {key: 'name', label: 'Project Name', sortable: true},
-    {key: 'percent_complete', label: '% Complete', sortable: true, type: 'percentage'},
+    {key: 'name', label: 'Project Name', sortable: true, clickable: true},
+    {key: 'status', label: 'Status', sortable: true, type: 'badge'},
+    {key: 'assignee.full_name', label: 'Assignee', sortable: true},
+    {key: 'starts_on', label: 'Start Date', sortable: true, type: 'date'},
+    {key: 'due_on', label: 'Due Date', sortable: true, type: 'date'},
+    {key: 'created_at', label: 'Created', sortable: true, type: 'date'}
   ];
 
   projectActions: ActionItem[] = [
-    {label: 'View', action: 'view', icon: 'eye'},
+    {label: 'Quick View', action: 'quick-view', icon: 'eye-fill'},
+    {label: 'View Details', action: 'view', icon: 'eye'},
     {label: 'Edit (Modal)', action: 'edit', icon: 'pencil'},
     {label: 'Edit (Page)', action: 'edit-page', icon: 'pencil-square'},
     {label: 'Delete', action: 'delete', icon: 'trash', disabled: (item) => item.status === 'active'}
@@ -64,6 +70,10 @@ export class ProjectsComponent implements OnInit {
 
   onAction(event: { action: string, item: Project }) {
     switch (event.action) {
+      case 'quick-view':
+        this.quickViewProject = event.item;
+        this.showQuickView = true;
+        break;
       case 'view':
         this.router.navigate(['/workspace/projects/'+event.item.id]);
         break;
@@ -93,6 +103,17 @@ export class ProjectsComponent implements OnInit {
   onCancelForm() {
     this.showForm = false;
     this.selectedProject = undefined;
+  }
+
+  closeQuickView() {
+    this.showQuickView = false;
+    this.quickViewProject = undefined;
+  }
+
+  onColumnClick(event: { column: string, item: Project }) {
+    if (event.column === 'name') {
+      this.router.navigate(['/workspace/projects/' + event.item.id]);
+    }
   }
 
   private loadProjects() {

@@ -9,6 +9,7 @@ export interface User {
   prefix: string;
   full_name: string;
   roles: string[];
+  avatar_url?: string | null;
 }
 
 @Injectable({providedIn: 'root'})

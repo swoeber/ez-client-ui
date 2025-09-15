@@ -30,7 +30,7 @@
                       (project.owner?.full_name || 'U')[0]
                     }}</span>
                 } @else {
-                  <span class="text-white fw-bold">{{ (item.author.full_name || 'U')[0] }}</span>
+                  <span class="text-white fw-bold">{{ (item.author ? item.author.full_name : 'U')[0] }}</span>
                 }
               </div>
             </div>

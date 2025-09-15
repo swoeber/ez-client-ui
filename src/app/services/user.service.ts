@@ -15,4 +15,10 @@ export class UserService {
       withCredentials: true,
     });
   }
+
+  updateUser(): Observable<User> {
+    return this.http.patch<User>(`${environment.api}/users`, {
+      withCredentials: true,
+    });
+  }
 }
