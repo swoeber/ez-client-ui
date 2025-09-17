@@ -2,6 +2,88 @@
   <div class="row g-4">
     <!-- Main Content -->
     <div class="col-lg-8">
+      
+      <!-- Work Item Metrics -->
+      @if (workItemMetrics && workItemMetrics.total > 0) {
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-white border-0 px-4 py-3">
+            <h5 class="mb-0 fw-semibold text-dark">
+              <i class="bi bi-bar-chart text-primary me-2"></i>
+              Work Items Overview
+            </h5>
+          </div>
+          <div class="card-body px-4 py-3">
+            <div class="row g-3 mb-3">
+              <div class="col-md-3">
+                <div class="metric-card total">
+                  <div class="metric-icon">
+                    <i class="bi bi-clipboard-data"></i>
+                  </div>
+                  <div class="metric-content">
+                    <div class="metric-value">{{ workItemMetrics.total }}</div>
+                    <div class="metric-label">Total Items</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="metric-card completed">
+                  <div class="metric-icon">
+                    <i class="bi bi-check-circle-fill"></i>
+                  </div>
+                  <div class="metric-content">
+                    <div class="metric-value">{{ workItemMetrics.completed }}</div>
+                    <div class="metric-label">Completed</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="metric-card pending">
+                  <div class="metric-icon">
+                    <i class="bi bi-clock"></i>
+                  </div>
+                  <div class="metric-content">
+                    <div class="metric-value">{{ workItemMetrics.pending }}</div>
+                    <div class="metric-label">Pending</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="metric-card progress">
+                  <div class="metric-icon">
+                    <i class="bi bi-percent"></i>
+                  </div>
+                  <div class="metric-content">
+                    <div class="metric-value">{{ (workItemMetrics.completionRate | number:'1.0-0') }}%</div>
+                    <div class="metric-label">Progress</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="progress-bar-container mb-3">
+              <div class="progress" style="height: 8px;">
+                <div class="progress-bar bg-success" [style.width.%]="workItemMetrics.completionRate"></div>
+              </div>
+            </div>
+            <div class="row g-2">
+              @if (workItemMetrics.byType.standard > 0) {
+                <div class="col-auto">
+                  <span class="badge bg-primary">{{ workItemMetrics.byType.standard }} Standard</span>
+                </div>
+              }
+              @if (workItemMetrics.byType.task_list > 0) {
+                <div class="col-auto">
+                  <span class="badge bg-warning">{{ workItemMetrics.byType.task_list }} Task Lists</span>
+                </div>
+              }
+              @if (workItemMetrics.byType.signature > 0) {
+                <div class="col-auto">
+                  <span class="badge bg-info">{{ workItemMetrics.byType.signature }} Signatures</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
       <!-- Project Summary -->
       <div class="card border-0 shadow-sm mb-4">
         <div class="card-header bg-white border-0 px-4 py-3">
@@ -14,6 +96,7 @@
           <div class="mb-0 text-dark lh-base" [innerHTML]="project.summary || 'No summary provided.'"></div>
         </div>
       </div>
+
 
       <!-- Service Address -->
       <app-location [project]="project"></app-location>

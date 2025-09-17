@@ -18,6 +18,7 @@ import { CommonModule } from '@angular/common';
 import { LocationComponent } from '../location/location.component';
 import { DateTime } from 'luxon';
 import { MessagesComponent } from '../messages/messages.component';
+import { WorkItemService } from '../../../../services/work-item.service';
 
 @Component({
   selector: 'app-project-overview',
@@ -29,6 +30,7 @@ export class ProjectOverviewComponent implements OnInit, OnChanges {
   userService: UserService = inject(UserService);
   cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   projectService: ProjectService = inject(ProjectService);
+  workItemService: WorkItemService = inject(WorkItemService);
 
   @Input() project: Project = {} as Project;
   @Output() projectUpdated = new EventEmitter<Project>();
@@ -39,6 +41,7 @@ export class ProjectOverviewComponent implements OnInit, OnChanges {
   assigneeSearch = '';
   showAssigneeDropdown = false;
   editingField: string | null = null;
+  workItemMetrics: any = null;
 
   statusOptions = [
     { value: 'draft', label: 'Draft' },
@@ -54,8 +57,13 @@ export class ProjectOverviewComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['project'] && this.accountMembers.length > 0) {
-      this.setInitialAssignee();
+    if (changes['project']) {
+      if (this.accountMembers.length > 0) {
+        this.setInitialAssignee();
+      }
+      if (this.project.id) {
+        this.loadWorkItemMetrics();
+      }
     }
   }
 
@@ -209,5 +217,36 @@ export class ProjectOverviewComponent implements OnInit, OnChanges {
         console.error('Error updating project:', error);
       },
     });
+  }
+
+  private loadWorkItemMetrics() {
+    if (this.project.work_items) {
+      this.calculateMetrics(this.project.work_items);
+    }
+  }
+
+  private calculateMetrics(workItems: any[]) {
+    const total = workItems.length;
+    const completed = workItems.filter(item => item.completed).length;
+    const pending = total - completed;
+    const byType = {
+      standard: workItems.filter(item => item.type === 'standard').length,
+      task_list: workItems.filter(item => item.type === 'task_list').length,
+      signature: workItems.filter(item => item.type === 'signature').length
+    };
+    
+    this.workItemMetrics = { 
+      total, 
+      completed, 
+      pending, 
+      completionRate: total > 0 ? (completed / total) * 100 : 0, 
+      byType 
+    };
+  }
+
+  refreshMetrics() {
+    if (this.project.work_items) {
+      this.calculateMetrics(this.project.work_items);
+    }
   }
 }

@@ -47,7 +47,7 @@
       </app-tab>
       @if (project.type != 1) {
       <app-tab [label]="'Work Items'">
-        <app-work-item-list [project]="project"></app-work-item-list>
+        <app-work-item-list [project]="project" (workItemsChanged)="onWorkItemsUpdated()"></app-work-item-list>
       </app-tab>
       } @if (project.type == 1) {
       <app-tab [label]="'Milestones'">

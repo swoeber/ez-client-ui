@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Project, ProjectService } from '../../services/project.service';
 import { ActivatedRoute } from '@angular/router';
@@ -31,6 +31,7 @@ export class ProjectComponent implements OnInit {
   private projectSubject = new BehaviorSubject<Project>({} as Project);
   project$ = this.projectSubject.asObservable();
 
+  @ViewChild(ProjectOverviewComponent) overviewComponent!: ProjectOverviewComponent;
   selectedIndex: number = 0;
 
   ngOnInit() {
@@ -51,5 +52,23 @@ export class ProjectComponent implements OnInit {
     const currentProject = this.projectSubject.value;
     const mergedProject = { ...currentProject, ...updatedProject };
     this.projectSubject.next(mergedProject);
+    
+    // Refresh overview metrics if workitems were updated
+    if (updatedProject.work_items && this.overviewComponent) {
+      this.overviewComponent.refreshMetrics();
+    }
+  }
+
+  onWorkItemsUpdated() {
+    // Reload the full project to get updated workitems
+    const projectId = this.projectSubject.value.id;
+    if (projectId) {
+      this.projectService.get(projectId).subscribe((project) => {
+        this.projectSubject.next(project);
+        if (this.overviewComponent) {
+          this.overviewComponent.refreshMetrics();
+        }
+      });
+    }
   }
 }

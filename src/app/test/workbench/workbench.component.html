@@ -14,7 +14,7 @@
             <div class="overview-header">
               <div class="work-badge">WO-{{ item.id }}</div>
               <h2 class="work-title">{{ item.title }}</h2>
-              <div class="status-container">
+              <!-- <div class="status-container">
                 <select [(ngModel)]="item.status" class="status-select-overview status-{{ item.status }}">
                   <option value="todo">Todo</option>
                   <option value="in_progress">In Progress</option>
@@ -22,7 +22,7 @@
                   <option value="done">Done</option>
                   <option value="on_hold">On Hold</option>
                 </select>
-              </div>
+              </div> -->
             </div>
 
             <div class="overview-content">
@@ -39,20 +39,20 @@
                       <div class="mini-value">{{ item.due_on | readableDate }}</div>
                     </div>
                   </div>
-                  <div class="info-card-mini">
+                  <!-- <div class="info-card-mini">
                     <i class="bi bi-bar-chart mini-icon"></i>
                     <div class="mini-content">
                       <div class="mini-label">Progress</div>
                       <div class="mini-value">{{ item.percent_complete }}%</div>
                     </div>
-                  </div>
-                  <div class="info-card-mini">
+                  </div> -->
+                  <!-- <div class="info-card-mini">
                     <i class="bi bi-person mini-icon"></i>
                     <div class="mini-content">
                       <div class="mini-label">Assigned To</div>
                       <div class="mini-value">{{ item.assignee.full_name || 'Unassigned' }}</div>
                     </div>
-                  </div>
+                  </div> -->
                 </div>
               </div>
 
@@ -81,7 +81,7 @@
         </app-tab>
         <app-tab label="Details">
           <div class="work-item-details">
-            <div class="hero-section">
+            <!-- <div class="hero-section">
               <div class="work-item-badge">WO-{{ item.id }}</div>
               <h2 class="work-item-title">{{ item.title }}</h2>
               <div class="status-pill status-{{ item.status }}">
@@ -94,16 +94,16 @@
                   <option value="on_hold">On Hold</option>
                 </select>
               </div>
-            </div>
+            </div> -->
 
             <div class="info-cards">
-              <div class="info-card">
+              <!-- <div class="info-card">
                 <i class="bi bi-person card-icon"></i>
                 <div class="card-content">
                   <div class="card-label">Assignee</div>
                   <div class="card-value">{{ item.assignee.full_name || 'Unassigned' }}</div>
                 </div>
-              </div>
+              </div> -->
               <div class="info-card">
                 <i class="bi bi-calendar-event card-icon"></i>
                 <div class="card-content">

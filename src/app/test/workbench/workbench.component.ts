@@ -26,7 +26,7 @@ export class WorkbenchComponent implements OnInit {
     const workOrderId = Number(this.route.snapshot.paramMap.get('id'));
     this.workItem$ = this.projectService
       .get(1)
-      .pipe(map((project) => project.workitems.find((item) => item.id === workOrderId)!));
+      .pipe(map((project) => project.work_items.find((item) => item.id === workOrderId)!));
   }
 
   goBack() {

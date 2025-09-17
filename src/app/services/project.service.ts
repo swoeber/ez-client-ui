@@ -54,7 +54,7 @@ export interface Project {
   updated_at: string; // ISO8601 datetime
 
   milestones: Milestone[];
-  workitems: WorkItem[];
+  work_items: WorkItem[];
   invoices: Invoice[];
   messages: Message[];
   assignee?: User;

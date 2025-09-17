@@ -1,47 +1,279 @@
-<div class="d-flex justify-content-between align-items-center mb-3 pe-4">
-  <h5></h5>
-  <button class="btn btn-sm btn-primary">+ Add Work Order</button>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="mb-0">Work Items</h5>
+  <button class="btn btn-sm btn-primary" (click)="toggleCreateForm()">
+    <i class="bi bi-plus-lg me-1"></i>Add Work Item
+  </button>
 </div>
 
-
-<div class="work-item-list col-12">
-  <!--  <div class="list-header">-->
-  <!--    <h1>Work Orders</h1>-->
-  <!--    <p class="project-name">{{ project.name }}</p>-->
-  <!--  </div>-->
-
-  <div class="work-items">
-    @for (item of project.workitems; track item.id) {
-      <div class="work-item-card" (click)="openWorkOrder(item.id)">
-        <div class="card-header">
-          <div class="work-item-id">WO-{{ item.id }}</div>
-          <div class="status-badge status-{{ item.status }}">
-            {{ item.status | titlecase }}
-          </div>
-        </div>
-
-        <div class="card-content">
-          <h3 class="work-title">{{ item.title }}</h3>
-          <p class="work-description">{{ item.description || 'No description' }}</p>
-        </div>
-
-        <div class="card-footer">
-          <div class="footer-item">
-            <i class="bi bi-person"></i>
-            <span>{{ item.assignee.full_name || 'Unassigned' }}</span>
-          </div>
-          <div class="footer-item">
-            <i class="bi bi-calendar-event"></i>
-            <span>{{ item.due_on | readableDate }}</span>
-          </div>
-          <div class="footer-item">
-            <i class="bi bi-check-circle"></i>
-            <span>{{ item.percent_complete }}%</span>
-          </div>
-        </div>
-
-        <i class="bi bi-chevron-right card-arrow"></i>
-      </div>
-    }
+<!-- Create Work Item Form -->
+@if (showCreateForm) {
+<div class="card mb-4">
+  <div class="card-header">
+    <h6 class="mb-0">Create New Work Item</h6>
   </div>
+  <div class="card-body">
+    <form (ngSubmit)="createWorkItem()">
+      <div class="row g-3">
+        <div class="col-md-8">
+          <label class="form-label">Title *</label>
+          <input type="text" class="form-control" [(ngModel)]="newWorkItem.title" name="title" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Type</label>
+          <select class="form-select" [(ngModel)]="newWorkItem.type" name="type" (change)="onTypeChange()">
+            @for (type of workItemTypes; track type.value) {
+              <option [value]="type.value">{{ type.label }}</option>
+            }
+          </select>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" rows="3" [(ngModel)]="newWorkItem.description" name="description"></textarea>
+        </div>
+        
+        @if (newWorkItem.type === 'task_list') {
+        <div class="col-12">
+          <label class="form-label">Tasks</label>
+          @for (task of newWorkItem.tasks; track $index; let i = $index) {
+            <div class="input-group mb-2">
+              <input type="text" class="form-control" [(ngModel)]="task.title" [name]="'task-' + i" placeholder="Task title">
+              <button type="button" class="btn btn-outline-danger" (click)="removeTask(i)">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          }
+          <button type="button" class="btn btn-sm btn-outline-primary" (click)="addTask()">
+            <i class="bi bi-plus me-1"></i>Add Task
+          </button>
+        </div>
+        }
+        
+        <div class="col-12">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" [(ngModel)]="newWorkItem.require_photos" name="requirePhotos">
+            <label class="form-check-label">Require photos</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" [(ngModel)]="newWorkItem.completion_required" name="completionRequired">
+            <label class="form-check-label">Completion required</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-primary" [disabled]="!newWorkItem.title?.trim()">
+          Create Work Item
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="toggleCreateForm()">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+}
+
+<div class="work-item-list">
+  @if (workItems.length === 0) {
+    <div class="text-center py-5 text-muted">
+      <i class="bi bi-clipboard display-1 mb-3"></i>
+      <p class="mb-0">No work items yet. Create your first work item to get started.</p>
+    </div>
+  } @else {
+    <div class="work-items">
+      @for (item of workItems; track item.id) {
+        <div class="work-item-card" [class.completed]="item.completed">
+          <div class="card-header">
+            <div class="d-flex align-items-center" (click)="toggleWorkItem(item.id)">
+              <div class="type-indicator" [class]="'type-' + item.type">
+                <i class="{{ getTypeIcon(item.type) }}"></i>
+              </div>
+              <div class="work-item-info">
+                <div class="work-item-id">WI-{{ item.id }}</div>
+                <span class="type-badge">{{ getTypeLabel(item.type) }}</span>
+              </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              @if (item.type !== 'signature') {
+                <div class="form-check completion-check">
+                  <input class="form-check-input" type="checkbox" [checked]="item.completed" (change)="toggleWorkItemCompletion(item)">
+                  <label class="form-check-label">Complete</label>
+                </div>
+              }
+              <div class="status-indicator" [class]="item.completed ? 'completed' : 'pending'">
+                <i class="bi" [class]="item.completed ? 'bi-check-circle-fill' : 'bi-clock'"></i>
+                <span>{{ item.completed ? 'Completed' : 'Pending' }}</span>
+              </div>
+              <div class="action-buttons">
+                <button class="btn btn-sm btn-outline-primary" (click)="startEditing(item.id)" [disabled]="isEditing(item.id)">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="deleteWorkItem(item)">
+                  <i class="bi bi-trash"></i>
+                </button>
+                <button class="btn btn-sm btn-ghost" (click)="toggleWorkItem(item.id)">
+                  <i class="bi" [class]="isExpanded(item.id) ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-content" (click)="!isEditing(item.id) && toggleWorkItem(item.id)">
+            @if (isEditing(item.id)) {
+              <div class="edit-form">
+                <input class="form-control mb-2" [(ngModel)]="item.title" placeholder="Work item title">
+                <textarea class="form-control mb-2" [(ngModel)]="item.description" rows="2" placeholder="Description"></textarea>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-sm btn-success" (click)="saveWorkItem(item)">
+                    <i class="bi bi-check me-1"></i>Save
+                  </button>
+                  <button class="btn btn-sm btn-secondary" (click)="stopEditing(item.id)">
+                    <i class="bi bi-x me-1"></i>Cancel
+                  </button>
+                </div>
+              </div>
+            } @else {
+              <h3 class="work-title">{{ item.title }}</h3>
+              <p class="work-description">{{ item.description || 'No description provided' }}</p>
+              
+              @if (item.type === 'task_list' && item.tasks && item.tasks.length > 0) {
+                <div class="progress-indicator">
+                  <div class="progress-bar">
+                    <div class="progress-fill" [style.width.%]="(getCompletedTasksCount(item.tasks) / item.tasks.length) * 100"></div>
+                  </div>
+                  <small class="progress-text">
+                    {{ getCompletedTasksCount(item.tasks) }} of {{ item.tasks.length }} tasks completed
+                  </small>
+                </div>
+              }
+              
+              @if (item.type === 'signature') {
+                <div class="signature-indicator">
+                  <i class="bi bi-pen-fill me-2"></i>
+                  <span>{{ item.completed ? 'Signature completed' : 'Signature required' }}</span>
+                </div>
+              }
+            }
+          </div>
+
+          @if (isExpanded(item.id)) {
+            <div class="expanded-content">
+              @if (item.type === 'standard') {
+                <div class="standard-content">
+                  <h6 class="mb-3">Work Item Details</h6>
+                  @if (item.require_photos) {
+                    <div class="photo-section">
+                      <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="mb-0">Required Photos</h6>
+                        @if (!item.image_url) {
+                          <label class="btn btn-sm btn-outline-primary" [class.disabled]="isUploadingImage(item.id)">
+                            <i class="bi bi-camera me-1"></i>
+                            {{ isUploadingImage(item.id) ? 'Uploading...' : 'Upload Photo' }}
+                            <input type="file" accept="image/*" (change)="onImageUpload(item, $event)" [disabled]="isUploadingImage(item.id)" hidden>
+                          </label>
+                        }
+                      </div>
+                      @if (item.image_url) {
+                        <div class="uploaded-image">
+                          <img [src]="item.image_url" alt="Work item photo" class="img-fluid rounded">
+                          <button class="btn btn-sm btn-outline-danger mt-2" (click)="removeImage(item)">
+                            <i class="bi bi-trash me-1"></i>Remove Photo
+                          </button>
+                        </div>
+                      } @else {
+                        <div class="alert alert-info">
+                          <i class="bi bi-camera me-2"></i>Photo required - please upload an image
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+              
+              @if (item.type === 'task_list') {
+                <div class="task-list-content">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0">Tasks</h6>
+                    <button class="btn btn-sm btn-outline-primary" (click)="addTaskToWorkItem(item)">
+                      <i class="bi bi-plus me-1"></i>Add Task
+                    </button>
+                  </div>
+                  @if (item.tasks && item.tasks.length > 0) {
+                    <div class="tasks-grid">
+                      @for (task of item.tasks; track task.id; let i = $index) {
+                        <div class="task-item" [class.completed]="task.completed">
+                          <div class="task-content">
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" [checked]="task.completed" (change)="toggleTaskCompletion(item, i)">
+                              @if (isEditing(item.id)) {
+                                <input class="form-control form-control-sm" [(ngModel)]="task.title" placeholder="Task title">
+                              } @else {
+                                <label class="form-check-label" [class.completed]="task.completed">
+                                  {{ task.title }}
+                                </label>
+                              }
+                            </div>
+                          </div>
+                          @if (isEditing(item.id)) {
+                            <button class="btn btn-sm btn-outline-danger" (click)="removeTaskFromWorkItem(item, i)">
+                              <i class="bi bi-trash"></i>
+                            </button>
+                          }
+                        </div>
+                      }
+                    </div>
+                  } @else {
+                    <div class="empty-state">
+                      <i class="bi bi-list-ul"></i>
+                      <p>No tasks yet. Add your first task to get started.</p>
+                    </div>
+                  }
+                </div>
+              }
+              
+              @if (item.type === 'signature') {
+                <div class="signature-content">
+                  <h6 class="mb-3">Signature Required</h6>
+                  @if (!item.completed) {
+                    <app-signature (signatureChange)="onSignatureChange(item, $event)"></app-signature>
+                    <div class="signature-actions mt-3">
+                      <button class="btn btn-success" (click)="submitSignature(item)" [disabled]="!hasSignature(item)">
+                        <i class="bi bi-check-lg me-1"></i>Submit Signature
+                      </button>
+                      <button class="btn btn-outline-secondary" (click)="clearSignature(item)">
+                        <i class="bi bi-arrow-clockwise me-1"></i>Clear
+                      </button>
+                    </div>
+                  } @else {
+                    <div class="alert alert-success">
+                      <i class="bi bi-check-circle me-2"></i>Signature completed
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+
+          <div class="card-footer">
+            <div class="footer-item">
+              <i class="bi bi-person"></i>
+              <span>{{ item.creator.full_name || 'Unassigned' }}</span>
+            </div>
+            @if (item.due_on) {
+            <div class="footer-item">
+              <i class="bi bi-calendar-event"></i>
+              <span>{{ item.due_on | readableDate }}</span>
+            </div>
+            }
+            @if (item.require_photos) {
+            <div class="footer-item">
+              <i class="bi bi-camera text-info"></i>
+              <span>Photos required</span>
+            </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
 </div>
