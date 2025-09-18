@@ -1,16 +1,15 @@
 import { Component, inject, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { Project } from '../../../../services/project.service';
-import { TitleCasePipe, CommonModule } from '@angular/common';
-import { ReadableDatePipe } from '../../../../shared/pipes/readable-date.pipe';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { WorkItem, WorkItemService } from '../../../../services/work-item.service';
 import { FormsModule } from '@angular/forms';
-import { SignatureComponent } from '../../../../shared/components/signature/signature.component';
+import { WorkItemModalComponent } from '../work-item-modal/work-item-modal.component';
 
 @Component({
   selector: 'app-work-item-list',
   standalone: true,
-  imports: [ReadableDatePipe, CommonModule, FormsModule, SignatureComponent],
+  imports: [CommonModule, FormsModule, WorkItemModalComponent],
   templateUrl: './work-item-list.component.html',
   styleUrl: './work-item-list.component.scss',
 })
@@ -24,6 +23,7 @@ export class WorkItemListComponent implements OnInit {
   showCreateForm = false;
   expandedItems: Set<number> = new Set();
   editingItems: Set<number> = new Set();
+  editingWorkItem: WorkItem | null = null;
   signatureData: Map<number, string> = new Map();
   uploadingImages: Set<number> = new Set();
   newWorkItem: Partial<WorkItem> = {
@@ -157,7 +157,7 @@ export class WorkItemListComponent implements OnInit {
 
   toggleWorkItemCompletion(workItem: WorkItem) {
     workItem.completed = !workItem.completed;
-    this.updateWorkItem({completed: workItem.completed, id: workItem.id});
+    this.updateWorkItem({ completed: workItem.completed, id: workItem.id });
   }
 
   private updateWorkItemCompletion(workItem: WorkItem) {
@@ -170,7 +170,7 @@ export class WorkItemListComponent implements OnInit {
   private updateWorkItem(workItem: Partial<WorkItem>) {
     this.workItemService.update(this.project.id, workItem.id!, workItem).subscribe({
       next: (updatedItem) => {
-        const index = this.workItems.findIndex(item => item.id === updatedItem.id);
+        const index = this.workItems.findIndex((item) => item.id === updatedItem.id);
         if (index !== -1) {
           this.workItems[index] = updatedItem;
         }
@@ -178,7 +178,7 @@ export class WorkItemListComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error updating work item:', error);
-      }
+      },
     });
   }
 
@@ -204,11 +204,16 @@ export class WorkItemListComponent implements OnInit {
   }
 
   startEditing(workItemId: number) {
-    this.editingItems.add(workItemId);
+    const item = this.workItems.find((wi) => wi.id === workItemId);
+    if (item) {
+      this.editingWorkItem = { ...item, tasks: item.tasks ? [...item.tasks] : [] };
+      this.editingItems.add(workItemId);
+    }
   }
 
   stopEditing(workItemId: number) {
     this.editingItems.delete(workItemId);
+    this.editingWorkItem = null;
   }
 
   isEditing(workItemId: number): boolean {
@@ -216,22 +221,28 @@ export class WorkItemListComponent implements OnInit {
   }
 
   saveWorkItem(workItem: WorkItem) {
-    this.updateWorkItem(workItem);
-    this.stopEditing(workItem.id);
+    if (this.editingWorkItem) {
+      this.updateWorkItem(this.editingWorkItem);
+      this.stopEditing(workItem.id);
+    }
   }
 
   addTaskToWorkItem(workItem: WorkItem) {
-    if (!workItem.tasks) {
-      workItem.tasks = [];
+    if (this.editingWorkItem && this.editingWorkItem.id === workItem.id) {
+      if (!this.editingWorkItem.tasks) {
+        this.editingWorkItem.tasks = [];
+      }
+      this.editingWorkItem.tasks.push({ title: 'New task', completed: false } as any);
     }
-    workItem.tasks.push({ title: 'New task', completed: false } as any);
   }
 
   removeTaskFromWorkItem(workItem: WorkItem, taskIndex: number) {
-    if (workItem.tasks) {
-      workItem.tasks.splice(taskIndex, 1);
-      this.updateWorkItemCompletion(workItem);
-      this.updateWorkItem(workItem);
+    if (
+      this.editingWorkItem &&
+      this.editingWorkItem.id === workItem.id &&
+      this.editingWorkItem.tasks
+    ) {
+      this.editingWorkItem.tasks.splice(taskIndex, 1);
     }
   }
 
@@ -239,12 +250,12 @@ export class WorkItemListComponent implements OnInit {
     if (confirm('Are you sure you want to delete this work item?')) {
       this.workItemService.delete(this.project.id, workItem.id).subscribe({
         next: () => {
-          this.workItems = this.workItems.filter(item => item.id !== workItem.id);
+          this.workItems = this.workItems.filter((item) => item.id !== workItem.id);
           this.workItemsChanged.emit();
         },
         error: (error) => {
           console.error('Error deleting work item:', error);
-        }
+        },
       });
     }
   }
@@ -253,15 +264,15 @@ export class WorkItemListComponent implements OnInit {
     const file = event.target.files[0];
     if (file && file.type.startsWith('image/')) {
       this.uploadingImages.add(workItem.id);
-      
+
       const formData = new FormData();
       formData.append('image', file);
-      
+
       this.workItemService.uploadImage(this.project.id, workItem.id, formData).subscribe({
         next: (response) => {
           // Update work item with image URL
           const updatedItem = { ...workItem, image_url: response.image_url };
-          const index = this.workItems.findIndex(item => item.id === workItem.id);
+          const index = this.workItems.findIndex((item) => item.id === workItem.id);
           if (index !== -1) {
             this.workItems[index] = updatedItem;
           }
@@ -271,7 +282,7 @@ export class WorkItemListComponent implements OnInit {
         error: (error) => {
           console.error('Error uploading image:', error);
           this.uploadingImages.delete(workItem.id);
-        }
+        },
       });
     }
   }
@@ -285,7 +296,7 @@ export class WorkItemListComponent implements OnInit {
       this.workItemService.removeImage(this.project.id, workItem.id).subscribe({
         next: () => {
           const updatedItem = { ...workItem, image_url: undefined };
-          const index = this.workItems.findIndex(item => item.id === workItem.id);
+          const index = this.workItems.findIndex((item) => item.id === workItem.id);
           if (index !== -1) {
             this.workItems[index] = updatedItem;
           }
@@ -293,21 +304,60 @@ export class WorkItemListComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error removing image:', error);
-        }
+        },
       });
+    }
+  }
+
+  onModalSave(item: WorkItem | Partial<WorkItem>) {
+    if (this.editingWorkItem) {
+      this.updateWorkItem(item as WorkItem);
+      this.stopEditing(this.editingWorkItem.id);
+    } else {
+      this.createWorkItem();
+    }
+  }
+
+  onModalCancel() {
+    if (this.editingWorkItem) {
+      this.stopEditing(this.editingWorkItem.id);
+    } else {
+      this.toggleCreateForm();
+    }
+  }
+
+  onModalAddTask() {
+    if (this.editingWorkItem) {
+      this.addTaskToWorkItem(this.editingWorkItem);
+    } else {
+      this.addTask();
+    }
+  }
+
+  onModalRemoveTask(index: number) {
+    if (this.editingWorkItem) {
+      this.removeTaskFromWorkItem(this.editingWorkItem, index);
+    } else {
+      this.removeTask(index);
     }
   }
 
   getWorkItemMetrics() {
     const total = this.workItems.length;
-    const completed = this.workItems.filter(item => item.completed).length;
+    const completed = this.workItems.filter((item) => item.completed).length;
     const pending = total - completed;
     const byType = {
-      standard: this.workItems.filter(item => item.type === 'standard').length,
-      task_list: this.workItems.filter(item => item.type === 'task_list').length,
-      signature: this.workItems.filter(item => item.type === 'signature').length
+      standard: this.workItems.filter((item) => item.type === 'standard').length,
+      task_list: this.workItems.filter((item) => item.type === 'task_list').length,
+      signature: this.workItems.filter((item) => item.type === 'signature').length,
     };
-    
-    return { total, completed, pending, completionRate: total > 0 ? (completed / total) * 100 : 0, byType };
+
+    return {
+      total,
+      completed,
+      pending,
+      completionRate: total > 0 ? (completed / total) * 100 : 0,
+      byType,
+    };
   }
 }

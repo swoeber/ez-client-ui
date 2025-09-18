@@ -1,345 +1,175 @@
-.work-item-list {
-  .work-items {
-    display: grid;
-    gap: 1rem;
-  }
-  
-  .work-item-card {
+.admin-work-items {
+  .table {
     background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
+    border-radius: 8px;
     overflow: hidden;
-    transition: all 0.2s ease;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     
-    &:hover {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      border-color: #096361;
+    th {
+      background: #f8f9fa;
+      border-bottom: 2px solid #dee2e6;
+      font-weight: 600;
+      color: #495057;
+      font-size: 0.875rem;
+      padding: 0.75rem;
     }
+    
+    td {
+      padding: 0.75rem;
+      vertical-align: middle;
+      border-bottom: 1px solid #f1f3f4;
+    }
+    
+    tr {
+      &:hover {
+        background: #f8f9fa;
+      }
+      
+      &.table-success {
+        background: #f0fdf4;
+        
+        &:hover {
+          background: #ecfdf5;
+        }
+      }
+    }
+  }
+  
+  .work-id {
+    font-family: monospace;
+    font-weight: 600;
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+  
+  .type-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    
+    &.type-standard {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+    
+    &.type-task_list {
+      background: #fef3c7;
+      color: #d97706;
+    }
+    
+    &.type-signature {
+      background: #ede9fe;
+      color: #7c3aed;
+    }
+  }
+  
+  .work-title {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+  }
+  
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
     
     &.completed {
-      background: #f0fdf4;
-      border-color: #16a34a;
+      background: #dcfce7;
+      color: #16a34a;
     }
     
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 1.25rem;
-      background: #fafafa;
-      border-bottom: 1px solid #e5e7eb;
+    &.pending {
+      background: #fef3c7;
+      color: #d97706;
+    }
+  }
+  
+  .progress-mini {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    .progress-bar-mini {
+      width: 40px;
+      height: 6px;
+      background: #e5e7eb;
+      border-radius: 3px;
+      overflow: hidden;
       
-      .type-indicator {
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 0.75rem;
-        
-        &.type-standard {
-          background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-          color: white;
-        }
-        
-        &.type-task_list {
-          background: linear-gradient(135deg, #f59e0b, #d97706);
-          color: white;
-        }
-        
-        &.type-signature {
-          background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-          color: white;
-        }
-        
-        i {
-          font-size: 1.1rem;
-        }
+      .progress-fill-mini {
+        height: 100%;
+        background: #10b981;
+        transition: width 0.3s ease;
       }
-      
-      .work-item-info {
-        flex: 1;
-        
-        .work-item-id {
-          font-weight: 600;
-          color: #1f2937;
-          font-size: 0.9rem;
-        }
-        
-        .type-badge {
-          background: #e5e7eb;
-          color: #6b7280;
-          padding: 0.25rem 0.5rem;
-          border-radius: 6px;
-          font-size: 0.75rem;
-          font-weight: 500;
-        }
-      }
-      
-      .status-indicator {
-        display: flex;
-        align-items: center;
+    }
+    
+    small {
+      color: #6b7280;
+      font-size: 0.75rem;
+    }
+  }
+  
+  .details-row {
+    background: #f8f9fa;
+    
+    td {
+      border-bottom: none;
+    }
+  }
+  
+
+  
+  .details-content {
+    padding: 1rem;
+    background: white;
+    border-radius: 6px;
+    margin: 0.5rem 0;
+    
+    h6 {
+      color: #374151;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+    
+    .task-summary {
+      .task-list-compact {
+        display: grid;
         gap: 0.5rem;
-        padding: 0.5rem 0.75rem;
-        border-radius: 8px;
-        font-size: 0.875rem;
-        font-weight: 500;
+        margin-top: 0.75rem;
         
-        &.completed {
-          background: #dcfce7;
-          color: #16a34a;
-        }
-        
-        &.pending {
-          background: #fef3c7;
-          color: #d97706;
-        }
-      }
-      
-      .completion-check {
-        .form-check-input {
-          margin: 0;
-        }
-        
-        .form-check-label {
-          font-size: 0.875rem;
-          font-weight: 500;
-          color: #374151;
-          margin-left: 0.5rem;
-          cursor: pointer;
-        }
-      }
-      
-      .action-buttons {
-        display: flex;
-        gap: 0.5rem;
-        margin-left: 1rem;
-        
-        .btn {
-          border-radius: 6px;
-          
-          &.btn-ghost {
-            border: none;
-            background: transparent;
-            color: #6b7280;
-            
-            &:hover {
-              background: #f3f4f6;
-              color: #374151;
-            }
-          }
-        }
-      }
-    }
-    
-    .card-content {
-      padding: 1.25rem;
-      
-      .edit-form {
-        .form-control {
-          border-radius: 8px;
-          border: 1px solid #d1d5db;
-          
-          &:focus {
-            border-color: #096361;
-            box-shadow: 0 0 0 3px rgba(9, 99, 97, 0.1);
-          }
-        }
-      }
-      
-      .work-title {
-        font-size: 1.125rem;
-        font-weight: 600;
-        color: #1f2937;
-        margin-bottom: 0.5rem;
-        line-height: 1.4;
-      }
-      
-      .work-description {
-        color: #6b7280;
-        margin-bottom: 1rem;
-        line-height: 1.5;
-      }
-      
-      .progress-indicator {
-        .progress-bar {
-          width: 100%;
-          height: 8px;
-          background: #e5e7eb;
-          border-radius: 4px;
-          overflow: hidden;
-          margin-bottom: 0.5rem;
-          
-          .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #10b981, #059669);
-            transition: width 0.3s ease;
-          }
-        }
-        
-        .progress-text {
-          color: #6b7280;
-          font-weight: 500;
-        }
-      }
-      
-      .signature-indicator {
-        display: flex;
-        align-items: center;
-        color: #8b5cf6;
-        font-weight: 500;
-      }
-    }
-    
-    .expanded-content {
-      border-top: 1px solid #e5e7eb;
-      background: #f9fafb;
-      padding: 1.25rem;
-      
-      .standard-content {
-        .alert {
-          border-radius: 8px;
-          border: none;
-        }
-        
-        .photo-section {
-          .uploaded-image {
-            text-align: center;
-            
-            img {
-              max-width: 100%;
-              max-height: 300px;
-              border: 2px solid #e5e7eb;
-            }
-          }
-          
-          label.btn {
-            cursor: pointer;
-            
-            &.disabled {
-              cursor: not-allowed;
-              opacity: 0.6;
-            }
-          }
-        }
-      }
-      
-      .task-list-content {
-        .tasks-grid {
-          display: grid;
-          gap: 0.75rem;
-        }
-        
-        .task-item {
-          background: white;
-          border: 1px solid #e5e7eb;
-          border-radius: 8px;
-          padding: 0.75rem;
+        .task-compact {
           display: flex;
-          justify-content: space-between;
           align-items: center;
-          transition: all 0.2s ease;
-          
-          &:hover {
-            border-color: #d1d5db;
-          }
+          gap: 0.5rem;
+          font-size: 0.875rem;
           
           &.completed {
-            background: #f0fdf4;
-            border-color: #bbf7d0;
+            color: #6b7280;
+            text-decoration: line-through;
           }
-          
-          .task-content {
-            flex: 1;
-            
-            .form-check {
-              display: flex;
-              align-items: center;
-              gap: 0.75rem;
-              
-              .form-check-input {
-                margin: 0;
-              }
-              
-              .form-check-label {
-                margin: 0;
-                cursor: pointer;
-                
-                &.completed {
-                  text-decoration: line-through;
-                  color: #6b7280;
-                }
-              }
-              
-              .form-control-sm {
-                border: none;
-                background: transparent;
-                padding: 0.25rem 0;
-                
-                &:focus {
-                  box-shadow: none;
-                  border-bottom: 1px solid #096361;
-                }
-              }
-            }
-          }
-        }
-        
-        .empty-state {
-          text-align: center;
-          padding: 2rem;
-          color: #6b7280;
           
           i {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-            opacity: 0.5;
-          }
-          
-          p {
-            margin: 0;
-          }
-        }
-      }
-      
-      .signature-content {
-        .alert {
-          border-radius: 8px;
-          border: none;
-        }
-        
-        .signature-actions {
-          display: flex;
-          gap: 0.75rem;
-          
-          .btn {
-            border-radius: 8px;
-            font-weight: 500;
+            font-size: 1rem;
           }
         }
       }
     }
     
-    .card-footer {
-      padding: 1rem 1.25rem;
-      background: #fafafa;
-      border-top: 1px solid #e5e7eb;
-      display: flex;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-      
-      .footer-item {
+    .photo-summary,
+    .signature-summary {
+      span {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
         font-size: 0.875rem;
-        color: #6b7280;
-        
-        i {
-          color: #096361;
-        }
+        font-weight: 500;
       }
     }
   }
@@ -403,3 +233,24 @@
     }
   }
 }
+
+// Button group styling
+.btn-group-sm {
+  .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    
+    &:first-child {
+      border-radius: 4px 0 0 4px;
+    }
+    
+    &:last-child {
+      border-radius: 0 4px 4px 0;
+    }
+    
+    &:only-child {
+      border-radius: 4px;
+    }
+  }
+}
+

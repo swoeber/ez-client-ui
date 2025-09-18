@@ -1,0 +1,78 @@
+@if (isVisible) {
+<div class="modal show d-block" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ isEditing ? 'Edit Work Item' : 'Create New Work Item' }}</h5>
+        <button type="button" class="btn-close" (click)="onCancel()"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="onSubmit()">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Title *</label>
+              <input type="text" class="form-control" [(ngModel)]="currentItem.title" name="title" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Type</label>
+              <select class="form-select" [(ngModel)]="currentItem.type" name="type" (change)="onTypeChange()">
+                @for (type of workItemTypes; track type.value) {
+                  <option [value]="type.value">{{ type.label }}</option>
+                }
+              </select>
+            </div>
+            @if (isEditing) {
+              <div class="col-md-4">
+                <label class="form-label">Status</label>
+                <select class="form-select" [(ngModel)]="currentItem.completed" name="status">
+                  <option [value]="false">Pending</option>
+                  <option [value]="true">Completed</option>
+                </select>
+              </div>
+            }
+            <div class="col-12">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" rows="3" [(ngModel)]="currentItem.description" name="description"></textarea>
+            </div>
+            @if (currentItem.type === 'task_list' && currentItem.tasks) {
+              <div class="col-12">
+                <label class="form-label">Tasks</label>
+                @for (task of currentItem.tasks; track $index; let i = $index) {
+                  <div class="input-group mb-2">
+                    <input type="text" class="form-control" [(ngModel)]="task.title" [name]="'task-' + i" placeholder="Task title">
+                    <button type="button" class="btn btn-outline-danger" (click)="onRemoveTask(i)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                }
+                <button type="button" class="btn btn-sm btn-outline-primary" (click)="onAddTask()">
+                  <i class="bi bi-plus me-1"></i>Add Task
+                </button>
+              </div>
+            }
+            <div class="col-12">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" [(ngModel)]="currentItem.require_photos" name="requirePhotos">
+                <label class="form-check-label">Require photos</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" [(ngModel)]="currentItem.completion_required" name="completionRequired">
+                <label class="form-check-label">Completion required</label>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="onCancel()">
+              <i class="bi bi-x me-1"></i>Cancel
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="!currentItem.title?.trim()">
+              <i class="bi bi-check me-1"></i>{{ isEditing ? 'Save Changes' : 'Create Work Item' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop show"></div>
+}
