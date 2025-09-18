@@ -7,6 +7,7 @@ import { WorkItem } from './work-item.service';
 
 export interface Project {
   id: number;
+  displayId: string;
   account_id: number;
   owner_user_id: number;
   client_id: number;

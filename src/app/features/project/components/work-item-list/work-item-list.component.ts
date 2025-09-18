@@ -4,12 +4,12 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { WorkItem, WorkItemService } from '../../../../services/work-item.service';
 import { FormsModule } from '@angular/forms';
-import { WorkItemModalComponent } from '../work-item-modal/work-item-modal.component';
+import { ModalFormComponent } from '../../../../shared/components/modal-form/modal-form.component';
 
 @Component({
   selector: 'app-work-item-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, WorkItemModalComponent],
+  imports: [CommonModule, FormsModule, ModalFormComponent],
   templateUrl: './work-item-list.component.html',
   styleUrl: './work-item-list.component.scss',
 })
@@ -309,9 +309,9 @@ export class WorkItemListComponent implements OnInit {
     }
   }
 
-  onModalSave(item: WorkItem | Partial<WorkItem>) {
+  onModalSave() {
     if (this.editingWorkItem) {
-      this.updateWorkItem(item as WorkItem);
+      this.updateWorkItem(this.editingWorkItem);
       this.stopEditing(this.editingWorkItem.id);
     } else {
       this.createWorkItem();
@@ -340,6 +340,15 @@ export class WorkItemListComponent implements OnInit {
     } else {
       this.removeTask(index);
     }
+  }
+
+  isFormValid(): boolean {
+    const currentItem = this.editingWorkItem || this.newWorkItem;
+    return !!(currentItem.title && currentItem.title.trim());
+  }
+
+  getCurrentItem(): WorkItem | Partial<WorkItem> {
+    return this.editingWorkItem || this.newWorkItem;
   }
 
   getWorkItemMetrics() {

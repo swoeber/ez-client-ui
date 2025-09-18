@@ -44,6 +44,7 @@ export class DashboardComponent implements OnInit {
   // ];
 
   projectColumns: TableColumn[] = [
+    {key: 'displayId', label: 'ID', sortable: true, clickable: true},
     {key: 'name', label: 'Project Name', sortable: true, clickable: true},
     {key: 'status', label: 'Status', sortable: true, type: 'badge'},
     {key: 'assignee.full_name', label: 'Assignee', sortable: true},
@@ -120,7 +121,7 @@ export class DashboardComponent implements OnInit {
   newInvoice() {}
 
   onColumnClick(event: { column: string, item: Project }) {
-    if (event.column === 'name') {
+    if (event.column === 'name' || event.column === 'displayId') {
       this.router.navigate(['/workspace/projects/' + event.item.id]);
     }
   }

@@ -33,111 +33,294 @@
 </div>
 
 <!-- Add Client Modal -->
-@if (showAddModal) {
-  <div class="modal show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content border-0 shadow">
-        <div class="modal-header bg-primary text-white">
-          <h5 class="modal-title mb-0">
-            <i class="bi bi-person-plus me-2"></i>
-            Add New Client
-          </h5>
-          <button 
-            type="button" 
-            class="btn-close btn-close-white" 
-            (click)="closeAddModal()"></button>
+<app-modal-form
+  [isVisible]="showAddModal"
+  title="Add New Client"
+  subtitle="Create a new client profile"
+  icon="bi-person-plus"
+  primaryButtonText="Create Client"
+  [isSubmitting]="isSubmitting"
+  [isValid]="isFormValid()"
+  [formContent]="clientFormTemplate"
+  (primaryAction)="onSubmitClient()"
+  (secondaryAction)="closeAddModal()"
+  (close)="closeAddModal()">
+</app-modal-form>
+
+<ng-template #clientFormTemplate>
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-0 py-3">
+      <h6 class="mb-0 fw-semibold d-flex align-items-center">
+        <i class="bi bi-info-circle text-primary me-2"></i>
+        Contact Information
+      </h6>
+    </div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">First Name *</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            [(ngModel)]="newClient.first_name"
+            name="firstName"
+            required
+            placeholder="Enter first name">
         </div>
-        <div class="modal-body p-4">
-          <form (ngSubmit)="onSubmitClient()" #clientForm="ngForm">
-            <div class="row g-3">
-              <div class="col-md-6">
-                <label class="form-label fw-semibold">First Name *</label>
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  [(ngModel)]="newClient.first_name"
-                  name="firstName"
-                  required
-                  placeholder="Enter first name">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-semibold">Last Name *</label>
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  [(ngModel)]="newClient.last_name"
-                  name="lastName"
-                  required
-                  placeholder="Enter last name">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-semibold">Email *</label>
-                <input 
-                  type="email" 
-                  class="form-control" 
-                  [(ngModel)]="newClient.email"
-                  name="email"
-                  required
-                  placeholder="Enter email address">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-semibold">Phone</label>
-                <input 
-                  type="tel" 
-                  class="form-control" 
-                  [(ngModel)]="newClient.phone"
-                  name="phone"
-                  placeholder="Enter phone number">
-              </div>
-              <div class="col-12">
-                <label class="form-label fw-semibold">Company</label>
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  [(ngModel)]="newClient.company"
-                  name="company"
-                  placeholder="Enter company name">
-              </div>
-              <div class="col-12">
-                <label class="form-label fw-semibold">Website</label>
-                <input 
-                  type="url" 
-                  class="form-control" 
-                  [(ngModel)]="newClient.website"
-                  name="website"
-                  placeholder="https://example.com">
-              </div>
-              <div class="col-12">
-                <label class="form-label fw-semibold">Notes</label>
-                <textarea 
-                  class="form-control" 
-                  rows="3"
-                  [(ngModel)]="newClient.notes"
-                  name="notes"
-                  placeholder="Additional notes about the client"></textarea>
-              </div>
-            </div>
-          </form>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Last Name *</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            [(ngModel)]="newClient.last_name"
+            name="lastName"
+            required
+            placeholder="Enter last name">
         </div>
-        <div class="modal-footer bg-light">
-          <button 
-            type="button" 
-            class="btn btn-outline-secondary" 
-            (click)="closeAddModal()">
-            Cancel
-          </button>
-          <button 
-            type="button" 
-            class="btn btn-primary px-4"
-            (click)="onSubmitClient()"
-            [disabled]="isSubmitting || !newClient.first_name || !newClient.last_name || !newClient.email">
-            @if (isSubmitting) {
-              <span class="spinner-border spinner-border-sm me-2"></span>
-            }
-            Create Client
-          </button>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Email *</label>
+          <input 
+            type="email" 
+            class="form-control" 
+            [(ngModel)]="newClient.email"
+            name="email"
+            required
+            placeholder="Enter email address">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Phone</label>
+          <input 
+            type="tel" 
+            class="form-control" 
+            [(ngModel)]="newClient.phone"
+            name="phone"
+            placeholder="Enter phone number">
         </div>
       </div>
     </div>
   </div>
-}
+
+  <div class="card border-0 shadow-sm mt-3">
+    <div class="card-header bg-white border-0 py-3">
+      <h6 class="mb-0 fw-semibold d-flex align-items-center">
+        <i class="bi bi-building text-primary me-2"></i>
+        Company Details
+      </h6>
+    </div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Company</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            [(ngModel)]="newClient.company"
+            name="company"
+            placeholder="Enter company name">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Website</label>
+          <input 
+            type="url" 
+            class="form-control" 
+            [(ngModel)]="newClient.website"
+            name="website"
+            placeholder="https://example.com">
+        </div>
+        <div class="col-12">
+          <label class="form-label fw-semibold">Notes</label>
+          <textarea 
+            class="form-control" 
+            rows="3"
+            [(ngModel)]="newClient.notes"
+            name="notes"
+            placeholder="Additional notes about the client"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- View Client Modal -->
+<app-modal-form
+  [isVisible]="showViewModal"
+  title="Client Details"
+  subtitle="View client information"
+  icon="bi-person-circle"
+  primaryButtonText="Edit Client"
+  secondaryButtonText="Close"
+  [isValid]="true"
+  [formContent]="clientViewTemplate"
+  (primaryAction)="openEditModal(viewingClient!); closeViewModal()"
+  (secondaryAction)="closeViewModal()"
+  (close)="closeViewModal()">
+</app-modal-form>
+
+<ng-template #clientViewTemplate>
+  @if (viewingClient) {
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-0 py-3">
+        <h6 class="mb-0 fw-semibold d-flex align-items-center">
+          <i class="bi bi-person text-primary me-2"></i>
+          Contact Information
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-muted">Full Name</label>
+            <div class="form-control-plaintext fw-medium">{{ viewingClient.first_name }} {{ viewingClient.last_name }}</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-muted">Client ID</label>
+            <div class="form-control-plaintext fw-medium">#{{ viewingClient.id }}</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-muted">Email</label>
+            <div class="form-control-plaintext">
+              <a [href]="'mailto:' + viewingClient.email" class="text-decoration-none">
+                <i class="bi bi-envelope me-1"></i>{{ viewingClient.email }}
+              </a>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-muted">Phone</label>
+            <div class="form-control-plaintext">
+              @if (viewingClient.phone) {
+                <a [href]="'tel:' + viewingClient.phone" class="text-decoration-none">
+                  <i class="bi bi-telephone me-1"></i>{{ viewingClient.phone }}
+                </a>
+              } @else {
+                <span class="text-muted">Not provided</span>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mt-3">
+      <div class="card-header bg-white border-0 py-3">
+        <h6 class="mb-0 fw-semibold d-flex align-items-center">
+          <i class="bi bi-building text-primary me-2"></i>
+          Company Information
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-muted">Company</label>
+            <div class="form-control-plaintext fw-medium">
+              @if (viewingClient.company) {
+                {{ viewingClient.company }}
+              } @else {
+                <span class="text-muted">Not provided</span>
+              }
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-muted">Website</label>
+            <div class="form-control-plaintext">
+              @if (viewingClient.website) {
+                <a [href]="viewingClient.website" target="_blank" class="text-decoration-none">
+                  <i class="bi bi-globe me-1"></i>{{ viewingClient.website }}
+                  <i class="bi bi-box-arrow-up-right ms-1 small"></i>
+                </a>
+              } @else {
+                <span class="text-muted">Not provided</span>
+              }
+            </div>
+          </div>
+          @if (viewingClient.notes) {
+            <div class="col-12">
+              <label class="form-label fw-semibold text-muted">Notes</label>
+              <div class="form-control-plaintext bg-light p-3 rounded-3">{{ viewingClient.notes }}</div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mt-3">
+      <div class="card-header bg-white border-0 py-3">
+        <h6 class="mb-0 fw-semibold d-flex align-items-center">
+          <i class="bi bi-clock-history text-primary me-2"></i>
+          Account Information
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-muted">Created</label>
+            <div class="form-control-plaintext">
+              @if (viewingClient.created_at) {
+                <i class="bi bi-calendar-plus me-1"></i>{{ viewingClient.created_at | date:'medium' }}
+              } @else {
+                <span class="text-muted">Unknown</span>
+              }
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-muted">Last Updated</label>
+            <div class="form-control-plaintext">
+              @if (viewingClient.updated_at) {
+                <i class="bi bi-calendar-check me-1"></i>{{ viewingClient.updated_at | date:'medium' }}
+              } @else {
+                <span class="text-muted">Unknown</span>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</ng-template>
+
+<!-- Client Projects Modal -->
+<app-modal-form
+  [isVisible]="showProjectsModal"
+  [title]="'Projects for ' + (projectsClient?.first_name || '') + ' ' + (projectsClient?.last_name || '')"
+  subtitle="View all projects associated with this client"
+  icon="bi-kanban"
+  primaryButtonText="Create New Project"
+  secondaryButtonText="Close"
+  [isValid]="true"
+  size="xl"
+  [formContent]="projectsListTemplate"
+  (primaryAction)="router.navigate(['/workspace/projects/new'], { queryParams: { client_id: projectsClient?.id } }); closeProjectsModal()"
+  (secondaryAction)="closeProjectsModal()"
+  (close)="closeProjectsModal()">
+</app-modal-form>
+
+<ng-template #projectsListTemplate>
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-0 py-3">
+      <h6 class="mb-0 fw-semibold d-flex align-items-center">
+        <i class="bi bi-briefcase text-primary me-2"></i>
+        Project List
+      </h6>
+    </div>
+    <div class="card-body p-0">
+      @if (projects$ | async; as projects) {
+        @if (projects.length > 0) {
+          <app-data-table
+            [data]="projects"
+            [columns]="projectColumns"
+            [options]="projectTableOptions"
+            [actions]="projectActions"
+            (actionClicked)="onProjectAction($event)">
+          </app-data-table>
+        } @else {
+          <div class="text-center py-5 text-muted">
+            <i class="bi bi-briefcase-fill display-1 mb-3 opacity-25"></i>
+            <h5 class="mb-2">No Projects Found</h5>
+            <p class="mb-3">This client doesn't have any projects yet.</p>
+            <button class="btn btn-primary" (click)="router.navigate(['/workspace/projects/new'], { queryParams: { client_id: projectsClient?.id } }); closeProjectsModal()">
+              <i class="bi bi-plus-circle me-2"></i>Create First Project
+            </button>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</ng-template>

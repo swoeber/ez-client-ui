@@ -1,68 +1,140 @@
 @if (isVisible) {
 <div class="modal show d-block" tabindex="-1">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">{{ isEditing ? 'Edit Work Item' : 'Create New Work Item' }}</h5>
-        <button type="button" class="btn-close" (click)="onCancel()"></button>
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg">
+      <!-- Header -->
+      <div class="modal-header bg-primary text-white border-0 p-4">
+        <div class="d-flex align-items-center">
+          <div class="bg-white bg-opacity-25 rounded-3 p-2 me-3">
+            <i class="bi bi-list-task fs-4"></i>
+          </div>
+          <div>
+            <h4 class="modal-title mb-1">{{ isEditing ? 'Edit Work Item' : 'Create New Work Item' }}</h4>
+            <small class="opacity-75">{{ isEditing ? 'Update work item details' : 'Add a new work item to your project' }}</small>
+          </div>
+        </div>
+        <button type="button" class="btn-close btn-close-white" (click)="onCancel()"></button>
       </div>
-      <div class="modal-body">
+
+      <!-- Body -->
+      <div class="modal-body p-4 bg-light">
         <form (ngSubmit)="onSubmit()">
-          <div class="row g-3">
-            <div class="col-md-4">
-              <label class="form-label">Title *</label>
-              <input type="text" class="form-control" [(ngModel)]="currentItem.title" name="title" required>
+          <!-- Basic Info Section -->
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-0 py-3">
+              <h6 class="mb-0 fw-semibold d-flex align-items-center">
+                <i class="bi bi-info-circle text-primary me-2"></i>
+                Basic Information
+              </h6>
             </div>
-            <div class="col-md-4">
-              <label class="form-label">Type</label>
-              <select class="form-select" [(ngModel)]="currentItem.type" name="type" (change)="onTypeChange()">
-                @for (type of workItemTypes; track type.value) {
-                  <option [value]="type.value">{{ type.label }}</option>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-8">
+                  <label class="form-label fw-semibold">Title *</label>
+                  <input type="text" class="form-control" [(ngModel)]="currentItem.title" name="title" placeholder="Enter work item title" required>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold">Type</label>
+                  <select class="form-select" [(ngModel)]="currentItem.type" name="type" (change)="onTypeChange()">
+                    @for (type of workItemTypes; track type.value) {
+                      <option [value]="type.value">{{ type.label }}</option>
+                    }
+                  </select>
+                </div>
+                @if (isEditing) {
+                  <div class="col-md-4">
+                    <label class="form-label fw-semibold">Status</label>
+                    <select class="form-select" [(ngModel)]="currentItem.completed" name="status">
+                      <option [value]="false">🔄 Pending</option>
+                      <option [value]="true">✅ Completed</option>
+                    </select>
+                  </div>
                 }
-              </select>
-            </div>
-            @if (isEditing) {
-              <div class="col-md-4">
-                <label class="form-label">Status</label>
-                <select class="form-select" [(ngModel)]="currentItem.completed" name="status">
-                  <option [value]="false">Pending</option>
-                  <option [value]="true">Completed</option>
-                </select>
+                <div class="col-12">
+                  <label class="form-label fw-semibold">Description</label>
+                  <textarea class="form-control" rows="3" [(ngModel)]="currentItem.description" name="description" placeholder="Describe the work item..."></textarea>
+                </div>
               </div>
-            }
-            <div class="col-12">
-              <label class="form-label">Description</label>
-              <textarea class="form-control" rows="3" [(ngModel)]="currentItem.description" name="description"></textarea>
             </div>
-            @if (currentItem.type === 'task_list' && currentItem.tasks) {
-              <div class="col-12">
-                <label class="form-label">Tasks</label>
+          </div>
+
+          <!-- Tasks Section -->
+          @if (currentItem.type === 'task_list' && currentItem.tasks) {
+            <div class="card border-0 shadow-sm mb-4">
+              <div class="card-header bg-white border-0 py-3">
+                <h6 class="mb-0 fw-semibold d-flex align-items-center">
+                  <i class="bi bi-check2-square text-primary me-2"></i>
+                  Task List
+                </h6>
+              </div>
+              <div class="card-body">
                 @for (task of currentItem.tasks; track $index; let i = $index) {
-                  <div class="input-group mb-2">
-                    <input type="text" class="form-control" [(ngModel)]="task.title" [name]="'task-' + i" placeholder="Task title">
+                  <div class="input-group mb-3">
+                    <span class="input-group-text bg-light border-end-0">
+                      <i class="bi bi-grip-vertical text-muted"></i>
+                    </span>
+                    <input type="text" class="form-control border-start-0" [(ngModel)]="task.title" [name]="'task-' + i" placeholder="Task title">
                     <button type="button" class="btn btn-outline-danger" (click)="onRemoveTask(i)">
                       <i class="bi bi-trash"></i>
                     </button>
                   </div>
                 }
-                <button type="button" class="btn btn-sm btn-outline-primary" (click)="onAddTask()">
-                  <i class="bi bi-plus me-1"></i>Add Task
+                <button type="button" class="btn btn-outline-primary w-100" (click)="onAddTask()">
+                  <i class="bi bi-plus me-2"></i>Add Task
                 </button>
               </div>
-            }
-            <div class="col-12">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" [(ngModel)]="currentItem.require_photos" name="requirePhotos">
-                <label class="form-check-label">Require photos</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" [(ngModel)]="currentItem.completion_required" name="completionRequired">
-                <label class="form-check-label">Completion required</label>
+            </div>
+          }
+
+          <!-- Options Section -->
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-0 py-3">
+              <h6 class="mb-0 fw-semibold d-flex align-items-center">
+                <i class="bi bi-gear text-primary me-2"></i>
+                Options
+              </h6>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded-3">
+                    <div class="d-flex align-items-center">
+                      <div class="bg-primary rounded-2 p-2 me-3">
+                        <i class="bi bi-camera text-white"></i>
+                      </div>
+                      <div>
+                        <h6 class="mb-1 fw-semibold">Photo Required</h6>
+                        <small class="text-muted">Require photos for completion</small>
+                      </div>
+                    </div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" [(ngModel)]="currentItem.require_photos" name="requirePhotos">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded-3">
+                    <div class="d-flex align-items-center">
+                      <div class="bg-success rounded-2 p-2 me-3">
+                        <i class="bi bi-check-circle text-white"></i>
+                      </div>
+                      <div>
+                        <h6 class="mb-1 fw-semibold">Completion Required</h6>
+                        <small class="text-muted">Must be completed to finish project</small>
+                      </div>
+                    </div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" [(ngModel)]="currentItem.completion_required" name="completionRequired">
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" (click)="onCancel()">
+
+          <!-- Footer -->
+          <div class="d-flex gap-2 justify-content-end">
+            <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
               <i class="bi bi-x me-1"></i>Cancel
             </button>
             <button type="submit" class="btn btn-primary" [disabled]="!currentItem.title?.trim()">

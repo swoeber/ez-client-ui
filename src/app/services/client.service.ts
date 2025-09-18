@@ -37,6 +37,12 @@ export class ClientService {
     return this.http.post<Client>(`${environment.api}/clients`, client, { withCredentials: true });
   }
 
+  updateClient(client: Partial<Client>): Observable<Client> {
+    return this.http.put<Client>(`${environment.api}/clients/${client.id}`, client, {
+      withCredentials: true,
+    });
+  }
+
   deleteClient(id: number): Observable<any> {
     return this.http.delete(`${environment.api}/clients/${id}`, { withCredentials: true });
   }

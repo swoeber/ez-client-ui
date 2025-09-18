@@ -30,6 +30,7 @@ export class ProjectsComponent implements OnInit {
   quickViewProject?: Project;
 
   projectColumns: TableColumn[] = [
+    {key: 'displayId', label: 'ID', sortable: true, clickable: true},
     {key: 'name', label: 'Project Name', sortable: true, clickable: true},
     {key: 'status', label: 'Status', sortable: true, type: 'badge'},
     {key: 'assignee.full_name', label: 'Assignee', sortable: true},
@@ -112,6 +113,8 @@ export class ProjectsComponent implements OnInit {
 
   onColumnClick(event: { column: string, item: Project }) {
     if (event.column === 'name') {
+      this.router.navigate(['/workspace/projects/' + event.item.id]);
+    } else if (event.column === 'displayId') {
       this.router.navigate(['/workspace/projects/' + event.item.id]);
     }
   }

@@ -140,14 +140,127 @@
   }
 </div>
 
-<app-work-item-modal
-  [workItem]="editingWorkItem"
-  [newWorkItem]="newWorkItem"
-  [workItemTypes]="workItemTypes"
+<app-modal-form
   [isVisible]="!!(editingWorkItem || showCreateForm)"
-  (save)="onModalSave($event)"
-  (cancel)="onModalCancel()"
-  (typeChange)="onTypeChange()"
-  (addTask)="onModalAddTask()"
-  (removeTask)="onModalRemoveTask($event)">
-</app-work-item-modal>
+  [title]="editingWorkItem ? 'Edit Work Item' : 'Create New Work Item'"
+  [subtitle]="editingWorkItem ? 'Update work item details' : 'Add a new work item to your project'"
+  icon="bi-list-task"
+  [primaryButtonText]="editingWorkItem ? 'Save Changes' : 'Create Work Item'"
+  [isValid]="isFormValid()"
+  [formContent]="workItemFormTemplate"
+  (primaryAction)="onModalSave()"
+  (secondaryAction)="onModalCancel()"
+  (close)="onModalCancel()">
+</app-modal-form>
+
+<ng-template #workItemFormTemplate>
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-0 py-3">
+      <h6 class="mb-0 fw-semibold d-flex align-items-center">
+        <i class="bi bi-info-circle text-primary me-2"></i>
+        Basic Information
+      </h6>
+    </div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-8">
+          <label class="form-label fw-semibold">Title *</label>
+          <input type="text" class="form-control" [(ngModel)]="getCurrentItem().title" name="title" placeholder="Enter work item title" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Type</label>
+          <select class="form-select" [(ngModel)]="getCurrentItem().type" name="type" (change)="onTypeChange()">
+            @for (type of workItemTypes; track type.value) {
+              <option [value]="type.value">{{ type.label }}</option>
+            }
+          </select>
+        </div>
+        @if (editingWorkItem) {
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Status</label>
+            <select class="form-select" [(ngModel)]="getCurrentItem().completed" name="status">
+              <option [value]="false">🔄 Pending</option>
+              <option [value]="true">✅ Completed</option>
+            </select>
+          </div>
+        }
+        <div class="col-12">
+          <label class="form-label fw-semibold">Description</label>
+          <textarea class="form-control" rows="3" [(ngModel)]="getCurrentItem().description" name="description" placeholder="Describe the work item..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (getCurrentItem().type === 'task_list' && getCurrentItem().tasks) {
+    <div class="card border-0 shadow-sm mt-3">
+      <div class="card-header bg-white border-0 py-3">
+        <h6 class="mb-0 fw-semibold d-flex align-items-center">
+          <i class="bi bi-check2-square text-primary me-2"></i>
+          Task List
+        </h6>
+      </div>
+      <div class="card-body">
+        @for (task of getCurrentItem().tasks; track $index; let i = $index) {
+          <div class="input-group mb-3">
+            <span class="input-group-text bg-light border-end-0">
+              <i class="bi bi-grip-vertical text-muted"></i>
+            </span>
+            <input type="text" class="form-control border-start-0" [(ngModel)]="task.title" [name]="'task-' + i" placeholder="Task title">
+            <button type="button" class="btn btn-outline-danger" (click)="onModalRemoveTask(i)">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        }
+        <button type="button" class="btn btn-outline-primary w-100" (click)="onModalAddTask()">
+          <i class="bi bi-plus me-2"></i>Add Task
+        </button>
+      </div>
+    </div>
+  }
+
+  <div class="card border-0 shadow-sm mt-3">
+    <div class="card-header bg-white border-0 py-3">
+      <h6 class="mb-0 fw-semibold d-flex align-items-center">
+        <i class="bi bi-gear text-primary me-2"></i>
+        Options
+      </h6>
+    </div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded-3">
+            <div class="d-flex align-items-center">
+              <div class="bg-primary rounded-2 p-2 me-3">
+                <i class="bi bi-camera text-white"></i>
+              </div>
+              <div>
+                <h6 class="mb-1 fw-semibold">Photo Required</h6>
+                <small class="text-muted">Require photos for completion</small>
+              </div>
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" [(ngModel)]="getCurrentItem().require_photos" name="requirePhotos">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded-3">
+            <div class="d-flex align-items-center">
+              <div class="bg-success rounded-2 p-2 me-3">
+                <i class="bi bi-check-circle text-white"></i>
+              </div>
+              <div>
+                <h6 class="mb-1 fw-semibold">Completion Required</h6>
+                <small class="text-muted">Must be completed to finish project</small>
+              </div>
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" [(ngModel)]="getCurrentItem().completion_required" name="completionRequired">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
