@@ -35,10 +35,10 @@
 <!-- Add Client Modal -->
 <app-modal-form
   [isVisible]="showAddModal"
-  title="Add New Client"
-  subtitle="Create a new client profile"
+  title="{{ !newClient.id ? 'Add New Client' : 'Edit Client'}}"
+  subtitle="{{ !newClient.id ? 'Create a new client profile' : 'Edit the client profile'}}"
   icon="bi-person-plus"
-  primaryButtonText="Create Client"
+  primaryButtonText="{{ !newClient.id ? 'Add Client' : 'Update Client'}}"
   [isSubmitting]="isSubmitting"
   [isValid]="isFormValid()"
   [formContent]="clientFormTemplate"
