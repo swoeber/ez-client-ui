@@ -16,8 +16,20 @@ export class UserService {
     });
   }
 
-  updateUser(): Observable<User> {
-    return this.http.patch<User>(`${environment.api}/users`, {
+  createUser(user: Partial<User>): Observable<User> {
+    return this.http.post<User>(`${environment.api}/users`, user, {
+      withCredentials: true,
+    });
+  }
+
+  updateUser(data: Partial<User>): Observable<User> {
+    return this.http.patch<User>(`${environment.api}/users/${data.id}`, data, {
+      withCredentials: true,
+    });
+  }
+
+  getUserById(id: number): Observable<User> {
+    return this.http.get<User>(`${environment.api}/users/${id}`, {
       withCredentials: true,
     });
   }

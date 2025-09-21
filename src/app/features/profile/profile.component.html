@@ -1,8 +1,8 @@
-<div class="profile-container">
-  <!-- Hero Header -->
-  <div class="profile-hero">
-    <div class="hero-content">
-      <div class="hero-avatar">
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <div class="user-avatar">
         @if (profileImage || user?.avatar_url) {
         <img [src]="profileImage || user?.avatar_url" class="avatar-image" alt="Profile">
         } @else {
@@ -17,147 +17,95 @@
           </button>
         </div>
       </div>
-      <div class="hero-info">
+      <div class="header-text">
         @if (user) {
-        <h1 class="hero-name">{{ user.full_name }}</h1>
-        <p class="hero-email">{{ user.email }}</p>
+        <h1 class="dashboard-title">{{ user.full_name }}</h1>
+        <p class="dashboard-subtitle">{{ user.email }} • ID: {{ user.id }}</p>
         @if (user.roles && user.roles.length > 0) {
-        <div class="hero-roles">
+        <div class="user-roles">
           @for (role of user.roles; track role) {
           <span class="role-badge">{{ role | titlecase }}</span>
           }
         </div>
         }
-        <div class="hero-meta">
-          <span class="meta-item">
-            <i class="bi bi-calendar-check"></i>
-            Member since Jan 2024
-          </span>
-          <span class="meta-item">
-            <i class="bi bi-hash"></i>
-            ID: {{ user.id }}
-          </span>
-        </div>
         }
       </div>
     </div>
   </div>
 
-  <div class="profile-content">
-    <div class="row g-4">
-      <!-- Quick Stats -->
-      <!-- <div class="col-12">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-icon bg-primary">
-              <i class="bi bi-briefcase"></i>
-            </div>
-            <div class="stat-content">
-              <h3 class="stat-number">12</h3>
-              <p class="stat-label">Active Projects</p>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon bg-success">
-              <i class="bi bi-check-circle"></i>
-            </div>
-            <div class="stat-content">
-              <h3 class="stat-number">48</h3>
-              <p class="stat-label">Completed Tasks</p>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon bg-info">
-              <i class="bi bi-people"></i>
-            </div>
-            <div class="stat-content">
-              <h3 class="stat-number">8</h3>
-              <p class="stat-label">Team Members</p>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon bg-warning">
-              <i class="bi bi-clock"></i>
-            </div>
-            <div class="stat-content">
-              <h3 class="stat-number">156h</h3>
-              <p class="stat-label">Hours Logged</p>
-            </div>
+  <!-- Content Grid -->
+  <div class="dashboard-grid">
+    <!-- Personal Information -->
+    <div class="personal-info-section">
+      <div class="card modern-card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="bi bi-person"></i>
+            <span>Personal Information</span>
           </div>
         </div>
-      </div> -->
-
-      <!-- Personal Information -->
-      <div class="col-lg-8">
-        <div class="profile-card">
-          <div class="card-header">
-            <h2 class="card-title">
-              <i class="bi bi-person"></i>
-              Personal Information
-            </h2>
-          </div>
-          <div class="card-body">
-            <form [formGroup]="profileForm" (ngSubmit)="onSave()">
-              <div class="form-grid">
-                <div class="form-group">
-                  <label class="form-label">Prefix</label>
-                  <select class="form-control" formControlName="prefix">
-                    @for (option of prefixOptions; track option) {
-                    <option [value]="option">{{ option || 'None' }}</option>
-                    }
-                  </select>
-                </div>
-                <div class="form-group span-2">
-                  <label class="form-label">First Name *</label>
-                  <input type="text" class="form-control" formControlName="first_name" placeholder="Enter first name">
-                </div>
-                <div class="form-group span-2">
-                  <label class="form-label">Last Name *</label>
-                  <input type="text" class="form-control" formControlName="last_name" placeholder="Enter last name">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Suffix</label>
-                  <select class="form-control" formControlName="suffix">
-                    @for (option of suffixOptions; track option) {
-                    <option [value]="option">{{ option || 'None' }}</option>
-                    }
-                  </select>
-                </div>
-                <div class="form-group span-full">
-                  <label class="form-label">Email Address *</label>
-                  <input type="email" class="form-control" formControlName="email" placeholder="Enter email address">
-                </div>
-              </div>
-              <div class="form-actions">
-                <button type="submit" class="btn btn-primary" [disabled]="profileForm.invalid || isLoading">
-                  @if (isLoading) {
-                  <span class="spinner-border spinner-border-sm me-2"></span>
-                  } @else {
-                  <i class="bi bi-check me-2"></i>
+        <div class="card-body">
+          <form [formGroup]="profileForm" (ngSubmit)="onSave()">
+            <div class="info-grid">
+              <div class="info-item">
+                <label class="info-label">Prefix</label>
+                <select class="form-control" formControlName="prefix">
+                  @for (option of prefixOptions; track option) {
+                  <option [value]="option">{{ option || 'None' }}</option>
                   }
-                  Save Changes
-                </button>
-                @if (profileImage || user?.avatar_url) {
-                <button type="button" class="btn btn-outline-danger" (click)="removeProfileImage()" [disabled]="isLoading">
-                  <i class="bi bi-trash me-1"></i>
-                  Remove Photo
-                </button>
-                }
+                </select>
               </div>
-            </form>
-          </div>
+              <div class="info-item">
+                <label class="info-label">First Name *</label>
+                <input type="text" class="form-control" formControlName="first_name" placeholder="Enter first name">
+              </div>
+              <div class="info-item">
+                <label class="info-label">Last Name *</label>
+                <input type="text" class="form-control" formControlName="last_name" placeholder="Enter last name">
+              </div>
+              <div class="info-item">
+                <label class="info-label">Suffix</label>
+                <select class="form-control" formControlName="suffix">
+                  @for (option of suffixOptions; track option) {
+                  <option [value]="option">{{ option || 'None' }}</option>
+                  }
+                </select>
+              </div>
+              <div class="info-item">
+                <label class="info-label">Email Address *</label>
+                <input type="email" class="form-control" formControlName="email" placeholder="Enter email address">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" [disabled]="profileForm.invalid || isLoading">
+                @if (isLoading) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                } @else {
+                <i class="bi bi-check me-2"></i>
+                }
+                Save Changes
+              </button>
+              @if (profileImage || user?.avatar_url) {
+              <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeProfileImage()" [disabled]="isLoading">
+                <i class="bi bi-trash me-1"></i>
+                Remove Photo
+              </button>
+              }
+            </div>
+          </form>
         </div>
       </div>
+    </div>
 
-      <!-- Security & Preferences -->
-      <div class="col-lg-4">
-        <div class="profile-card">
-          <div class="card-header">
-            <h2 class="card-title">
-              <i class="bi bi-shield-lock"></i>
-              Security
-            </h2>
+    <!-- Security & Preferences -->
+    <div class="settings-section">
+      <div class="card modern-card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="bi bi-shield-lock"></i>
+            <span>Security</span>
           </div>
+        </div>
           <div class="card-body">
             <div class="security-items">
               <div class="security-item">
@@ -194,13 +142,13 @@
           </div>
         </div>
 
-        <div class="profile-card mt-4">
-          <div class="card-header">
-            <h2 class="card-title">
-              <i class="bi bi-gear"></i>
-              Preferences
-            </h2>
+      <div class="card modern-card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="bi bi-gear"></i>
+            <span>Preferences</span>
           </div>
+        </div>
           <div class="card-body">
             <div class="preference-items">
               <div class="preference-item">
@@ -232,7 +180,6 @@
               </div>
             </div>
           </div>
-        </div>
       </div>
     </div>
   </div>

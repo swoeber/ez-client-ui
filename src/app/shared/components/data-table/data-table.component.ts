@@ -2,6 +2,7 @@ import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitte
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { debounceTime, Subject } from 'rxjs';
 
 export interface TableColumn {
   key: string;
@@ -18,12 +19,12 @@ export interface TableOptions {
   sortable?: boolean;
 }
 
-export interface ActionItem {
+export interface ActionItem<T = unknown> {
   label: string;
   action: string;
   icon?: string;
-  disabled?: (item: any) => boolean;
-  showActions?: (item: any) => boolean;
+  disabled?: (item: T) => boolean;
+  showActions?: (item: T) => boolean;
 }
 
 @Component({
@@ -33,15 +34,15 @@ export interface ActionItem {
   templateUrl: './data-table.component.html',
   styleUrls: ['./data-table.component.scss'],
 })
-export class DataTableComponent implements OnInit, OnChanges {
-  @Input() data: any[] = [];
+export class DataTableComponent<T = unknown> implements OnInit, OnChanges {
+  @Input() data: T[] = [];
   @Input() columns: TableColumn[] = [];
   @Input() options: TableOptions = {};
-  @Input() actions: ActionItem[] = [];
-  @Output() actionClicked = new EventEmitter<{action: string, item: any}>();
-  @Output() columnClicked = new EventEmitter<{column: string, item: any}>();
+  @Input() actions: ActionItem<T>[] = [];
+  @Output() actionClicked = new EventEmitter<{action: string, item: T}>();
+  @Output() columnClicked = new EventEmitter<{column: string, item: T}>();
 
-  filteredData: any[] = [];
+  filteredData: T[] = [];
   searchTerm = '';
   sortColumn = '';
   sortDirection: 'asc' | 'desc' = 'asc';
@@ -50,9 +51,20 @@ export class DataTableComponent implements OnInit, OnChanges {
   pageSize = 10;
   collectionSize = 0;
 
+  Math = Math;
+
+  private searchSubject = new Subject<string>();
+  private static currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+  private static numberFormatter = new Intl.NumberFormat();
+  private static dateFormatter = new Intl.DateTimeFormat();
+
   ngOnInit() {
     this.pageSize = this.options.pageSize || 10;
     this.updateFilteredData();
+    
+    this.searchSubject.pipe(debounceTime(300)).subscribe(term => {
+      this.performSearch(term);
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -68,13 +80,19 @@ export class DataTableComponent implements OnInit, OnChanges {
   }
 
   onSearch() {
-    if (!this.searchTerm) {
+    this.searchSubject.next(this.searchTerm);
+  }
+
+  private performSearch(term: string) {
+    if (!term) {
       this.filteredData = [...this.data];
     } else {
+      const lowerTerm = term.toLowerCase();
       this.filteredData = this.data.filter((item) =>
-        this.columns.some((col) =>
-          String(this.getNestedValue(item, col.key) || '').toLowerCase().includes(this.searchTerm.toLowerCase())
-        )
+        this.columns.some((col) => {
+          const value = this.getNestedValue(item, col.key);
+          return value && String(value).toLowerCase().includes(lowerTerm);
+        })
       );
     }
     this.collectionSize = this.filteredData.length;
@@ -95,6 +113,11 @@ export class DataTableComponent implements OnInit, OnChanges {
       const aVal = this.getNestedValue(a, column.key);
       const bVal = this.getNestedValue(b, column.key);
 
+      // Handle null/undefined values
+      if (aVal == null && bVal == null) return 0;
+      if (aVal == null) return this.sortDirection === 'asc' ? -1 : 1;
+      if (bVal == null) return this.sortDirection === 'asc' ? 1 : -1;
+
       if (aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;
       if (aVal > bVal) return this.sortDirection === 'asc' ? 1 : -1;
       return 0;
@@ -112,37 +135,53 @@ export class DataTableComponent implements OnInit, OnChanges {
     return this.actions && this.actions.length > 0;
   }
 
-  getNestedValue(obj: any, path: string): any {
-    return path.split('.').reduce((current, key) => current?.[key], obj);
+  getNestedValue(obj: unknown, path: string): unknown {
+    return path.split('.').reduce((current, key) => (current as any)?.[key], obj);
   }
 
-  formatValue(value: any, type?: string): string {
-    if (!value) return '';
+  getItemId(item: T, index: number): string {
+    const id = this.getNestedValue(item, 'id');
+    return id ? String(id) : String(index);
+  }
 
-    switch (type) {
-      case 'currency':
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value / 100);
-      case 'date':
-        return new Date(value).toLocaleDateString();
-      case 'number':
-        return new Intl.NumberFormat().format(value);
-      case 'percentage':
-        return new Intl.NumberFormat().format(value) + '%';
-      case 'badge':
-        return String(value).replace('_', ' ');
-      default:
-        return String(value);
+  formatValue(value: unknown, type?: string): string {
+    if (value == null) return '';
+
+    try {
+      switch (type) {
+        case 'currency':
+          const numValue = typeof value === 'string' ? parseFloat(value) : value as number;
+          return DataTableComponent.currencyFormatter.format(numValue / 100);
+        case 'date':
+          const date = new Date(value as string | number | Date);
+          if (isNaN(date.getTime())) return String(value);
+          return date.toLocaleDateString();
+        case 'number':
+          return DataTableComponent.numberFormatter.format(value as number);
+        case 'percentage':
+          return DataTableComponent.numberFormatter.format(value as number) + '%';
+        case 'badge':
+          return String(value).replace('_', ' ');
+        default:
+          return String(value);
+      }
+    } catch (error) {
+      return String(value);
     }
   }
 
-  getBadgeClass(value: any): string {
+  getBadgeClass(value: unknown): string {
+    if (value == null) return 'bg-secondary';
+    
     const status = String(value).toLowerCase();
     switch (status) {
       case 'done':
       case 'completed':
+      case 'active':
+      case 'true':
         return 'bg-success';
       case 'in_progress':
-      case 'active':
+      case 'pending':
         return 'bg-primary';
       case 'on_hold':
       case 'paused':
@@ -150,25 +189,26 @@ export class DataTableComponent implements OnInit, OnChanges {
       case 'canceled':
       case 'cancelled':
       case 'blocked':
+      case 'false':
         return 'bg-danger';
       default:
         return 'bg-secondary';
     }
   }
 
-  onActionClick(action: string, item: any) {
+  onActionClick(action: string, item: T) {
     this.actionClicked.emit({ action, item });
   }
 
-  isActionDisabled(actionItem: ActionItem, item: any): boolean {
+  isActionDisabled(actionItem: ActionItem<T>, item: T): boolean {
     return actionItem.disabled?.(item) ?? false;
   }
 
-  shouldShowActions(item: any): boolean {
+  hasVisibleActions(item: T): boolean {
     return this.actions.some(action => !action.showActions || action.showActions(item));
   }
 
-  onColumnClick(column: TableColumn, item: any) {
+  onColumnClick(column: TableColumn, item: T) {
     if (column.clickable) {
       this.columnClicked.emit({ column: column.key, item });
     }

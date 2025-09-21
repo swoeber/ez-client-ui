@@ -11,6 +11,8 @@
             Welcome Back
           } @else if (isSignup) {
             Create Account
+          } @else if (isComplete) {
+            Complete Registration
           } @else {
             Reset Password
           }
@@ -20,6 +22,8 @@
             Sign in to your account
           } @else if (isSignup) {
             Join us today
+          } @else if (isComplete) {
+            Set your password to complete registration
           } @else {
             We'll send you a reset link
           }
@@ -50,20 +54,22 @@
           </div>
         }
 
-        <div class="mb-3">
-          <div class="input-group">
-            <span class="input-group-text bg-light border-end-0">
-              <i class="bi bi-envelope text-muted"></i>
-            </span>
-            <input
-              type="email"
-              formControlName="email"
-              placeholder="Email Address"
-              class="form-control border-start-0 bg-light"
-              style="padding: 12px 16px;"
-              [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched">
+        @if (!isComplete) {
+          <div class="mb-3">
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0">
+                <i class="bi bi-envelope text-muted"></i>
+              </span>
+              <input
+                type="email"
+                formControlName="email"
+                placeholder="Email Address"
+                class="form-control border-start-0 bg-light"
+                style="padding: 12px 16px;"
+                [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched">
+            </div>
           </div>
-        </div>
+        }
 
         @if (!isReset) {
           <div class="mb-4">
@@ -74,7 +80,7 @@
               <input
                 type="password"
                 formControlName="password"
-                placeholder="Password"
+                [placeholder]="isComplete ? 'Create Password' : 'Password'"
                 class="form-control border-start-0 bg-light"
                 style="padding: 12px 16px;"
                 [class.is-invalid]="form.get('password')?.invalid && form.get('password')?.touched">
@@ -93,6 +99,8 @@
             <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
           } @else if (isSignup) {
             <i class="bi bi-person-plus me-2"></i>Create Account
+          } @else if (isComplete) {
+            <i class="bi bi-check-circle me-2"></i>Complete Registration
           } @else {
             <i class="bi bi-envelope me-2"></i>Send Reset Link
           }
@@ -113,6 +121,11 @@
           <a class="text-decoration-none text-primary fw-medium" (click)="setMode('login')" style="cursor: pointer;">
             Already have an account? <span class="fw-bold">Sign in</span>
           </a>
+        } @else if (isComplete) {
+          <p class="text-muted small mb-0">
+            <i class="bi bi-shield-check me-1"></i>
+            Your account is almost ready. Just set a secure password.
+          </p>
         } @else {
           <a class="text-decoration-none text-primary fw-medium" (click)="setMode('login')" style="cursor: pointer;">
             <i class="bi bi-arrow-left me-1"></i>Back to sign in

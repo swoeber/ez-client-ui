@@ -51,7 +51,7 @@ export class ClientsComponent {
       label: 'Delete',
       action: 'delete',
       icon: 'trash',
-      disabled: (item) => item.status === 'active',
+      disabled: (item) => (item as any).status === 'active',
     },
   ];
 

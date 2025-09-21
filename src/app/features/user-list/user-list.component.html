@@ -1,1 +1,51 @@
-<p>user-list works!</p>
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <div class="dashboard-icon">
+        <i class="bi bi-people-fill"></i>
+      </div>
+      <div class="header-text">
+        <h1 class="dashboard-title">Users</h1>
+        <p class="dashboard-subtitle">Manage your team members and their access</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="openAddModal()">
+        <i class="bi bi-plus-circle me-2"></i>
+        Add New User
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="users-section">
+    <div class="card modern-card">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="bi bi-people"></i>
+          <span>Team Members</span>
+        </div>
+      </div>
+      <div class="card-body table-container">
+        @if (users$ | async; as users) {
+          @if (users.length > 0) {
+            <app-data-table
+              [data]="users"
+              [columns]="clientColumns"
+              [options]="tableOptions"
+              [actions]="clientActions"
+              (actionClicked)="onAction($event)"
+            ></app-data-table>
+          } @else {
+            <div class="empty-state">
+              <i class="bi bi-people-fill"></i>
+              <h6>No Users Yet</h6>
+              <p>Get started by <a class="link-primary" (click)="openAddModal()">adding your first team member</a>.</p>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+</div>

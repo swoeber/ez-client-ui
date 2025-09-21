@@ -45,8 +45,8 @@
                   <div class="col-md-4">
                     <label class="form-label fw-semibold">Status</label>
                     <select class="form-select" [(ngModel)]="currentItem.completed" name="status">
-                      <option [value]="false">🔄 Pending</option>
-                      <option [value]="true">✅ Completed</option>
+                      <option [value]="0">🔄 Pending</option>
+                      <option [value]="1">✅ Completed</option>
                     </select>
                   </div>
                 }

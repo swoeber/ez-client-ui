@@ -1,19 +1,40 @@
 import { Component, inject, OnInit } from '@angular/core';
-import {
-  DataTableComponent,
-  TableColumn,
-  TableOptions,
-  ActionItem,
-} from '../../shared/components/data-table/data-table.component';
 import { Client, ClientService } from '../../services/client.service';
 import { CommonModule } from '@angular/common';
-import { Observable } from 'rxjs';
+import { Observable, map, combineLatest } from 'rxjs';
 import { Project, ProjectQueryParams, ProjectService } from '../../services/project.service';
 import { Router } from '@angular/router';
 
+interface ProjectStats {
+  active: number;
+  overdue: number;
+}
+
+interface ClientStats {
+  total: number;
+  newThisMonth: number;
+}
+
+interface RevenueStats {
+  thisMonth: number;
+  pending: number;
+}
+
+interface TaskStats {
+  dueToday: number;
+  overdue: number;
+}
+
+interface Activity {
+  id: string;
+  message: string;
+  timestamp: Date;
+  icon: string;
+}
+
 @Component({
   selector: 'app-dashboard',
-  imports: [DataTableComponent, CommonModule],
+  imports: [CommonModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
@@ -22,82 +43,96 @@ export class DashboardComponent implements OnInit {
   projectService: ProjectService = inject(ProjectService);
   router: Router = inject(Router);
 
-  done = 0;
-
-  clients$: Observable<Client[]> = new Observable<Client[]>();
-  projects$: Observable<Project[]> = new Observable<Project[]>();
-
-  // Define Client columns
-  clientColumns: TableColumn[] = [
-    { key: 'id', label: 'ID', sortable: true, type: 'number' },
-    { key: 'name', label: 'Client Name', sortable: true },
-    { key: 'first_name', label: 'First Name', sortable: true },
-    { key: 'last_name', label: 'Last Name', sortable: true },
-    { key: 'email', label: 'Email' },
-  ];
-
-  // projectColumns: TableColumn[] = [
-  //   { key: 'id', label: 'ID', sortable: true, type: 'number' },
-  //   { key: 'name', label: 'Project Name', sortable: true },
-  //   { key: 'status', label: 'Status', sortable: true },
-  //   { key: 'due_on', label: 'Due On', sortable: true, type: 'date' },
-  // ];
-
-  projectColumns: TableColumn[] = [
-    {key: 'displayId', label: 'ID', sortable: true, clickable: true},
-    {key: 'name', label: 'Project Name', sortable: true, clickable: true},
-    {key: 'status', label: 'Status', sortable: true, type: 'badge'},
-    {key: 'assignee.full_name', label: 'Assignee', sortable: true},
-    {key: 'starts_on', label: 'Start Date', sortable: true, type: 'date'},
-    {key: 'due_on', label: 'Due Date', sortable: true, type: 'date'},
-    // {key: 'created_at', label: 'Created', sortable: true, type: 'date'}
-  ];
-
-
-  // Configure Client options
-  tableOptions: TableOptions = {
-    showSearch: false,
-    showPagination: true,
-    pageSize: 5,
-    sortable: true, // Global sortable override
-  };
-
-  // Define actions for clients
-  clientActions: ActionItem[] = [
-    { label: 'View', action: 'view', icon: 'eye' },
-    { label: 'Edit', action: 'edit', icon: 'pencil', showActions: (item) => item.id !== 1 },
-    {
-      label: 'Delete',
-      action: 'delete',
-      icon: 'trash',
-      disabled: (item) => item.status === 'active',
-      showActions: (item) => item.id !== 1,
-    },
-  ];
-
-  // Define actions for projects
-  projectActions: ActionItem[] = [
-    { label: 'View', action: 'view', icon: 'eye' },
-    {
-      label: 'Edit',
-      action: 'edit',
-      icon: 'pencil',
-      showActions: (item) => item.status !== 'completed',
-    },
-    {
-      label: 'Archive',
-      action: 'archive',
-      icon: 'archive',
-      showActions: (item) => item.status !== 'archived',
-    },
-  ];
+  projectStats: ProjectStats = { active: 0, overdue: 0 };
+  clientStats: ClientStats = { total: 0, newThisMonth: 0 };
+  revenueStats: RevenueStats = { thisMonth: 0, pending: 0 };
+  taskStats: TaskStats = { dueToday: 0, overdue: 0 };
+  recentActivity: Activity[] = [];
 
   ngOnInit() {
-    // this.loadClients();
-    const projectParams: ProjectQueryParams = { sort: 'due_on', direction: 'desc' };
+    this.loadDashboardData();
+  }
 
-    this.clients$ = this.clientService.getClients();
-    this.projects$ = this.projectService.all(projectParams);
+  private loadDashboardData() {
+    const clients$ = this.clientService.getClients();
+    const projects$ = this.projectService.all({ sort: 'due_on', direction: 'desc' });
+
+    combineLatest([clients$, projects$]).subscribe(([clients, projects]) => {
+      this.calculateProjectStats(projects);
+      this.calculateClientStats(clients);
+      this.calculateRevenueStats();
+      this.calculateTaskStats(projects);
+      this.generateRecentActivity(projects, clients);
+    });
+  }
+
+  private calculateProjectStats(projects: Project[]) {
+    const today = new Date();
+    const activeProjects = projects.filter(p => p.status !== 'done');
+    const overdueProjects = activeProjects.filter(p => p.due_on && new Date(p.due_on) < today);
+    
+    this.projectStats = {
+      active: activeProjects.length,
+      overdue: overdueProjects.length
+    };
+  }
+
+  private calculateClientStats(clients: Client[]) {
+    const thisMonth = new Date();
+    thisMonth.setDate(1);
+    
+    const newThisMonth = clients.filter(c => 
+      c.created_at && new Date(c.created_at) >= thisMonth
+    ).length;
+    
+    this.clientStats = {
+      total: clients.length,
+      newThisMonth
+    };
+  }
+
+  private calculateRevenueStats() {
+    // Mock data - replace with actual invoice service
+    this.revenueStats = {
+      thisMonth: 15750,
+      pending: 3200
+    };
+  }
+
+  private calculateTaskStats(projects: Project[]) {
+    // Mock data - replace with actual task service
+    this.taskStats = {
+      dueToday: 5,
+      overdue: 2
+    };
+  }
+
+  private generateRecentActivity(projects: Project[], clients: Client[]) {
+    const activities: Activity[] = [];
+    
+    // Add recent project activities
+    projects.slice(0, 3).forEach(project => {
+      activities.push({
+        id: `project-${project.id}`,
+        message: `Project "${project.name}" was updated`,
+        timestamp: new Date(project.updated_at || project.created_at),
+        icon: 'bi-kanban-fill'
+      });
+    });
+    
+    // Add recent client activities
+    clients.slice(0, 2).forEach(client => {
+      activities.push({
+        id: `client-${client.id}`,
+        message: `New client "${client.first_name}" was added`,
+        timestamp: new Date(client.created_at),
+        icon: 'bi-person-plus-fill'
+      });
+    });
+    
+    this.recentActivity = activities
+      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+      .slice(0, 5);
   }
 
   goToProjects() {
@@ -120,38 +155,5 @@ export class DashboardComponent implements OnInit {
 
   newInvoice() {}
 
-  onColumnClick(event: { column: string, item: Project }) {
-    if (event.column === 'name' || event.column === 'displayId') {
-      this.router.navigate(['/workspace/projects/' + event.item.id]);
-    }
-  }
 
-  onClientAction(event: { action: string; item: any }) {
-    switch (event.action) {
-      case 'view':
-        console.log('Viewing client:', event.item);
-        break;
-      case 'edit':
-        console.log('Editing client:', event.item);
-        break;
-      case 'delete':
-        console.log('Deleting client:', event.item);
-        break;
-    }
-  }
-
-  onProjectAction(event: { action: string; item: any }) {
-    switch (event.action) {
-      case 'view':
-        this.router.navigateByUrl(`workspace/projects/${event.item.id}`);
-        break;
-      case 'edit':
-        console.log('Editing project:', event.item);
-        this.router.navigateByUrl(`workspace/projects/${event.item.id}/edit`);
-        break;
-      case 'archive':
-        console.log('Archiving project:', event.item);
-        break;
-    }
-  }
 }

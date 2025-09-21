@@ -65,4 +65,11 @@ export class AuthService {
       { withCredentials: true }
     );
   }
+
+  async completeRegistration(token: string, password: string): Promise<any> {
+    await this.getCsrfToken();
+    return this.http
+      .post(`${environment.api}/complete-registration`, { token, password }, { withCredentials: true })
+      .toPromise();
+  }
 }

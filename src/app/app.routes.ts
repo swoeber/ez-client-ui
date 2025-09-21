@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { Workspace } from './components/workspace/workspace';
 import { authGuard } from './guards/auth.guard';
 import { WorkitemResolver } from './resolver/workitem.resolver';
+import { userResolver } from './resolver/user.resolver';
 
 export const routes: Routes = [
   {
@@ -19,6 +20,23 @@ export const routes: Routes = [
         path: 'users',
         loadComponent: () =>
           import('./features/user-list/user-list.component').then((m) => m.UserListComponent),
+      },
+      {
+        path: 'users/new',
+        loadComponent: () =>
+          import('./features/user-list/user-form/user-form.component').then((m) => m.UserFormComponent),
+      },
+      {
+        path: 'users/:id',
+        resolve: { user: userResolver },
+        loadComponent: () =>
+          import('./features/user-dashboard/user-dashboard.component').then((m) => m.UserDashboardComponent),
+      },
+      {
+        path: 'users/:id/edit',
+        resolve: { user: userResolver },
+        loadComponent: () =>
+          import('./features/user-list/user-form/user-form.component').then((m) => m.UserFormComponent),
       },
       {
         path: 'profile',
@@ -98,6 +116,10 @@ export const routes: Routes = [
   },
   {
     path: 'login',
+    loadComponent: () => import('./components/login/login.component').then((m) => m.LoginComponent),
+  },
+  {
+    path: 'complete-registration',
     loadComponent: () => import('./components/login/login.component').then((m) => m.LoginComponent),
   },
   {

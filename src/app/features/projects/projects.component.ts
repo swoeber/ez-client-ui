@@ -39,12 +39,12 @@ export class ProjectsComponent implements OnInit {
     {key: 'created_at', label: 'Created', sortable: true, type: 'date'}
   ];
 
-  projectActions: ActionItem[] = [
+  projectActions: ActionItem<Project>[] = [
     {label: 'Quick View', action: 'quick-view', icon: 'eye-fill'},
     {label: 'View Details', action: 'view', icon: 'eye'},
     {label: 'Edit (Modal)', action: 'edit', icon: 'pencil'},
     {label: 'Edit (Page)', action: 'edit-page', icon: 'pencil-square'},
-    {label: 'Delete', action: 'delete', icon: 'trash', disabled: (item) => item.status === 'active'}
+    {label: 'Delete', action: 'delete', icon: 'trash', disabled: (item) => (item as any).status === 'active'}
   ];
 
   // Configure Client options

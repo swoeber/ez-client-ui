@@ -1,6 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 // import {AuthService} from '../../../../../ez-client-ui-bck/src/app/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
@@ -12,18 +12,28 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent {
-  mode = signal<'login' | 'signup' | 'reset'>('login');
+export class LoginComponent implements OnInit {
+  mode = signal<'login' | 'signup' | 'reset' | 'complete'>('login');
   form: FormGroup;
   loading = signal(false);
   error = signal<string | null>(null);
+  registrationToken: string | null = null;
 
-  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
+  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router, private route: ActivatedRoute) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       name: [''],
     });
+  }
+
+  ngOnInit() {
+    this.registrationToken = this.route.snapshot.queryParams['token'];
+    if (this.registrationToken) {
+      this.setMode('complete');
+    } else if (this.route.snapshot.url.some(segment => segment.path === 'complete-registration')) {
+      this.router.navigate(['/']);
+    }
   }
 
   get isLogin() {
@@ -38,7 +48,11 @@ export class LoginComponent {
     return this.mode() === 'reset';
   }
 
-  setMode(mode: 'login' | 'signup' | 'reset') {
+  get isComplete() {
+    return this.mode() === 'complete';
+  }
+
+  setMode(mode: 'login' | 'signup' | 'reset' | 'complete') {
     this.mode.set(mode);
     this.error.set(null);
     this.form.reset();
@@ -51,7 +65,12 @@ export class LoginComponent {
 
     if (mode === 'reset') {
       this.form.get('password')?.clearValidators();
+      this.form.get('email')?.setValidators([Validators.required, Validators.email]);
+    } else if (mode === 'complete') {
+      this.form.get('email')?.clearValidators();
+      this.form.get('password')?.setValidators([Validators.required, Validators.minLength(6)]);
     } else {
+      this.form.get('email')?.setValidators([Validators.required, Validators.email]);
       this.form.get('password')?.setValidators([Validators.required, Validators.minLength(6)]);
     }
 
@@ -82,6 +101,11 @@ export class LoginComponent {
         reset: async () => {
           await this.auth.resetPassword(email);
           this.setMode('login');
+        },
+        complete: async () => {
+          await this.auth.completeRegistration(this.registrationToken!, password);
+          await this.auth.boot();
+          this.router.navigateByUrl('/workspace');
         },
       };
 

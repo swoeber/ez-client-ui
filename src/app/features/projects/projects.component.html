@@ -1,23 +1,21 @@
-<div class="container-fluid px-4 py-3">
-  <!-- Header Section -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-      <h3 class="mb-1 fw-bold text-dark">
-        <i class="bi bi-kanban-fill text-primary me-2"></i>
-        Projects
-      </h3>
-      <p class="text-muted mb-0">Manage your project portfolio</p>
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <div class="dashboard-icon">
+        <i class="bi bi-kanban-fill"></i>
+      </div>
+      <div class="header-text">
+        <h1 class="dashboard-title">Projects</h1>
+        <p class="dashboard-subtitle">Manage your project portfolio</p>
+      </div>
     </div>
-    <div class="d-flex gap-2">
-      <button 
-        class="btn btn-outline-primary px-4 py-2 rounded-pill shadow-sm"
-        (click)="createProject()">
+    <div class="header-actions">
+      <button class="btn btn-outline-primary" (click)="createProject()">
         <i class="bi bi-plus-circle me-2"></i>
         Quick Add
       </button>
-      <button 
-        class="btn btn-primary px-4 py-2 rounded-pill shadow-sm"
-        (click)="createProjectPage()">
+      <button class="btn btn-primary" (click)="createProjectPage()">
         <i class="bi bi-plus-circle me-2"></i>
         New Project
       </button>
@@ -25,23 +23,32 @@
   </div>
 
   <!-- Main Content -->
-  <div class="card border-0 shadow-sm">
-    <div class="card-body p-0">
-      @if (projects$|async; as projects) {
-        <app-data-table
-          [data]="projects"
-          [columns]="projectColumns"
-          [options]="tableOptions"
-          [actions]="projectActions"
-          (actionClicked)="onAction($event)"
-          (columnClicked)="onColumnClick($event)"
-        ></app-data-table>
-      } @else {
-        <div class="text-center py-5">
-          <i class="bi bi-kanban text-muted" style="font-size: 3rem;"></i>
-          <p class="text-muted mt-3 mb-0">No projects yet. <a class="text-primary" style="cursor: pointer;" (click)="createProject()">Create one</a>.</p>
+  <div class="projects-section">
+    <div class="card modern-card">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="bi bi-kanban"></i>
+          <span>All Projects</span>
         </div>
-      }
+      </div>
+      <div class="card-body table-container">
+        @if (projects$|async; as projects) {
+          <app-data-table
+            [data]="projects"
+            [columns]="projectColumns"
+            [options]="tableOptions"
+            [actions]="projectActions"
+            (actionClicked)="onAction($event)"
+            (columnClicked)="onColumnClick($event)"
+          ></app-data-table>
+        } @else {
+          <div class="empty-state">
+            <i class="bi bi-kanban-fill"></i>
+            <h6>No Projects Yet</h6>
+            <p>Get started by <a class="link-primary" (click)="createProject()">creating your first project</a>.</p>
+          </div>
+        }
+      </div>
     </div>
   </div>
 

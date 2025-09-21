@@ -1,0 +1,269 @@
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <div class="dashboard-icon">
+        <i class="bi bi-person-badge"></i>
+      </div>
+      <div class="header-text">
+        <h1 class="dashboard-title">{{ isEditing ? 'Edit User' : 'Add New User' }}</h1>
+        <p class="dashboard-subtitle">{{ isEditing ? 'Update user information and settings' : 'Create a new user account with profile details' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <form #userForm="ngForm" (ngSubmit)="onSubmit()">
+    <!-- Contact Information -->
+    <div class="card modern-card">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="bi bi-info-circle"></i>
+          <span>Contact Information</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">First Name *</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="user.first_name"
+              name="firstName"
+              #firstName="ngModel"
+              required
+              minlength="2"
+              placeholder="Enter first name"
+              [class.is-invalid]="firstName.invalid && firstName.touched"
+            />
+            @if (firstName.invalid && firstName.touched) {
+              <div class="invalid-feedback">
+                @if (firstName.errors?.['required']) {
+                  First name is required
+                }
+                @if (firstName.errors?.['minlength']) {
+                  First name must be at least 2 characters
+                }
+              </div>
+            }
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Last Name *</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="user.last_name"
+              name="lastName"
+              #lastName="ngModel"
+              required
+              minlength="2"
+              placeholder="Enter last name"
+              [class.is-invalid]="lastName.invalid && lastName.touched"
+            />
+            @if (lastName.invalid && lastName.touched) {
+              <div class="invalid-feedback">
+                @if (lastName.errors?.['required']) {
+                  Last name is required
+                }
+                @if (lastName.errors?.['minlength']) {
+                  Last name must be at least 2 characters
+                }
+              </div>
+            }
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Email *</label>
+            <input
+              type="email"
+              class="form-control"
+              [(ngModel)]="user.email"
+              name="email"
+              #email="ngModel"
+              required
+              email
+              placeholder="Enter email address"
+              [class.is-invalid]="email.invalid && email.touched"
+            />
+            @if (email.invalid && email.touched) {
+              <div class="invalid-feedback">
+                @if (email.errors?.['required']) {
+                  Email is required
+                }
+                @if (email.errors?.['email']) {
+                  Please enter a valid email address
+                }
+              </div>
+            }
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Phone</label>
+            <input
+              type="tel"
+              class="form-control"
+              [(ngModel)]="user.phone"
+              name="phone"
+              #phone="ngModel"
+              pattern="[0-9+\\-\\s\\(\\)]+"
+              placeholder="Enter phone number"
+              [class.is-invalid]="phone.invalid && phone.touched"
+            />
+            @if (phone.invalid && phone.touched) {
+              <div class="invalid-feedback">
+                @if (phone.errors?.['pattern']) {
+                  Please enter a valid phone number
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Professional Information -->
+    <div class="card modern-card">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="bi bi-briefcase"></i>
+          <span>Professional Information</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Job Title</label>
+            <input
+              type="text"
+              class="form-control"
+              [ngModel]="user.account_profile?.title"
+              (ngModelChange)="updateProfile('title', $event)"
+              name="title"
+              placeholder="e.g. Project Manager, Electrician"
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Hourly Rate</label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input
+                type="number"
+                class="form-control"
+                [ngModel]="user.account_profile?.hourly_rate"
+                (ngModelChange)="updateProfile('hourly_rate', $event)"
+                name="hourlyRate"
+                step="0.01"
+                min="0"
+                placeholder="0.00"
+              />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Hire Date</label>
+            <input
+              type="date"
+              class="form-control"
+              [ngModel]="user.account_profile?.hire_date"
+              (ngModelChange)="updateProfile('hire_date', $event)"
+              name="hireDate"
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Status</label>
+            <select
+              class="form-select"
+              [ngModel]="user.account_profile?.is_active"
+              (ngModelChange)="updateProfile('is_active', $event)"
+              name="isActive"
+            >
+              <option [value]="true">Active</option>
+              <option [value]="false">Inactive</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Address Information -->
+    <div class="card modern-card">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="bi bi-geo-alt"></i>
+          <span>Address Information</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label fw-semibold">Address Line 1</label>
+            <input
+              type="text"
+              class="form-control"
+              [ngModel]="user.account_profile?.address_line1"
+              (ngModelChange)="updateProfile('address_line1', $event)"
+              name="addressLine1"
+              placeholder="Street address"
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">City</label>
+            <input
+              type="text"
+              class="form-control"
+              [ngModel]="user.account_profile?.city"
+              (ngModelChange)="updateProfile('city', $event)"
+              name="city"
+              placeholder="City"
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">State</label>
+            <input
+              type="text"
+              class="form-control"
+              [ngModel]="user.account_profile?.state"
+              (ngModelChange)="updateProfile('state', $event)"
+              name="state"
+              placeholder="State"
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">ZIP Code</label>
+            <input
+              type="text"
+              class="form-control"
+              [ngModel]="user.account_profile?.zip"
+              (ngModelChange)="updateProfile('zip', $event)"
+              name="zip"
+              placeholder="ZIP Code"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
+        <i class="bi bi-x-circle me-2"></i>
+        Cancel
+      </button>
+      <button type="button" class="btn btn-outline-primary btn-sm" (click)="onCancel()">
+        <i class="bi bi-arrow-left me-2"></i>
+        Back to Users
+      </button>
+      <button 
+        type="submit" 
+        class="btn btn-primary"
+        [disabled]="!userForm.valid || isSubmitting"
+      >
+        @if (isSubmitting) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          Saving...
+        } @else {
+          <i class="bi bi-check-circle me-2"></i>
+          {{ isEditing ? 'Update User' : 'Add User' }}
+        }
+      </button>
+    </div>
+  </form>
+</div>

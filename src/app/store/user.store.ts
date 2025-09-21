@@ -1,15 +1,22 @@
 import {Injectable, signal, computed} from '@angular/core';
+import { AccountUserProfile, AccountUserLicense, AccountUserSpecialty, AccountUserCompliance, AccountUserPermission } from '../interfaces';
 
 export interface User {
   id: number;
   email: string;
   first_name: string;
   last_name: string;
+  phone: string;
   suffix: string;
   prefix: string;
   full_name: string;
   roles: string[];
   avatar_url?: string | null;
+  account_profile?: AccountUserProfile;
+  account_permissions?: AccountUserPermission[];
+  account_licenses?: AccountUserLicense[];
+  account_specialties?: AccountUserSpecialty[];
+  account_compliance?: AccountUserCompliance[];
 }
 
 @Injectable({providedIn: 'root'})
