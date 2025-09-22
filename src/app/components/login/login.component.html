@@ -23,7 +23,11 @@
           } @else if (isSignup) {
             Join us today
           } @else if (isComplete) {
-            Set your password to complete registration
+            @if (tokenValidated() && userEmail()) {
+              Set password for {{ userEmail() }}
+            } @else {
+              Set your password to complete registration
+            }
           } @else {
             We'll send you a reset link
           }
@@ -53,7 +57,7 @@
             </div>
           </div>
         }
-
+        
         @if (!isComplete) {
           <div class="mb-3">
             <div class="input-group">
@@ -71,8 +75,8 @@
           </div>
         }
 
-        @if (!isReset) {
-          <div class="mb-4">
+        @if (!isReset && !(isComplete && !tokenValidated() && !loading())) {
+          <div class="mb-3">
             <div class="input-group">
               <span class="input-group-text bg-light border-end-0">
                 <i class="bi bi-lock text-muted"></i>
@@ -81,18 +85,50 @@
                 type="password"
                 formControlName="password"
                 [placeholder]="isComplete ? 'Create Password' : 'Password'"
+                [disabled]="isComplete && !tokenValidated()"
                 class="form-control border-start-0 bg-light"
                 style="padding: 12px 16px;"
                 [class.is-invalid]="form.get('password')?.invalid && form.get('password')?.touched">
             </div>
+            @if (form.get('password')?.hasError('passwordStrength') && form.get('password')?.touched && (isSignup || isComplete)) {
+              <small class="text-danger mt-1 d-block">
+                Password must be 8+ characters with uppercase, lowercase, number, and special character
+              </small>
+            }
           </div>
+
+          @if (isComplete || isSignup) {
+            <div class="mb-4">
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0">
+                  <i class="bi bi-lock-fill text-muted"></i>
+                </span>
+                <input
+                  type="password"
+                  formControlName="confirmPassword"
+                  placeholder="Confirm Password"
+                  [disabled]="isComplete && !tokenValidated()"
+                  class="form-control border-start-0 bg-light"
+                  style="padding: 12px 16px;"
+                  [class.is-invalid]="(form.hasError('passwordMismatch') || form.get('confirmPassword')?.invalid) && form.get('confirmPassword')?.touched">
+              </div>
+              @if (form.hasError('passwordMismatch') && form.get('confirmPassword')?.touched) {
+                <small class="text-danger mt-1 d-block">
+                  Passwords do not match
+                </small>
+              }
+            </div>
+          } @else {
+            <div class="mb-4"></div>
+          }
         }
 
-        <button
-          type="submit"
-          [disabled]="form.invalid || loading()"
-          class="btn btn-primary w-100 py-3 fw-semibold rounded-3 mb-4"
-          style="font-size: 16px;">
+        @if (!(isComplete && !tokenValidated() && !loading())) {
+          <button
+            type="submit"
+            [disabled]="form.invalid || loading() || (isComplete && !tokenValidated())"
+            class="btn btn-primary w-100 py-3 fw-semibold rounded-3 mb-4"
+            style="font-size: 16px;">
           @if (loading()) {
             <span class="spinner-border spinner-border-sm me-2"></span>Loading...
           } @else if (isLogin) {
@@ -100,11 +136,12 @@
           } @else if (isSignup) {
             <i class="bi bi-person-plus me-2"></i>Create Account
           } @else if (isComplete) {
-            <i class="bi bi-check-circle me-2"></i>Complete Registration
+            <i class="bi bi-check-circle me-2"></i>Set Password
           } @else {
             <i class="bi bi-envelope me-2"></i>Send Reset Link
           }
-        </button>
+          </button>
+        }
       </form>
 
       <div class="text-center">
@@ -122,10 +159,16 @@
             Already have an account? <span class="fw-bold">Sign in</span>
           </a>
         } @else if (isComplete) {
-          <p class="text-muted small mb-0">
-            <i class="bi bi-shield-check me-1"></i>
-            Your account is almost ready. Just set a secure password.
-          </p>
+          @if (!tokenValidated() && !loading()) {
+            <a class="btn btn-outline-primary" (click)="setMode('login')" style="cursor: pointer;">
+              <i class="bi bi-arrow-left me-1"></i>Go Back to Login
+            </a>
+          } @else {
+            <p class="text-muted small mb-0">
+              <i class="bi bi-shield-check me-1"></i>
+              Your account is almost ready. Just set a secure password.
+            </p>
+          }
         } @else {
           <a class="text-decoration-none text-primary fw-medium" (click)="setMode('login')" style="cursor: pointer;">
             <i class="bi bi-arrow-left me-1"></i>Back to sign in

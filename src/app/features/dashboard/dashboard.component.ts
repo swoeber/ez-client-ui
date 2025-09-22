@@ -55,39 +55,46 @@ export class DashboardComponent implements OnInit {
 
   private loadDashboardData() {
     const clients$ = this.clientService.getClients();
-    const projects$ = this.projectService.all({ sort: 'due_on', direction: 'desc' });
-
-    combineLatest([clients$, projects$]).subscribe(([clients, projects]) => {
-      this.calculateProjectStats(projects);
-      this.calculateClientStats(clients);
-      this.calculateRevenueStats();
-      this.calculateTaskStats(projects);
-      this.generateRecentActivity(projects, clients);
+    const projectStats$ = this.projectService.getStats();
+    const recentProjects$ = this.projectService.all({
+      sort: 'updated_at',
+      direction: 'desc',
+      per_page: 5,
     });
+
+    combineLatest([clients$, projectStats$, recentProjects$]).subscribe(
+      ([clients, projectStats, recentProjects]) => {
+        this.projectStats = projectStats;
+        this.calculateClientStats(clients);
+        this.calculateRevenueStats();
+        this.calculateTaskStats(projectStats);
+        this.generateRecentActivity(recentProjects, clients);
+      }
+    );
   }
 
   private calculateProjectStats(projects: Project[]) {
     const today = new Date();
-    const activeProjects = projects.filter(p => p.status !== 'done');
-    const overdueProjects = activeProjects.filter(p => p.due_on && new Date(p.due_on) < today);
-    
+    const activeProjects = projects.filter((p) => p.status !== 'done');
+    const overdueProjects = activeProjects.filter((p) => p.due_on && new Date(p.due_on) < today);
+
     this.projectStats = {
       active: activeProjects.length,
-      overdue: overdueProjects.length
+      overdue: overdueProjects.length,
     };
   }
 
   private calculateClientStats(clients: Client[]) {
     const thisMonth = new Date();
     thisMonth.setDate(1);
-    
-    const newThisMonth = clients.filter(c => 
-      c.created_at && new Date(c.created_at) >= thisMonth
+
+    const newThisMonth = clients.filter(
+      (c) => c.created_at && new Date(c.created_at) >= thisMonth
     ).length;
-    
+
     this.clientStats = {
       total: clients.length,
-      newThisMonth
+      newThisMonth,
     };
   }
 
@@ -95,41 +102,41 @@ export class DashboardComponent implements OnInit {
     // Mock data - replace with actual invoice service
     this.revenueStats = {
       thisMonth: 15750,
-      pending: 3200
+      pending: 3200,
     };
   }
 
-  private calculateTaskStats(projects: Project[]) {
+  private calculateTaskStats(stats: ProjectStats) {
     // Mock data - replace with actual task service
     this.taskStats = {
-      dueToday: 5,
-      overdue: 2
+      dueToday: stats.active,
+      overdue: stats.overdue,
     };
   }
 
   private generateRecentActivity(projects: Project[], clients: Client[]) {
     const activities: Activity[] = [];
-    
+
     // Add recent project activities
-    projects.slice(0, 3).forEach(project => {
+    projects.slice(0, 3).forEach((project) => {
       activities.push({
         id: `project-${project.id}`,
         message: `Project "${project.name}" was updated`,
         timestamp: new Date(project.updated_at || project.created_at),
-        icon: 'bi-kanban-fill'
+        icon: 'bi-kanban-fill',
       });
     });
-    
+
     // Add recent client activities
-    clients.slice(0, 2).forEach(client => {
+    clients.slice(0, 2).forEach((client) => {
       activities.push({
         id: `client-${client.id}`,
         message: `New client "${client.first_name}" was added`,
         timestamp: new Date(client.created_at),
-        icon: 'bi-person-plus-fill'
+        icon: 'bi-person-plus-fill',
       });
     });
-    
+
     this.recentActivity = activities
       .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
       .slice(0, 5);
@@ -154,6 +161,4 @@ export class DashboardComponent implements OnInit {
   goFiles() {}
 
   newInvoice() {}
-
-
 }

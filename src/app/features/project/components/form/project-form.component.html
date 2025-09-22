@@ -1,8 +1,13 @@
-<div class="container-fluid p-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-      <h4 class="mb-0 fw-bold">{{ isEdit ? 'Edit Project' : 'New Project' }}</h4>
-      <small class="text-muted">Step {{ currentStep }} of {{ totalSteps }}</small>
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <div class="header-content">
+      <div class="dashboard-icon">
+        <i class="bi bi-folder-plus"></i>
+      </div>
+      <div class="header-text">
+        <h1 class="dashboard-title">{{ isEdit ? 'Edit Project' : 'New Project' }}</h1>
+        <p class="dashboard-subtitle">Step {{ currentStep }} of {{ totalSteps }}</p>
+      </div>
     </div>
     <button type="button" class="btn-close" (click)="onCancel()"></button>
   </div>
@@ -37,11 +42,14 @@
   <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
     <!-- Step 1: Basic Information -->
     @if (currentStep === 1) {
-    <div class="card border-0 shadow-sm">
-      <div class="card-header bg-white border-0 p-4">
-        <h5 class="mb-0 fw-semibold">Basic Information</h5>
+    <div class="card modern-card">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="bi bi-info-circle"></i>
+          <span>Basic Information</span>
+        </div>
       </div>
-      <div class="card-body p-4">
+      <div class="card-body">
         <div class="row g-3">
           <div [class.col-12]="!isEdit" [class.col-md-8]="isEdit">
             <label class="form-label">Project Name *</label>
@@ -132,18 +140,19 @@
 
     <!-- Step 2: Client Selection/Creation -->
     @if (currentStep === 2) {
-    <div class="card border-0 shadow-sm">
-      <div class="card-header bg-white border-0 p-4">
-        <div class="d-flex justify-content-between align-items-center">
-          <h5 class="mb-0 fw-semibold">Client Information</h5>
-          @if (!showClientForm) {
-          <button type="button" class="btn btn-outline-primary btn-sm" (click)="toggleClientForm()">
-            <i class="bi bi-plus"></i> Add New Client
-          </button>
-          }
+    <div class="card modern-card">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="bi bi-person-badge"></i>
+          <span>Client Information</span>
         </div>
+        @if (!showClientForm) {
+        <button type="button" class="btn btn-outline-primary btn-sm" (click)="toggleClientForm()">
+          <i class="bi bi-plus"></i> Add New Client
+        </button>
+        }
       </div>
-      <div class="card-body p-4">
+      <div class="card-body">
         @if (!showClientForm) {
         <div class="row g-3">
           <div class="col-12">
@@ -252,11 +261,14 @@
 
     <!-- Step 3: Service Address -->
     @if (currentStep === 3) {
-    <div class="card border-0 shadow-sm">
-      <div class="card-header bg-white border-0 p-4">
-        <h5 class="mb-0 fw-semibold">Service Location</h5>
+    <div class="card modern-card">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="bi bi-geo-alt"></i>
+          <span>Service Location</span>
+        </div>
       </div>
-      <div class="card-body p-4">
+      <div class="card-body">
         <div class="row g-3">
           <div class="col-12">
             <label class="form-label">Address Line 1</label>

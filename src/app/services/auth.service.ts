@@ -69,7 +69,33 @@ export class AuthService {
   async completeRegistration(token: string, password: string): Promise<any> {
     await this.getCsrfToken();
     return this.http
-      .post(`${environment.api}/complete-registration`, { token, password }, { withCredentials: true })
+      .post(
+        `${environment.api}/complete-registration`,
+        { token, password },
+        { withCredentials: true }
+      )
       .toPromise();
+  }
+
+  async validateToken(token: string): Promise<{ message: string; email: string }> {
+    await this.getCsrfToken();
+    return firstValueFrom(
+      this.http.post<{ message: string; email: string }>(
+        `${environment.api}/validate-token`,
+        { token },
+        { withCredentials: true }
+      )
+    );
+  }
+
+  async setPassword(token: string, password: string): Promise<{ message: string }> {
+    await this.getCsrfToken();
+    return firstValueFrom(
+      this.http.post<{ message: string }>(
+        `${environment.api}/set-password`,
+        { token, password },
+        { withCredentials: true }
+      )
+    );
   }
 }

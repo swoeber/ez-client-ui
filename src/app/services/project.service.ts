@@ -125,6 +125,11 @@ export interface ProjectQueryParams {
   client_id?: string;
 }
 
+export interface ProjectStats {
+  active: number;
+  overdue: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -159,6 +164,12 @@ export class ProjectService {
 
   updateProject(project: Project) {
     return this.http.put<Project>(`${environment.api}/projects/${project.id}`, project, {
+      withCredentials: true,
+    });
+  }
+
+  getStats(): Observable<ProjectStats> {
+    return this.http.get<ProjectStats>(`${environment.api}/projects/stats`, {
       withCredentials: true,
     });
   }

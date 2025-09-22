@@ -2,7 +2,16 @@
   <app-side-menu></app-side-menu>
   <div class="container-fluid d-flex g-0 h-100 flex-column" style="overflow: hidden; min-width: 0;">
     <app-header></app-header>
-    <div style="flex: 1; overflow: auto; min-width: 0;">
+    <div style="flex: 1; overflow: auto; min-width: 0; position: relative;">
+      @if (loadingService.loading$ | async) {
+        <div class="loading-overlay">
+          <div class="loading-spinner">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+      }
       <router-outlet></router-outlet>
     </div>
   </div>

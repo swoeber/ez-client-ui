@@ -24,19 +24,25 @@ export const routes: Routes = [
       {
         path: 'users/new',
         loadComponent: () =>
-          import('./features/user-list/user-form/user-form.component').then((m) => m.UserFormComponent),
+          import('./features/user-list/user-form/user-form.component').then(
+            (m) => m.UserFormComponent
+          ),
       },
       {
         path: 'users/:id',
         resolve: { user: userResolver },
         loadComponent: () =>
-          import('./features/user-dashboard/user-dashboard.component').then((m) => m.UserDashboardComponent),
+          import('./features/user-dashboard/user-dashboard.component').then(
+            (m) => m.UserDashboardComponent
+          ),
       },
       {
         path: 'users/:id/edit',
         resolve: { user: userResolver },
         loadComponent: () =>
-          import('./features/user-list/user-form/user-form.component').then((m) => m.UserFormComponent),
+          import('./features/user-list/user-form/user-form.component').then(
+            (m) => m.UserFormComponent
+          ),
       },
       {
         path: 'profile',

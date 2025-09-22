@@ -1,72 +1,105 @@
 <div
   id="side-nav"
   class="d-none d-md-flex flex-column flex-shrink-0 bg-primary shadow-sm"
-  style="width: 280px; height: 100vh;"
+  style="width: 280px; height: 100vh"
 >
   <!-- Logo Section -->
   <div class="p-4 border-bottom border-light border-opacity-25">
-    <img class="img-fluid" src="logos/ez-client-logo.png" alt="EZ Client Logo" style="max-height: 40px;" />
+    <img
+      class="img-fluid"
+      src="logos/ez-client-logo.png"
+      alt="EZ Client Logo"
+      style="max-height: 40px"
+    />
   </div>
 
   <!-- Navigation Menu -->
   <nav class="flex-grow-1 p-3">
     <ul class="nav flex-column gap-1">
       <li class="nav-item">
-        <a [routerLink]="'dashboard'" [routerLinkActive]="'active'" 
-           class="nav-link d-flex align-items-center px-3 py-2 rounded-3 text-white fw-medium">
-          <i class="bi bi-speedometer2 me-3" style="font-size: 1.1rem;"></i>
+        <a
+          [routerLink]="'dashboard'"
+          [routerLinkActive]="'active'"
+          class="nav-link d-flex align-items-center px-3 py-2 rounded-3 text-white fw-medium"
+        >
+          <i class="bi bi-speedometer2 me-3" style="font-size: 1.1rem"></i>
           Dashboard
         </a>
       </li>
       <li class="nav-item">
-        <a [routerLink]="'users'" [routerLinkActive]="'active'" 
-           class="nav-link d-flex align-items-center px-3 py-2 rounded-3 text-white fw-medium">
-          <i class="bi bi-person-badge me-3" style="font-size: 1.1rem;"></i>
+        <a
+          [routerLink]="'users'"
+          [routerLinkActive]="'active'"
+          *can="Perm.read_users"
+          class="nav-link d-flex align-items-center px-3 py-2 rounded-3 text-white fw-medium"
+        >
+          <i class="bi bi-person-badge me-3" style="font-size: 1.1rem"></i>
           Users
         </a>
       </li>
       <li class="nav-item">
-        <a [routerLink]="'projects'" [routerLinkActive]="'active'" 
-           class="nav-link d-flex align-items-center px-3 py-2 rounded-3 text-white fw-medium">
-          <i class="bi bi-kanban-fill me-3" style="font-size: 1.1rem;"></i>
+        <a
+          [routerLink]="'projects'"
+          [routerLinkActive]="'active'"
+          *can="Perm.read_projects"
+          class="nav-link d-flex align-items-center px-3 py-2 rounded-3 text-white fw-medium"
+        >
+          <i class="bi bi-kanban-fill me-3" style="font-size: 1.1rem"></i>
           Projects
         </a>
       </li>
       <li class="nav-item">
-        <a [routerLink]="'clients'" [routerLinkActive]="'active'" 
-           class="nav-link d-flex align-items-center px-3 py-2 rounded-3 text-white fw-medium">
-          <i class="bi bi-people-fill me-3" style="font-size: 1.1rem;"></i>
+        <a
+          [routerLink]="'clients'"
+          [routerLinkActive]="'active'"
+          *can="Perm.read_clients"
+          class="nav-link d-flex align-items-center px-3 py-2 rounded-3 text-white fw-medium"
+        >
+          <i class="bi bi-people-fill me-3" style="font-size: 1.1rem"></i>
           Clients
         </a>
       </li>
       <li class="nav-item">
-        <a [routerLink]="'invoices'" [routerLinkActive]="'active'" 
-           class="nav-link d-flex align-items-center px-3 py-2 rounded-3 text-white fw-medium">
-          <i class="bi bi-receipt-cutoff me-3" style="font-size: 1.1rem;"></i>
+        <a
+          [routerLink]="'invoices'"
+          [routerLinkActive]="'active'"
+          *can="Perm.read_invoices"
+          class="nav-link d-flex align-items-center px-3 py-2 rounded-3 text-white fw-medium"
+        >
+          <i class="bi bi-receipt-cutoff me-3" style="font-size: 1.1rem"></i>
           Invoices
         </a>
       </li>
       <li class="nav-item">
-        <a [routerLink]="'files'" [routerLinkActive]="'active'" 
-           class="nav-link d-flex align-items-center px-3 py-2 rounded-3 text-white fw-medium">
-          <i class="bi bi-folder-fill me-3" style="font-size: 1.1rem;"></i>
+        <a
+          [routerLink]="'files'"
+          [routerLinkActive]="'active'"
+          class="nav-link d-flex align-items-center px-3 py-2 rounded-3 text-white fw-medium"
+        >
+          <i class="bi bi-folder-fill me-3" style="font-size: 1.1rem"></i>
           Files
         </a>
       </li>
       <li>
-        <hr>
+        <hr />
       </li>
       <li class="nav-item mt-1">
-        <a [routerLink]="'profile'" [routerLinkActive]="'active'" 
-           class="nav-link d-flex align-items-center px-3 py-2 rounded-3 text-white-50 fw-medium">
-          <i class="bi bi-person-circle me-3" style="font-size: 1.1rem;"></i>
+        <a
+          [routerLink]="'profile'"
+          [routerLinkActive]="'active'"
+          class="nav-link d-flex align-items-center px-3 py-2 rounded-3 text-white-50 fw-medium"
+        >
+          <i class="bi bi-person-circle me-3" style="font-size: 1.1rem"></i>
           Profile
         </a>
       </li>
       <li class="nav-item">
-        <a [routerLink]="'settings'" [routerLinkActive]="'active'" 
-           class="nav-link d-flex align-items-center px-3 py-2 rounded-3 text-white-50 fw-medium">
-          <i class="bi bi-gear-fill me-3" style="font-size: 1.1rem;"></i>
+        <a
+          [routerLink]="'settings'"
+          [routerLinkActive]="'active'"
+          class="nav-link d-flex align-items-center px-3 py-2 rounded-3 text-white-50 fw-medium"
+        >
+          <i class="bi bi-gear-fill me-3" style="font-size: 1.1rem"></i>
           Settings
         </a>
       </li>

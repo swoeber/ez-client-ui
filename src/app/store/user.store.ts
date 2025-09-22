@@ -37,6 +37,25 @@ export class UserStore {
     this._ready.set(true);
   }
 
+  readonly permissionsSet = computed(() => {
+    const m = this._user();
+    return new Set<number>(m?.account_permissions?.map(p => p.permission_id) ?? []);
+  });
+
+  has = (permId: number) => this.permissionsSet().has(+permId);
+
+  anyOf = (permIds: number[]) => {
+    const s = this.permissionsSet();
+    for (const id of permIds) if (s.has(+id)) return true;
+    return false;
+  };
+
+  allOf = (permIds: number[]) => {
+    const s = this.permissionsSet();
+    for (const id of permIds) if (!s.has(+id)) return false;
+    return true;
+  };
+
   reset() {
     this._user.set(null);
     this._ready.set(true);
