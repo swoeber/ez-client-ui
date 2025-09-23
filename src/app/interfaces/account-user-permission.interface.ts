@@ -1,7 +1,7 @@
-export interface AccountUserPermission {
-  account_id: number;
-  user_id: number;
-  permission_id: number;
-  created_at: string;
-  updated_at: string;
-}
+// export interface AccountUserPermission {
+//   account_id: number;
+//   user_id: number;
+//   permission_id: number;
+//   created_at: string;
+//   updated_at: string;
+// }

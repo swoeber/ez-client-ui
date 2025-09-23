@@ -6,7 +6,7 @@ type Mode = 'all' | 'any';
 
 @Directive({ selector: '[can]', standalone: true })
 export class CanDirective {
-  private list: number[] = [];
+  private list: string[] = [];
   private mode: Mode = 'all';
   private readonly store = inject(UserStore);
 
@@ -14,7 +14,7 @@ export class CanDirective {
     effect(() => this.render()); // re-evaluate when permissions change
   }
 
-  @Input({ alias: 'can' }) set can(value: number | number[]) {
+  @Input({ alias: 'can' }) set can(value: string | string[]) {
     this.list = Array.isArray(value) ? value : [value];
     this.render();
   }
@@ -29,7 +29,8 @@ export class CanDirective {
 
   private render() {
     let ok = false;
-    if (this.store.anyOf([1])) {
+    
+    if (this.store.anyOf(['admin'])) {
       ok = true;
     } else {
       ok = this.mode === 'any' ? this.store.anyOf(this.list) : this.store.allOf(this.list);

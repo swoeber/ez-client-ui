@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { User } from '../../store/user.store';
 import { ProjectService, Project } from '../../services/project.service';
 import { UserService } from '../../services/user.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AccountUserPermission } from '../../interfaces';
+import { ActivatedRoute } from '@angular/router';
+import { Perm } from '../../enum/permissions.model';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -149,30 +149,24 @@ export class UserDashboardComponent implements OnInit {
     return permission?.label || `Permission ${permissionId}`;
   }
 
-  hasPermission(permissionId: number): boolean {
-    return this.user?.account_permissions?.some((p) => p.permission_id === permissionId) || false;
+  hasPermission(permission: string): boolean {
+    return this.user?.account_permissions?.some((p) => p === permission) || false;
   }
 
   hasAdminPermission(): boolean {
-    return this.hasPermission(1);
+    return this.hasPermission(Perm.admin);
   }
 
-  togglePermission(permissionId: number): void {
+  togglePermission(permission: string): void {
     if (!this.user) return;
 
-    const hasPermission = this.hasPermission(permissionId);
+    const hasPermission = this.hasPermission(permission);
 
     if (hasPermission) {
       this.user.account_permissions =
-        this.user.account_permissions?.filter((p) => p.permission_id !== permissionId) || [];
+        this.user.account_permissions?.filter((p) => p !== permission) || [];
     } else {
-      const newPermission: AccountUserPermission = {
-        account_id: 1,
-        user_id: this.user.id,
-        permission_id: permissionId,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
+      const newPermission: string = permission;
       this.user.account_permissions = [...(this.user.account_permissions || []), newPermission];
     }
 

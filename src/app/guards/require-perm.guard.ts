@@ -3,7 +3,7 @@ import { CanMatchFn, Router } from '@angular/router';
 import { UserStore } from '../store/user.store';
 
 export const requirePerm =
-  (...permIds: number[]): CanMatchFn =>
+  (...permIds: string[]): CanMatchFn =>
   () => {
     const store = inject(UserStore);
     const router = inject(Router);

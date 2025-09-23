@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Perm } from '../../../../enum/permissions.model';
 import { CanDirective } from '../../../../directives/can.directive';
+import { UserStore } from '../../../../store/user.store';
 
 @Component({
   selector: 'app-side-menu',
@@ -10,5 +11,11 @@ import { CanDirective } from '../../../../directives/can.directive';
   styleUrl: './side-menu.scss',
 })
 export class SideMenu {
+  userStore = inject(UserStore);
   Perm = Perm;
+
+
+  constructor() {
+    console.log(this.userStore.user)
+  }
 }

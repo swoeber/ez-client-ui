@@ -1,5 +1,5 @@
 import {Injectable, signal, computed} from '@angular/core';
-import { AccountUserProfile, AccountUserLicense, AccountUserSpecialty, AccountUserCompliance, AccountUserPermission } from '../interfaces';
+import { AccountUserProfile, AccountUserLicense, AccountUserSpecialty, AccountUserCompliance } from '../interfaces';
 
 export interface User {
   id: number;
@@ -13,7 +13,7 @@ export interface User {
   roles: string[];
   avatar_url?: string | null;
   account_profile?: AccountUserProfile;
-  account_permissions?: AccountUserPermission[];
+  account_permissions?: string[];
   account_licenses?: AccountUserLicense[];
   account_specialties?: AccountUserSpecialty[];
   account_compliance?: AccountUserCompliance[];
@@ -39,20 +39,20 @@ export class UserStore {
 
   readonly permissionsSet = computed(() => {
     const m = this._user();
-    return new Set<number>(m?.account_permissions?.map(p => p.permission_id) ?? []);
+    return new Set<string>(m?.account_permissions?.map(p => p) ?? []);
   });
 
-  has = (permId: number) => this.permissionsSet().has(+permId);
+  has = (perm: string) => this.permissionsSet().has(perm);
 
-  anyOf = (permIds: number[]) => {
+  anyOf = (perms: string[]) => {
     const s = this.permissionsSet();
-    for (const id of permIds) if (s.has(+id)) return true;
+    for (const id of perms) if (s.has(id)) return true;
     return false;
   };
 
-  allOf = (permIds: number[]) => {
+  allOf = (perms: string[]) => {
     const s = this.permissionsSet();
-    for (const id of permIds) if (!s.has(+id)) return false;
+    for (const id of perms) if (!s.has(id)) return false;
     return true;
   };
 

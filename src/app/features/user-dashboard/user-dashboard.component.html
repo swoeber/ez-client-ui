@@ -44,14 +44,17 @@
               <div class="info-label">Client Rating</div>
               <div class="rating-display">
                 @if (clientRatingAverage !== null) {
-                  <div class="rating-score">{{ clientRatingAverage }}/5</div>
-                  <div class="rating-stars">
-                    @for (star of [1,2,3,4,5]; track star) {
-                      <i class="bi" [class]="star <= clientRatingAverage! ? 'bi-star-fill' : 'bi-star'"></i>
-                    }
-                  </div>
+                <div class="rating-score">{{ clientRatingAverage }}/5</div>
+                <div class="rating-stars">
+                  @for (star of [1,2,3,4,5]; track star) {
+                  <i
+                    class="bi"
+                    [class]="star <= clientRatingAverage! ? 'bi-star-fill' : 'bi-star'"
+                  ></i>
+                  }
+                </div>
                 } @else {
-                  <span class="no-rating">No ratings yet</span>
+                <span class="no-rating">No ratings yet</span>
                 }
               </div>
             </div>
@@ -72,22 +75,26 @@
         <div class="card-body">
           <div class="permissions-grid">
             @for (permission of availablePermissions; track permission.id) {
-              <div class="permission-item" 
-                   [class.active]="hasPermission(permission.id) || (hasAdminPermission() && permission.id !== 1)">
-                <div class="permission-toggle">
-                  <input 
-                    class="form-check-input" 
-                    type="checkbox" 
-                    [id]="'perm-' + permission.id"
-                    [checked]="hasPermission(permission.id) || hasAdminPermission()"
-                    (change)="togglePermission(permission.id)"
-                  >
-                  <label class="permission-label" [for]="'perm-' + permission.id">
-                    <div class="permission-name">{{ permission.label }}</div>
-                    <div class="permission-desc">{{ permission.description }}</div>
-                  </label>
-                </div>
+            <div
+              class="permission-item"
+              [class.active]="
+                hasPermission(permission.name) || (hasAdminPermission() && permission.id !== 1)
+              "
+            >
+              <div class="permission-toggle">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  [id]="'perm-' + permission.id"
+                  [checked]="hasPermission(permission.name) || hasAdminPermission()"
+                  (change)="togglePermission(permission.name)"
+                />
+                <label class="permission-label" [for]="'perm-' + permission.id">
+                  <div class="permission-name">{{ permission.label }}</div>
+                  <div class="permission-desc">{{ permission.description }}</div>
+                </label>
               </div>
+            </div>
             }
           </div>
         </div>
@@ -105,50 +112,52 @@
         </div>
         <div class="card-body">
           @if (projects.length > 0) {
-            <div class="projects-list">
-              @for (project of projects; track project.id) {
-                <div class="project-item">
-                  <div class="project-header">
-                    <div class="project-info">
-                      <h6 class="project-name">{{ project.name }}</h6>
-                      <span class="project-id">{{ project.displayId }}</span>
-                    </div>
-                    <span class="status-badge" [class]="getStatusBadgeClass(project.status)">
-                      {{ getStatusLabel(project.status) }}
-                    </span>
-                  </div>
-                  <div class="project-progress">
-                    <div class="progress-header">
-                      <span class="progress-label">Progress</span>
-                      <span class="progress-value">{{ getProjectProgress(project) }}%</span>
-                    </div>
-                    <div class="progress-bar-container">
-                      <div class="progress-bar-fill" [style.width.%]="getProjectProgress(project)"></div>
-                    </div>
-                  </div>
-                  <div class="project-dates">
-                    @if (project.starts_on) {
-                      <span class="date-item">
-                        <i class="bi bi-play-circle"></i>
-                        Started {{ project.starts_on | date:'MMM d, y' }}
-                      </span>
-                    }
-                    @if (project.due_on) {
-                      <span class="date-item">
-                        <i class="bi bi-flag"></i>
-                        Due {{ project.due_on | date:'MMM d, y' }}
-                      </span>
-                    }
-                  </div>
+          <div class="projects-list">
+            @for (project of projects; track project.id) {
+            <div class="project-item">
+              <div class="project-header">
+                <div class="project-info">
+                  <h6 class="project-name">{{ project.name }}</h6>
+                  <span class="project-id">{{ project.displayId }}</span>
                 </div>
-              }
+                <span class="status-badge" [class]="getStatusBadgeClass(project.status)">
+                  {{ getStatusLabel(project.status) }}
+                </span>
+              </div>
+              <div class="project-progress">
+                <div class="progress-header">
+                  <span class="progress-label">Progress</span>
+                  <span class="progress-value">{{ getProjectProgress(project) }}%</span>
+                </div>
+                <div class="progress-bar-container">
+                  <div
+                    class="progress-bar-fill"
+                    [style.width.%]="getProjectProgress(project)"
+                  ></div>
+                </div>
+              </div>
+              <div class="project-dates">
+                @if (project.starts_on) {
+                <span class="date-item">
+                  <i class="bi bi-play-circle"></i>
+                  Started {{ project.starts_on | date : 'MMM d, y' }}
+                </span>
+                } @if (project.due_on) {
+                <span class="date-item">
+                  <i class="bi bi-flag"></i>
+                  Due {{ project.due_on | date : 'MMM d, y' }}
+                </span>
+                }
+              </div>
             </div>
+            }
+          </div>
           } @else {
-            <div class="empty-state">
-              <i class="bi bi-kanban-fill"></i>
-              <h6>No Projects Assigned</h6>
-              <p>You don't have any active projects at the moment.</p>
-            </div>
+          <div class="empty-state">
+            <i class="bi bi-kanban-fill"></i>
+            <h6>No Projects Assigned</h6>
+            <p>You don't have any active projects at the moment.</p>
+          </div>
           }
         </div>
       </div>

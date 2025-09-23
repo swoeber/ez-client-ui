@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Observable, map, combineLatest } from 'rxjs';
 import { Project, ProjectQueryParams, ProjectService } from '../../services/project.service';
 import { Router } from '@angular/router';
+import { Perm } from '../../enum/permissions.model';
 
 interface ProjectStats {
   active: number;
@@ -48,6 +49,7 @@ export class DashboardComponent implements OnInit {
   revenueStats: RevenueStats = { thisMonth: 0, pending: 0 };
   taskStats: TaskStats = { dueToday: 0, overdue: 0 };
   recentActivity: Activity[] = [];
+  Perm = Perm;
 
   ngOnInit() {
     this.loadDashboardData();
