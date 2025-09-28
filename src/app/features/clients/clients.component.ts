@@ -36,8 +36,8 @@ export class ClientsComponent {
   isSubmitting = false;
 
   clientColumns: TableColumn[] = [
-    { key: 'id', label: 'ID', sortable: true, type: 'number' },
-    { key: 'name', label: 'Client Name', sortable: true },
+    { key: 'id', label: 'ID', sortable: true, type: 'number', clickable: true },
+    { key: 'name', label: 'Client Name', sortable: true, clickable: true },
     { key: 'first_name', label: 'First Name', sortable: true },
     { key: 'last_name', label: 'Last Name', sortable: true },
     { key: 'email', label: 'Email' },
@@ -209,6 +209,12 @@ export class ClientsComponent {
         this.router.navigate(['/workspace/projects', event.item.id, 'edit']);
         this.closeProjectsModal();
         break;
+    }
+  }
+
+  onColumnClick(event: { column: string; item: Project }) {
+    if (event.column === 'name' || event.column === 'id') {
+      // this.router.navigate(['/workspace/projects/' + event.item.id]);
     }
   }
 }

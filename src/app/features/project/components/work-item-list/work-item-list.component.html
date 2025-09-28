@@ -151,12 +151,12 @@
 </app-modal-form>
 
 <ng-template #workItemFormTemplate>
-  <div class="card border-0 shadow-sm">
-    <div class="card-header bg-white border-0 py-3">
-      <h6 class="mb-0 fw-semibold d-flex align-items-center">
-        <i class="bi bi-info-circle text-primary me-2"></i>
-        Basic Information
-      </h6>
+  <div class="card modern-card">
+    <div class="card-header">
+      <div class="card-title">
+        <i class="bi bi-info-circle"></i>
+        <span>Basic Information</span>
+      </div>
     </div>
     <div class="card-body">
       <div class="row g-3">
@@ -190,12 +190,12 @@
   </div>
 
   @if (getCurrentItem().type === 'task_list' && getCurrentItem().tasks) {
-    <div class="card border-0 shadow-sm mt-3">
-      <div class="card-header bg-white border-0 py-3">
-        <h6 class="mb-0 fw-semibold d-flex align-items-center">
-          <i class="bi bi-check2-square text-primary me-2"></i>
-          Task List
-        </h6>
+    <div class="card modern-card mt-3">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="bi bi-check2-square"></i>
+          <span>Task List</span>
+        </div>
       </div>
       <div class="card-body">
         @for (task of getCurrentItem().tasks; track $index; let i = $index) {
@@ -216,12 +216,12 @@
     </div>
   }
 
-  <div class="card border-0 shadow-sm mt-3">
-    <div class="card-header bg-white border-0 py-3">
-      <h6 class="mb-0 fw-semibold d-flex align-items-center">
-        <i class="bi bi-gear text-primary me-2"></i>
-        Options
-      </h6>
+  <div class="card modern-card mt-3">
+    <div class="card-header">
+      <div class="card-title">
+        <i class="bi bi-gear"></i>
+        <span>Options</span>
+      </div>
     </div>
     <div class="card-body">
       <div class="row g-3">

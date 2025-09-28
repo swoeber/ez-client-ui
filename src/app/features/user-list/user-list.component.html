@@ -36,6 +36,7 @@
               [options]="tableOptions"
               [actions]="clientActions"
               (actionClicked)="onAction($event)"
+              (columnClicked)="onColumnClick($event)"
             ></app-data-table>
           } @else {
             <div class="empty-state">

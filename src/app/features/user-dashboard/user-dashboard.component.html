@@ -10,6 +10,14 @@
         <p class="dashboard-subtitle">Member Dashboard</p>
       </div>
     </div>
+    <div class="header-actions">
+      @if (canManageRoles()) {
+      <button class="btn btn-outline-primary" (click)="updateUser()">
+        <i class="bi bi-pencil-square"></i>
+        Edit Member
+      </button>
+      }
+    </div>
   </div>
 
   <div class="dashboard-grid">
@@ -63,40 +71,42 @@
       </div>
     </div>
 
-    <!-- Permissions Card -->
-    <div class="permissions-card">
+    <!-- Roles Card -->
+    <div class="roles-card">
       <div class="card modern-card">
         <div class="card-header">
           <div class="card-title">
-            <i class="bi bi-shield-check"></i>
-            <span>Permissions & Access</span>
+            <i class="bi bi-person-badge"></i>
+            <span>Roles</span>
           </div>
         </div>
         <div class="card-body">
-          <div class="permissions-grid">
-            @for (permission of availablePermissions; track permission.id) {
-            <div
-              class="permission-item"
-              [class.active]="
-                hasPermission(permission.name) || (hasAdminPermission() && permission.id !== 1)
-              "
-            >
-              <div class="permission-toggle">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  [id]="'perm-' + permission.id"
-                  [checked]="hasPermission(permission.name) || hasAdminPermission()"
-                  (change)="togglePermission(permission.name)"
-                />
-                <label class="permission-label" [for]="'perm-' + permission.id">
-                  <div class="permission-name">{{ permission.label }}</div>
-                  <div class="permission-desc">{{ permission.description }}</div>
-                </label>
+          @if (userRoles && userRoles.length > 0) {
+          <div class="row g-3">
+            @for (role of userRoles; track role.id) {
+            <div class="col-md-6">
+              <div class="card border">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h6 class="card-title mb-0 text-primary">{{ role.name | titlecase }}</h6>
+                  </div>
+                  <p class="card-text text-muted mb-2">{{ role.description }}</p>
+                  <div class="d-flex align-items-center text-success">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <small>{{ getRoleAccess(role.name) }}</small>
+                  </div>
+                </div>
               </div>
             </div>
             }
           </div>
+          } @else {
+          <div class="empty-state">
+            <i class="bi bi-person-x"></i>
+            <h6>No Roles Assigned</h6>
+            <p>This user has not been assigned any roles yet.</p>
+          </div>
+          }
         </div>
       </div>
     </div>
@@ -163,21 +173,54 @@
       </div>
     </div>
 
-    <!-- Activity Card -->
-    <div class="activity-card">
+    <!-- Calendar Card -->
+    <div class="calendar-card">
       <div class="card modern-card">
         <div class="card-header">
           <div class="card-title">
-            <i class="bi bi-activity"></i>
-            <span>Recent Activity</span>
+            <i class="bi bi-calendar3"></i>
+            <span>Project Calendar</span>
           </div>
         </div>
         <div class="card-body">
-          <div class="empty-state">
-            <i class="bi bi-clock-history"></i>
-            <h6>Activity Coming Soon</h6>
-            <p>Your recent activity will appear here once available.</p>
+          @if (projects.length > 0) {
+          <div class="calendar-timeline">
+            @for (project of projects; track project.id) {
+            <div class="timeline-item">
+              <div class="timeline-date">
+                @if (project.starts_on) {
+                <small class="text-muted">{{ project.starts_on | date : 'MMM d' }}</small>
+                }
+              </div>
+              <div class="timeline-content">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6 class="mb-1">{{ project.name }}</h6>
+                    <small class="text-muted">{{ project.displayId }}</small>
+                  </div>
+                  <span class="badge" [class]="getStatusBadgeClass(project.status)">
+                    {{ getStatusLabel(project.status) }}
+                  </span>
+                </div>
+                @if (project.due_on) {
+                <div class="mt-2">
+                  <small class="text-danger">
+                    <i class="bi bi-flag me-1"></i>
+                    Due {{ project.due_on | date : 'MMM d, y' }}
+                  </small>
+                </div>
+                }
+              </div>
+            </div>
+            }
           </div>
+          } @else {
+          <div class="empty-state">
+            <i class="bi bi-calendar-x"></i>
+            <h6>No Project Dates</h6>
+            <p>Your project timeline will appear here once projects are assigned.</p>
+          </div>
+          }
         </div>
       </div>
     </div>

@@ -13,9 +13,4 @@ import { UserStore } from '../../../../store/user.store';
 export class SideMenu {
   userStore = inject(UserStore);
   Perm = Perm;
-
-
-  constructor() {
-    console.log(this.userStore.user)
-  }
 }

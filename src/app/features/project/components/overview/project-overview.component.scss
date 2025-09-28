@@ -118,6 +118,7 @@
   border: 1px solid var(--bs-border-color);
   background: white;
   transition: all 0.2s ease;
+  min-height: 83px;
   
   &:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);

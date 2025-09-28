@@ -1,8 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { User } from '../store/user.store';
+import { User, UserStore } from '../store/user.store';
 import { WorkItem } from './work-item.service';
 
 export interface Project {
@@ -123,6 +123,7 @@ export interface ProjectQueryParams {
   per_page?: number;
   page?: number;
   client_id?: string;
+  assignee_id?: number;
 }
 
 export interface ProjectStats {
@@ -134,6 +135,8 @@ export interface ProjectStats {
   providedIn: 'root',
 })
 export class ProjectService {
+  userStore: UserStore =  inject(UserStore);
+
   constructor(private http: HttpClient) {}
 
   all(params?: ProjectQueryParams): Observable<Project[]> {
@@ -144,8 +147,12 @@ export class ProjectService {
     if (params?.per_page) httpParams = httpParams.set('per_page', params.per_page.toString());
     if (params?.page) httpParams = httpParams.set('page', params.page.toString());
     if (params?.client_id) httpParams = httpParams.set('client_id', params.client_id);
+    if (params?.assignee_id) httpParams = httpParams.set('assignee_id', params.assignee_id);
 
-    return this.http.get<Project[]>(`${environment.api}/projects`, {
+    const accountId = this.userStore.user()!.account_id;
+    console.log(params);
+
+    return this.http.get<Project[]>(`${environment.api}/account/${accountId}/projects`, {
       withCredentials: true,
       params: httpParams,
     });

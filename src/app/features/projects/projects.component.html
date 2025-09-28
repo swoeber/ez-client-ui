@@ -52,83 +52,76 @@
     </div>
   </div>
 
-  <!-- Quick View Modal -->
-  @if (showQuickView && quickViewProject) {
-  <div class="modal show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content border-0 shadow">
-        <div class="modal-header bg-primary text-white">
-          <h5 class="modal-title mb-0">
-            <i class="bi bi-eye me-2"></i>
-            {{ quickViewProject.name }}
-          </h5>
-          <button type="button" class="btn-close btn-close-white" (click)="closeQuickView()"></button>
-        </div>
-        <div class="modal-body p-4">
-          <div class="row g-4">
-            <div class="col-md-6">
-              <div class="d-flex align-items-center mb-3">
-                <strong class="text-muted me-3">Status:</strong>
-                <span class="badge" [class]="'bg-' + (quickViewProject.status === 'done' ? 'success' : quickViewProject.status === 'in_progress' ? 'primary' : 'secondary')">{{ quickViewProject.status!.replace('_', ' ') | titlecase }}</span>
-              </div>
-              <div class="mb-3">
-                <strong class="text-muted">Assignee:</strong>
-                <span class="ms-2">{{ quickViewProject.assignee?.full_name || 'Unassigned' }}</span>
-              </div>
-              <div class="mb-3">
-                <strong class="text-muted">Start Date:</strong>
-                <span class="ms-2">{{ quickViewProject.starts_on || 'Not set' }}</span>
-              </div>
-              <div class="mb-3">
-                <strong class="text-muted">Due Date:</strong>
-                <span class="ms-2">{{ quickViewProject.due_on || 'Not set' }}</span>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="mb-3">
-                <strong class="text-muted">Project ID:</strong>
-                <span class="ms-2">#{{ quickViewProject.id }}</span>
-              </div>
-              <div class="mb-3">
-                <strong class="text-muted">Created:</strong>
-                <span class="ms-2">{{ quickViewProject.created_at | date:'short' }}</span>
-              </div>
-              <div class="mb-3">
-                <strong class="text-muted">Last Updated:</strong>
-                <span class="ms-2">{{ quickViewProject.updated_at | date:'short' }}</span>
-              </div>
-            </div>
-            @if (quickViewProject.summary) {
-            <div class="col-12">
-              <strong class="text-muted">Summary:</strong>
-              <p class="mt-2 mb-0">{{ quickViewProject.summary }}</p>
-            </div>
-            }
-            @if (quickViewProject.service_address_line1 || quickViewProject.service_city) {
-            <div class="col-12">
-              <strong class="text-muted">Service Address:</strong>
-              <div class="mt-2">
-                @if (quickViewProject.service_address_line1) {
-                <div>{{ quickViewProject.service_address_line1 }}</div>
-                }
-                @if (quickViewProject.service_city) {
-                <div>{{ quickViewProject.service_city }}{{ quickViewProject.service_state ? ', ' + quickViewProject.service_state : '' }}{{ quickViewProject.service_postal_code ? ' ' + quickViewProject.service_postal_code : '' }}</div>
-                }
-              </div>
-            </div>
-            }
-          </div>
-        </div>
-        <div class="modal-footer bg-light">
-          <button type="button" class="btn btn-outline-secondary" (click)="closeQuickView()">Close</button>
-          <button type="button" class="btn btn-primary" (click)="router.navigate(['/workspace/projects/' + quickViewProject!.id]); closeQuickView()">
-            <i class="bi bi-arrow-right me-2"></i>View Full Details
-          </button>
-        </div>
+<app-modal-form
+  [isVisible]="showQuickView && !!quickViewProject"
+  [title]="quickViewProject?.name || ''"
+  subtitle="Project overview and details"
+  icon="bi-eye"
+  primaryButtonText="View Full Details"
+  secondaryButtonText="Close"
+  [formContent]="quickViewTemplate"
+  (primaryAction)="router.navigate(['/workspace/projects/' + quickViewProject!.id]); closeQuickView()"
+  (secondaryAction)="closeQuickView()"
+  (close)="closeQuickView()">
+</app-modal-form>
+
+<ng-template #quickViewTemplate>
+  @if (quickViewProject) {
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="d-flex align-items-center mb-3">
+        <strong class="text-muted me-3">Status:</strong>
+        <span class="badge" [class]="'bg-' + (quickViewProject.status === 'done' ? 'success' : quickViewProject.status === 'in_progress' ? 'primary' : 'secondary')">{{ quickViewProject.status!.replace('_', ' ') | titlecase }}</span>
+      </div>
+      <div class="mb-3">
+        <strong class="text-muted">Assignee:</strong>
+        <span class="ms-2">{{ quickViewProject.assignee?.full_name || 'Unassigned' }}</span>
+      </div>
+      <div class="mb-3">
+        <strong class="text-muted">Start Date:</strong>
+        <span class="ms-2">{{ quickViewProject.starts_on || 'Not set' }}</span>
+      </div>
+      <div class="mb-3">
+        <strong class="text-muted">Due Date:</strong>
+        <span class="ms-2">{{ quickViewProject.due_on || 'Not set' }}</span>
       </div>
     </div>
+    <div class="col-md-6">
+      <div class="mb-3">
+        <strong class="text-muted">Project ID:</strong>
+        <span class="ms-2">#{{ quickViewProject.id }}</span>
+      </div>
+      <div class="mb-3">
+        <strong class="text-muted">Created:</strong>
+        <span class="ms-2">{{ quickViewProject.created_at | date:'short' }}</span>
+      </div>
+      <div class="mb-3">
+        <strong class="text-muted">Last Updated:</strong>
+        <span class="ms-2">{{ quickViewProject.updated_at | date:'short' }}</span>
+      </div>
+    </div>
+    @if (quickViewProject.summary) {
+    <div class="col-12">
+      <strong class="text-muted">Summary:</strong>
+      <p class="mt-2 mb-0">{{ quickViewProject.summary }}</p>
+    </div>
+    }
+    @if (quickViewProject.service_address_line1 || quickViewProject.service_city) {
+    <div class="col-12">
+      <strong class="text-muted">Service Address:</strong>
+      <div class="mt-2">
+        @if (quickViewProject.service_address_line1) {
+        <div>{{ quickViewProject.service_address_line1 }}</div>
+        }
+        @if (quickViewProject.service_city) {
+        <div>{{ quickViewProject.service_city }}{{ quickViewProject.service_state ? ', ' + quickViewProject.service_state : '' }}{{ quickViewProject.service_postal_code ? ' ' + quickViewProject.service_postal_code : '' }}</div>
+        }
+      </div>
+    </div>
+    }
   </div>
   }
+</ng-template>
 
   <!-- Project Form Modal -->
   @if (showForm) {

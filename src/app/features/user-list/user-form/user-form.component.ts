@@ -1,14 +1,17 @@
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, TitleCasePipe, AsyncPipe, Location } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { UserService } from '../../../services/user.service';
+import { RoleService } from '../../../services/role.service';
 import { User } from '../../../store/user.store';
+import { Role } from '../../../interfaces/roles.interface';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-user-form',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TitleCasePipe, AsyncPipe],
   templateUrl: './user-form.component.html',
   styleUrl: './user-form.component.scss',
 })
@@ -16,10 +19,18 @@ export class UserFormComponent implements OnInit {
   @ViewChild('userForm') userForm!: NgForm;
 
   userService = inject(UserService);
+  roleService = inject(RoleService);
   router = inject(Router);
   route = inject(ActivatedRoute);
+  location = inject(Location);
 
-  user: Partial<User> = { account_profile: {}, account_specialties: [], account_licenses: [] };
+  user: Partial<User> = {
+    account_profile: {},
+    account_specialties: [],
+    account_licenses: [],
+    account_roles: [],
+  };
+  availableRoles$: Observable<Role[]> = new Observable<Role[]>();
   isEditing = false;
   isSubmitting = false;
 
@@ -29,6 +40,22 @@ export class UserFormComponent implements OnInit {
       this.isEditing = true;
       this.user = this.route.snapshot.data['user'];
     }
+    this.availableRoles$ = this.roleService.getRoles();
+  }
+
+  toggleRole(role: Role): void {
+    if (!this.user.account_roles) this.user.account_roles = [];
+
+    const roleIndex = this.user.account_roles.findIndex((r) => r.id === role.id);
+    if (roleIndex > -1) {
+      this.user.account_roles.splice(roleIndex, 1);
+    } else {
+      this.user.account_roles.push(role);
+    }
+  }
+
+  hasRole(role: Role): boolean {
+    return this.user.account_roles?.some((r) => r.id === role.id) || false;
   }
 
   updateProfile(field: string, value: any) {
@@ -84,6 +111,7 @@ export class UserFormComponent implements OnInit {
   }
 
   onCancel() {
-    this.router.navigate(['/workspace/users']);
+    // this.router.navigate(['/workspace/users']);
+    this.location.back();
   }
 }

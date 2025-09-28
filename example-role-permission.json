@@ -1,0 +1,283 @@
+[
+    {
+        "id": 1,
+        "name": "owner",
+        "description": "Account owner with full access",
+        "created_at": "2025-09-24T16:38:36.000000Z",
+        "updated_at": "2025-09-24T16:38:36.000000Z",
+        "permissions": [
+            {
+                "id": 1,
+                "name": "read_users",
+                "description": "View users",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 2,
+                "name": "write_users",
+                "description": "Create and edit users",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 3,
+                "name": "read_projects",
+                "description": "View projects",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 4,
+                "name": "write_projects",
+                "description": "Create and edit projects",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 5,
+                "name": "read_clients",
+                "description": "View clients",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 6,
+                "name": "write_clients",
+                "description": "Create and edit clients",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 7,
+                "name": "read_invoices",
+                "description": "View invoices",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 8,
+                "name": "write_invoices",
+                "description": "Create and edit invoices",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 9,
+                "name": "read_reports",
+                "description": "View reports",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 10,
+                "name": "write_reports",
+                "description": "Create and edit reports",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 11,
+                "name": "read_roles",
+                "description": "View Roles",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 12,
+                "name": "write_roles",
+                "description": "Create and edit roles",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "admin",
+        "description": "Administrator with management access",
+        "created_at": "2025-09-24T16:38:36.000000Z",
+        "updated_at": "2025-09-24T16:38:36.000000Z",
+        "permissions": [
+            {
+                "id": 1,
+                "name": "read_users",
+                "description": "View users",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 2,
+                "name": "write_users",
+                "description": "Create and edit users",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 3,
+                "name": "read_projects",
+                "description": "View projects",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 4,
+                "name": "write_projects",
+                "description": "Create and edit projects",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 5,
+                "name": "read_clients",
+                "description": "View clients",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 6,
+                "name": "write_clients",
+                "description": "Create and edit clients",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 7,
+                "name": "read_invoices",
+                "description": "View invoices",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 8,
+                "name": "write_invoices",
+                "description": "Create and edit invoices",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 9,
+                "name": "read_reports",
+                "description": "View reports",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 10,
+                "name": "write_reports",
+                "description": "Create and edit reports",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 11,
+                "name": "read_roles",
+                "description": "View Roles",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 12,
+                "name": "write_roles",
+                "description": "Create and edit roles",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "name": "member",
+        "description": "Regular member with standard access",
+        "created_at": "2025-09-24T16:38:36.000000Z",
+        "updated_at": "2025-09-24T16:38:36.000000Z",
+        "permissions": [
+            {
+                "id": 1,
+                "name": "read_users",
+                "description": "View users",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 3,
+                "name": "read_projects",
+                "description": "View projects",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 5,
+                "name": "read_clients",
+                "description": "View clients",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 7,
+                "name": "read_invoices",
+                "description": "View invoices",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 9,
+                "name": "read_reports",
+                "description": "View reports",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 11,
+                "name": "read_roles",
+                "description": "View Roles",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "name": "client",
+        "description": "Client with limited access",
+        "created_at": "2025-09-24T16:38:36.000000Z",
+        "updated_at": "2025-09-24T16:38:36.000000Z",
+        "permissions": [
+            {
+                "id": 3,
+                "name": "read_projects",
+                "description": "View projects",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 5,
+                "name": "read_clients",
+                "description": "View clients",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 7,
+                "name": "read_invoices",
+                "description": "View invoices",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 9,
+                "name": "read_reports",
+                "description": "View reports",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            },
+            {
+                "id": 11,
+                "name": "read_roles",
+                "description": "View Roles",
+                "created_at": "2025-09-24T17:08:02.000000Z",
+                "updated_at": "2025-09-24T17:08:02.000000Z"
+            }
+        ]
+    }
+]

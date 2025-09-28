@@ -1,15 +1,23 @@
-import { Component, OnInit, inject, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { User } from '../../store/user.store';
+import { Component, OnInit, inject, Input, ChangeDetectorRef } from '@angular/core';
+import { CommonModule, TitleCasePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { User, UserStore } from '../../store/user.store';
 import { ProjectService, Project } from '../../services/project.service';
 import { UserService } from '../../services/user.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Perm } from '../../enum/permissions.model';
+import { RoleService } from '../../services/role.service';
+import { Role } from '../../interfaces/roles.interface';
+import { Permission } from '../../interfaces/permission.interface';
+
+interface RoleWithPermissions extends Role {
+  permissions: Permission[];
+}
 
 @Component({
   selector: 'app-user-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TitleCasePipe, FormsModule],
   templateUrl: './user-dashboard.component.html',
   styleUrls: ['./user-dashboard.component.scss'],
 })
@@ -18,99 +26,80 @@ export class UserDashboardComponent implements OnInit {
 
   private projectService = inject(ProjectService);
   private route = inject(ActivatedRoute);
-  private userService = inject(UserService);
+  private router = inject(Router);
+  private roleService = inject(RoleService);
+  private userStore = inject(UserStore);
+  private cdr = inject(ChangeDetectorRef);
 
   user: User | null = null;
   projects: Project[] = [];
   clientRatingAverage: number | null = null;
-
-  availablePermissions = [
-    {
-      id: 1,
-      name: 'admin',
-      label: 'Full Admin Access',
-      description: 'Complete system access with all privileges',
-    },
-    {
-      id: 2,
-      name: 'read_users',
-      label: 'View Users',
-      description: 'View user profiles and information',
-    },
-    {
-      id: 3,
-      name: 'write_users',
-      label: 'Create/Edit Users',
-      description: 'Create new users and modify existing profiles',
-    },
-    {
-      id: 4,
-      name: 'read_projects',
-      label: 'View Projects',
-      description: 'Access project details and status',
-    },
-    {
-      id: 5,
-      name: 'write_projects',
-      label: 'Create/Edit Projects',
-      description: 'Create and modify project information',
-    },
-    {
-      id: 6,
-      name: 'read_clients',
-      label: 'View Clients',
-      description: 'Access client information and contacts',
-    },
-    {
-      id: 7,
-      name: 'write_clients',
-      label: 'Create/Edit Clients',
-      description: 'Add new clients and update client data',
-    },
-    {
-      id: 8,
-      name: 'read_invoices',
-      label: 'View Invoices',
-      description: 'Access invoice details and payment status',
-    },
-    {
-      id: 9,
-      name: 'write_invoices',
-      label: 'Create/Edit Invoices',
-      description: 'Generate and modify invoices',
-    },
-    {
-      id: 10,
-      name: 'read_reports',
-      label: 'View Reports',
-      description: 'Access system reports and analytics',
-    },
-    {
-      id: 11,
-      name: 'write_reports',
-      label: 'Create/Edit Reports',
-      description: 'Generate custom reports and modify templates',
-    },
-  ];
+  userRoles: RoleWithPermissions[] = [];
+  availableRoles: Role[] = [];
+  selectedRoleId: number | null = null;
 
   ngOnInit(): void {
     this.user = this.route.snapshot.data['user'];
     this.loadProjects();
+    this.loadUserRoles();
+    this.loadAvailableRoles();
   }
 
-  private loadUser(): void {
-    this.userService.getUserById(this.userId).subscribe({
-      next: (user) => (this.user = user),
-      error: (error) => console.error('Error loading user:', error),
+  private loadAvailableRoles(): void {
+    this.roleService.getRoles().subscribe({
+      next: (roles) => (this.availableRoles = roles),
+      error: (error) => console.error('Error loading roles:', error),
     });
   }
 
+  canManageRoles(): boolean {
+    return this.userStore.hasRole('admin') || this.userStore.has('write_users');
+  }
+
+  assignRole(): void {
+    if (!this.selectedRoleId || !this.user) return;
+
+    const selectedRole = this.availableRoles.find((r) => r.id === this.selectedRoleId);
+    if (!selectedRole) return;
+
+    // Check if user already has this role
+    if (this.userRoles.some((r) => r.id === selectedRole.id)) {
+      this.selectedRoleId = null;
+      return;
+    }
+
+    // Convert Role to RoleWithPermissions (would normally fetch permissions from API)
+    const roleWithPermissions: RoleWithPermissions = {
+      ...selectedRole,
+      permissions: [], // Would be populated from API
+    };
+
+    this.userRoles.push(roleWithPermissions);
+    this.selectedRoleId = null;
+
+    // Update user roles in backend
+    const roleIds = this.userRoles.map((r) => r.id);
+    // API call would go here to update user roles
+    console.log('Assigning roles:', roleIds, 'to user:', this.user.id);
+  }
+
+  updateUser() {
+    this.router.navigateByUrl('/workspace/users/' + this.user?.id + '/edit');
+  }
+
+  private loadUserRoles(): void {
+    const mockUserRoles: RoleWithPermissions[] = this.user!.account_roles as RoleWithPermissions[];
+    this.userRoles = mockUserRoles;
+  }
+
   private loadProjects(): void {
-    this.projectService.all().subscribe({
+    const userId = this.user!.id;
+    this.projectService.all({ assignee_id: userId }).subscribe({
       next: (projects) => {
         this.projects = projects.filter(
-          (p) => p.assignee_id === this.userId || p.owner_user_id === this.userId
+          (p) => p.assignee_id === userId || p.owner_user_id === userId
         );
+        this.cdr.markForCheck();
       },
       error: (error) => console.error('Error loading projects:', error),
     });
@@ -144,36 +133,20 @@ export class UserDashboardComponent implements OnInit {
     return Math.round((completedWorkItems / totalWorkItems) * 100);
   }
 
-  getPermissionLabel(permissionId: string): string {
-    const permission = this.availablePermissions.find((p) => p.id.toString() === permissionId);
-    return permission?.label || `Permission ${permissionId}`;
-  }
-
-  hasPermission(permission: string): boolean {
-    return this.user?.account_permissions?.some((p) => p === permission) || false;
-  }
-
-  hasAdminPermission(): boolean {
-    return this.hasPermission(Perm.admin);
-  }
-
-  togglePermission(permission: string): void {
-    if (!this.user) return;
-
-    const hasPermission = this.hasPermission(permission);
-
-    if (hasPermission) {
-      this.user.account_permissions =
-        this.user.account_permissions?.filter((p) => p !== permission) || [];
-    } else {
-      const newPermission: string = permission;
-      this.user.account_permissions = [...(this.user.account_permissions || []), newPermission];
+  editMember(): void {
+    if (this.user?.id) {
+      this.router.navigate(['/users', this.user.id, 'edit']);
     }
+  }
 
-    // console.log(this.user.account_permissions);
-    this.userService.updateUser(this.user).subscribe({
-      next: (updatedUser) => (this.user = updatedUser),
-      error: (error) => console.error('Error updating permissions:', error),
-    });
+  getRoleAccess(roleName: string): string {
+    const accessMap: { [key: string]: string } = {
+      'admin': 'Full system access, user management, and configuration',
+      'owner': 'Complete project ownership and team management',
+      'member': 'Standard access to assigned projects and tasks',
+      'viewer': 'Read-only access to projects and reports',
+      'manager': 'Team management and project oversight capabilities'
+    };
+    return accessMap[roleName.toLowerCase()] || 'Standard role permissions';
   }
 }

@@ -286,6 +286,108 @@ For profile/info sections:
 }
 ```
 
+### Quick Add Modal Pattern
+For multi-step forms and quick creation workflows:
+
+```html
+<div class="modal show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow">
+      <!-- Modal Header with Icon -->
+      <div class="dashboard-header">
+        <div class="header-content">
+          <div class="dashboard-icon">
+            <i class="bi bi-folder-plus"></i>
+          </div>
+          <div class="header-text">
+            <h1 class="dashboard-title">{{ title }}</h1>
+            <p class="dashboard-subtitle">Step {{ currentStep }} of {{ totalSteps }}</p>
+          </div>
+        </div>
+        <button type="button" class="btn-close" (click)="onCancel()"></button>
+      </div>
+      
+      <!-- Progress Bar -->
+      <div class="mb-4">
+        <div class="progress" style="height: 6px">
+          <div class="progress-bar" [style.width.%]="(currentStep / totalSteps) * 100"></div>
+        </div>
+        <div class="d-flex justify-content-between mt-2">
+          <small class="text-muted" [class.text-primary]="currentStep >= 1" [class.fw-bold]="currentStep >= 1">Step 1</small>
+          <small class="text-muted" [class.text-primary]="currentStep >= 2" [class.fw-bold]="currentStep >= 2">Step 2</small>
+          <small class="text-muted" [class.text-primary]="currentStep >= 3" [class.fw-bold]="currentStep >= 3">Step 3</small>
+        </div>
+      </div>
+      
+      <!-- Form Content -->
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <!-- Step Content Cards -->
+        <div class="card modern-card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="bi bi-step-icon"></i>
+              <span>Step Title</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <!-- Form fields -->
+          </div>
+        </div>
+        
+        <!-- Navigation Footer -->
+        <div class="d-flex justify-content-between mt-4">
+          <div>
+            @if (currentStep > 1) {
+            <button type="button" class="btn btn-outline-secondary" (click)="prevStep()">
+              <i class="bi bi-arrow-left me-2"></i>Previous
+            </button>
+            }
+          </div>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">Cancel</button>
+            @if (currentStep < totalSteps) {
+            <button type="button" class="btn btn-primary" (click)="nextStep()" [disabled]="!canProceed()">
+              Next<i class="bi bi-arrow-right ms-2"></i>
+            </button>
+            } @else {
+            <button type="submit" class="btn btn-success" [disabled]="form.invalid">
+              <i class="bi bi-check me-2"></i>Create
+            </button>
+            }
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+```
+
+```scss
+.modal-content {
+  .dashboard-container {
+    padding: 2rem;
+  }
+  
+  .progress {
+    height: 6px;
+    background-color: var(--bs-border-color);
+    
+    .progress-bar {
+      background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
+      transition: width 0.3s ease;
+    }
+  }
+  
+  .btn {
+    transition: all 0.2s ease-in-out;
+    
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+}
+```
+
 ## Implementation Checklist
 
 When creating new components, ensure:
@@ -300,6 +402,7 @@ When creating new components, ensure:
 - [ ] Includes responsive breakpoints
 - [ ] Uses CSS custom properties for colors
 - [ ] Includes hover/transition effects
+- [ ] Uses Quick Add modal pattern for multi-step forms
 
 ## File Organization
 
@@ -307,6 +410,36 @@ Each component should have:
 - `component.html` - Clean, semantic HTML structure
 - `component.scss` - Component-specific styles following patterns
 - Shared styles in global stylesheets when appropriate
+
+## Modal Patterns
+
+### Standard Modal
+For simple content display and basic forms:
+
+```html
+<div class="modal show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title mb-0">
+          <i class="bi bi-icon me-2"></i>
+          Modal Title
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="close()"></button>
+      </div>
+      <div class="modal-body p-4">
+        <!-- Content -->
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-outline-secondary" (click)="close()">Close</button>
+        <button type="button" class="btn btn-primary" (click)="action()">
+          <i class="bi bi-arrow-right me-2"></i>Action
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+```
 
 ## Future Considerations
 

@@ -27,9 +27,9 @@ export class UserListComponent {
   viewingClient: User | null = null;
 
   clientColumns: TableColumn[] = [
-    { key: 'id', label: 'SysID', sortable: true, type: 'number' },
-    { key: 'first_name', label: 'First Name', sortable: true },
-    { key: 'last_name', label: 'Last Name', sortable: true },
+    { key: 'id', label: 'SysID', sortable: true, type: 'number', clickable: true },
+    { key: 'first_name', label: 'First Name', sortable: true, clickable: true },
+    { key: 'last_name', label: 'Last Name', sortable: true, clickable: true },
     { key: 'profile.title', label: 'Title', sortable: true },
     { key: 'phone', label: 'Phone' },
     { key: 'email', label: 'Email' },
@@ -88,6 +88,12 @@ export class UserListComponent {
       case 'delete':
         // this.deleteClient(event.item);
         break;
+    }
+  }
+
+  onColumnClick(event: { column: string; item: User }) {
+    if (event.column === 'first_name' || event.column === 'last_name' || event.column === 'id') {
+      this.router.navigate(['/workspace/users/' + event.item.id]);
     }
   }
 }

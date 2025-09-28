@@ -10,10 +10,11 @@ import {Observable} from 'rxjs';
 import {CommonModule, TitleCasePipe} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ProjectFormComponent} from '../project/components/form/project-form.component';
+import {ModalFormComponent} from '../../shared/components/modal-form/modal-form.component';
 
 @Component({
   selector: 'app-project',
-  imports: [DataTableComponent, CommonModule, ProjectFormComponent, TitleCasePipe],
+  imports: [DataTableComponent, CommonModule, ProjectFormComponent, TitleCasePipe, ModalFormComponent],
   templateUrl: './projects.component.html',
   styleUrl: './projects.component.scss',
 })
